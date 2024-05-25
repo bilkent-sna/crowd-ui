@@ -1,0 +1,13 @@
+{
+  "date": "2024-05-20",
+  "simulation-duration": "0:00:00.854960",
+  "start-time": "2024-05-20 13:55:48.464480",
+  "end-time": "2024-05-20 13:55:49.319440",
+  "epoch-num": 10,
+  "snapshot-period": 1,
+  "states": ["Susceptible", "Infected", "Recovered"],
+  "watch-methods": {
+    "get_node_status": "<code object get_node_status at 0x0000021F796B1870, file \"c:\\Users\\SERIF\\Desktop\\nese\\dyn and soc netw\\simulation tool\\netsim\\crowd\\diffusion-basic\\project_test.py\", line 37>",
+    "get_percentage_infected": "<code object get_percentage_infected at 0x0000021F796F8920, file \"c:\\Users\\SERIF\\Desktop\\nese\\dyn and soc netw\\simulation tool\\netsim\\crowd\\diffusion-basic\\project_test.py\", line 41>"
+  }
+}

@@ -14,7 +14,13 @@
     "vite": "^3.1.0"
   },
   "dependencies": {
+    "@codemirror/commands": "^6.5.0",
+    "@codemirror/lang-yaml": "^6.1.1",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/view": "^6.26.3",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "codemirror": "^6.0.1",
     "d3-array": "^3.2.0",
     "d3-drag": "^2.0.0",
     "d3-force": "^3.0.0",
@@ -23,7 +29,10 @@
     "d3-scale": "^4.0.2",
     "d3-selection": "^2.0.0",
     "d3-zoom": "^2.0.0",
+    "file-saver": "^2.0.5",
     "path": "^0.12.7",
+    "svelte-codemirror": "^1.2.1",
+    "svelte-routing": "^2.13.0",
     "sveltestrap": "^5.11.3"
   }
 }

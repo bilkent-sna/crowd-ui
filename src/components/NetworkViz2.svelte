@@ -1,103 +1,107 @@
 <script>
-	import { onMount } from 'svelte';
-	import { scaleLinear, scaleOrdinal } from 'd3-scale';
-    import { zoom, zoomIdentity } from 'd3-zoom';
-	// import { schemeCategory10 } from 'd3-scale-chromatic'; // Imported for color scheme
-	import { select, selectAll } from 'd3-selection';
-	import { drag } from 'd3-drag';
-	import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force';
-    import { Button, Container, Row, Col } from 'sveltestrap';
+  //svelte imports
+  import { onMount } from 'svelte';
 
-	let d3 = { zoom, zoomIdentity, scaleLinear, scaleOrdinal, select, selectAll, drag,  forceSimulation, forceLink, forceManyBody, forceCenter }
+  //D3 imports
+  import { scaleLinear, scaleOrdinal } from 'd3-scale';
+  import { zoom, zoomIdentity } from 'd3-zoom';
 
-	// export let data;  // Data for different iterations
-    // import data from "$data/graph.js";
-//   import data from "$data/graph_100.js";
-//    import data from "$data/graph_1000.js";
+  import { select, selectAll } from 'd3-selection';
+  import { drag } from 'd3-drag';
+  
+	import { 
+    forceSimulation, 
+    forceLink, 
+    forceManyBody, 
+    forceCenter, 
+    forceX,
+    forceY,
+    forceCollide 
+  } from 'd3-force';
+  
+  // import data from "$data/graph.js";
+  // import data from "$data/graph_100.js";
+  //  import data from "$data/graph_1000.js";
   import data from "$data/graph_higgs200.js"
-	let curr_iteration = 0;  // Current iteration
 
-    let hoveredData = null;
-    let neighbors = new Set(); // Set to store neighbors of the hovered node
+  // Initializing variables related to width/height/margins
+  let width = 1500;
+	let height = 900;
 
-	let svg;
-	let width = 1000;
-	let height = 800;
-    const nodeRadius = 5;
-	const padding = { top: 20, right: 40, bottom: 40, left: 25 };
+  const nodeRadius = 5;
+  const margin = {
+    top: 50, 
+    right: 0, 
+    bottom: 0, 
+    left: 50
+  }
 
-	let graph = data[curr_iteration];  // Initial graph data
-    $: console.log("iteration:", curr_iteration, "graph:", graph);
-	let links = graph.links.map(d => Object.create(d));
-	let nodes = graph.nodes.map(d => Object.create(d));  
+  $: innerWidth = width - margin.left - margin.right;
+  let innerHeight = height - margin.top - margin.bottom;
 
-    // Setting color range for the nodes
-    // Will be modified in later versions
-    const colorRange = ['blue', 'red', 'green'];
-    const nodeStates = ['Susceptible', 'Infected', 'Recovered'];
-    
-    // Color scale
-    const colorScale = scaleOrdinal()
-        .domain(nodeStates)
-        .range(colorRange);
+  // Setting color range for the nodes
+  // Will be modified in later versions
+  const colorRange = ['blue', 'red', 'green'];
+  const nodeStates = ['Susceptible', 'Infected', 'Recovered'];
+  
+  // Color scale
+  const colorScale = scaleOrdinal()
+    .domain(nodeStates)
+    .range(colorRange);
 
-    const scaleX = scaleLinear().domain([0, width]).range([nodeRadius, width - nodeRadius]);
-	const scaleY = scaleLinear().domain([0, height]).range([nodeRadius, height - nodeRadius]);
+  // Declaring and initializing variables related to graph
+  export let curr_iteration = 0;
 
-	let transform = d3.zoomIdentity;
-    let simulation;
+  $: console.log("iteration: ", curr_iteration, "data: ", data[curr_iteration]);
+  let nodes = data[curr_iteration]['nodes'].map(d => Object.create(d));
+  $: console.log("nodes:", nodes);
+  let links = data[curr_iteration]['links'].map(d => Object.create(d));
 
-	onMount(() => {
-		initializeSimulation();
-	});
+  $: {
+    nodes = data[curr_iteration]['nodes'].map(d => Object.create(d))
+    links = data[curr_iteration]['links'].map(d => Object.create(d))
+  }
 
-	function initializeSimulation() {
-		simulation = d3.forceSimulation(nodes)
-			.force("link", d3.forceLink(links).id(d => d.id))
-			.force("charge", d3.forceManyBody().strength(-110))
-			.force("center", d3.forceCenter(width / 2, height / 2))
-            .alpha(0.3) // [0,1] how much movement, how fast
-            .alphaDecay(.05)
-			.on('tick', simulationUpdate);
+  // Check if we can read graph data correctly
+  //console.logs(currGraph);
 
-		d3.select(svg)
-			.call(d3.drag()
-				.container(svg)
-				.subject(dragsubject)
-				.on("start", dragstarted)
-				.on("drag", dragged)
-				.on("end", dragended))
-			.call(d3.zoom()
-				.scaleExtent([1 / 10, 8])
-				.on('zoom', zoomed));
-	}
+  // Todo: understand how zoom works
+  let transform = zoomIdentity;
+  let simulation;
+  let svg; //we used bind:this in html element
 
-	function updateGraph() {
-		graph = data[curr_iteration];
-		links = graph.links.map(d => Object.create(d));
-		nodes = graph.nodes.map(d => Object.create(d));
-		simulation.nodes(nodes);
-		simulation.force("link").links(links);
-        simulation.alpha(0.3) // [0,1] how much movement, how fast
-            .alphaDecay(.05)//[0, 1] the rate which alpha approaches zero. how long does it take btw simulation states
-            .restart(); // Restart simulation with new data
-	}
+  onMount( () => {
+    console.log("hellooooonodes:", nodes.map(d => Object.create(d)));
+     // Instantiate a new force simulation with "nodes" array as the argument
+    simulation = forceSimulation(nodes)
+		.force("link", forceLink(links).id(d => d.id))
+		.force("charge", forceManyBody())
+		.force("center", forceCenter(width / 2, height / 2))
+		.on('tick', simulationUpdate);
 
-	function simulationUpdate () {
-		simulation.tick();
-        nodes.forEach(node => {
-			node.x = scaleX(node.x);
-			node.y = scaleY(node.y);
-		});
-		nodes = [...nodes];
-		links = [...links];
+    select(svg)
+      .call(drag()
+        .container(svg)
+        .subject(dragsubject)
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended))
+      .call(zoom()
+            .scaleExtent([1 / 10, 8])
+            .on('zoom', zoomed));
+  });
+
+  function simulationUpdate () {
+    simulation.tick();
+    // nodes = data[curr_iteration]['nodes'].map(d => Object.create(d));
+    // nodes = [...nodes];
+    // links = [...links];
 	}
 
     function zoomed(currentEvent) {
         transform = currentEvent.transform;
         simulationUpdate();
     }
-
 
 	function dragsubject(currentEvent) {
         const node = simulation.find(transform.invertX(currentEvent.x), transform.invertY(currentEvent.y), nodeRadius);
@@ -129,90 +133,36 @@
 		({ width, height } = svg.getBoundingClientRect());
 	}
 
-	function changeIteration(delta) {
-		// curr_iteration = (curr_iteration + delta + data.length) % data.length;  // Update iteration index
-		curr_iteration = curr_iteration + delta;
-        updateGraph();  // Update graph with new data
-	}
 
-    function getNeighbors(node) {
-		const neighbors = new Set();
-		links.forEach(link => {
-			if (link.source.id === node.id) {
-				neighbors.add(link.target.id);
-			} else if (link.target.id === node.id) {
-				neighbors.add(link.source.id);
-			}
-		});
-		return neighbors;
-	}
-
-    
+ 
 </script>
 
 <svelte:window on:resize='{resize}'/>
 
-<Container>
-	<Row>
-		<Col>
-			<Button on:click={() => changeIteration(-1)} color="primary">Previous</Button>
-		</Col>
-		<Col>
-			<p>{curr_iteration}</p>
-		</Col>
-		<Col>
-			<Button on:click={() => changeIteration(1)} color="primary">Next</Button>
-		</Col>
-	</Row>
-</Container>
-
-<svg bind:this={svg} width='{width}' height='{height}'>
-	<g>
-        {#each links as link}
-            <line class='link 'x1='{link.source.x}' y1='{link.source.y}' 
-                    x2='{link.target.x}' y2='{link.target.y}'
-                    stroke-opacity={hoveredData ? (hoveredData.id === link.source.id || hoveredData.id === link.target.id) ? ".8" : ".3" : ".8"}
-                    transform='translate({transform.x} {transform.y}) scale({transform.k} {transform.k})'>
-                    <title>{link.source.id}</title>
-            </line>
-        {/each}
-
-        {#each nodes as point}
-            <circle class='node' 
-                    r='5'
-                    fill='{colorScale(point.node)}' 
-                    cx='{point.x}' 
-                    cy='{point.y}'
-                    opacity={hoveredData ? (hoveredData.id === point.id || neighbors.has(point.id)) ? "1" : ".3" : "1"}
-                    on:mouseover={() => {
-                        hoveredData = point;
-                        neighbors = getNeighbors(point);
-                    }}
-                    on:focus={() => {
-                        hoveredData = point;
-                        neighbors = getNeighbors(point);
-                    }}
-                    on:mouseleave={() => {
-                        hoveredData = null;
-                        neighbors = new Set();
-                    }}
-                    transform='translate({transform.x} {transform.y}) scale({transform.k} {transform.k})'>
-            <title>{point.id}</title></circle>
-        {/each}
+<div class="chart-container" bind:this={svg}>
+  <svg {width} {height}>
+    <g class="chart">
+      {#each links as link}
+        <line 
+          x1='{link.source.x}' y1='{link.source.y}' 
+          x2='{link.target.x}' y2='{link.target.y}'
+          stroke='#999' stroke-opacity='0.6'
+          transform='translate({transform.x} {transform.y}) scale({transform.k} {transform.k})'
+        >
+          <!-- <title>{link.source.id}</title> -->
+        </line>
+      {/each}
+      {#each nodes as node}
+        <circle
+          cx='{node.x}'
+          cy='{node.y}'
+          r=5
+          fill={colorScale(node.node)}
+          transform='translate({transform.x} {transform.y}) scale({transform.k} {transform.k})'
+          stroke="black"
+          title={node.node}
+        /> 
+      {/each}
     </g>
-</svg>
-
-<style>
-	svg {
-		float: left;     
-	}
-
-	circle {
-		stroke: #060606;
-        stroke-width: 1;
-	}
-
-    line {
-        stroke: #999;
-    }
-</style>
+  </svg>
+</div>

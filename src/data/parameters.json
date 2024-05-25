@@ -1,0 +1,22 @@
+{
+  "get_node_status iteration 0": 0,
+  "get_percentage_infected iteration 0": 0.1,
+  "get_node_status iteration 1": 0,
+  "get_percentage_infected iteration 1": 0.245,
+  "get_node_status iteration 2": 0,
+  "get_percentage_infected iteration 2": 0.4,
+  "get_node_status iteration 3": 0,
+  "get_percentage_infected iteration 3": 0.58,
+  "get_node_status iteration 4": 1,
+  "get_percentage_infected iteration 4": 0.605,
+  "get_node_status iteration 5": 1,
+  "get_percentage_infected iteration 5": 0.615,
+  "get_node_status iteration 6": 1,
+  "get_percentage_infected iteration 6": 0.625,
+  "get_node_status iteration 7": 1,
+  "get_percentage_infected iteration 7": 0.645,
+  "get_node_status iteration 8": 1,
+  "get_percentage_infected iteration 8": 0.655,
+  "get_node_status iteration 9": 1,
+  "get_percentage_infected iteration 9": 0.655
+}
