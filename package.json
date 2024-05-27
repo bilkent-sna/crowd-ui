@@ -1,12 +1,15 @@
 {
-  "name": "svelte-visualization-template",
+  "name": "crowd",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tauri:init": "tauri init",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.2",
@@ -15,9 +18,12 @@
   },
   "dependencies": {
     "@codemirror/commands": "^6.5.0",
+    "@codemirror/lang-python": "^6.1.6",
     "@codemirror/lang-yaml": "^6.1.1",
     "@codemirror/state": "^6.4.1",
     "@codemirror/view": "^6.26.3",
+    "@tauri-apps/api": "^1.5.6",
+    "@tauri-apps/cli": "^1.5.14",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "codemirror": "^6.0.1",
@@ -32,6 +38,7 @@
     "file-saver": "^2.0.5",
     "path": "^0.12.7",
     "svelte-codemirror": "^1.2.1",
+    "svelte-codemirror-editor": "^1.4.0",
     "svelte-routing": "^2.13.0",
     "sveltestrap": "^5.11.3"
   }
