@@ -1,6 +1,6 @@
 <script>
     import { saveAs } from 'file-saver';
-    import { Input, Button, Icon } from "sveltestrap";
+    import { Input, Button, Icon } from "@sveltestrap/sveltestrap";
   
     export let chartId; // ID of the chart to download
     export let getSVG; // Function to get the chart canvas element

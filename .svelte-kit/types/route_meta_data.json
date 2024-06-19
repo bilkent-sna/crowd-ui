@@ -1,0 +1,22 @@
+{
+	"/": [],
+	"/graph/[slug]": [],
+	"/methodlab": [],
+	"/project/[slug]": [],
+	"/results": [],
+	"/sidebar": [
+		"src/routes/sidebar/+page.js"
+	],
+	"/sidebar/crud/products": [],
+	"/sidebar/crud/results": [],
+	"/sidebar/crud/users": [],
+	"/sidebar/dashboard": [
+		"src/routes/sidebar/dashboard/+page.js"
+	],
+	"/sidebar/layouts/sidebar": [
+		"src/routes/sidebar/layouts/sidebar/+page.js"
+	],
+	"/sidebar/playground/sidebar": [],
+	"/sidebar/settings": [],
+	"/welcome": []
+}

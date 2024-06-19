@@ -1,6 +1,6 @@
 <script>
   import DeltaGraph from "./Delta_Graph.svelte";
-  import { Button, Container, Row, Col, Input } from 'sveltestrap';
+  import { Button, Container, Row, Col, Input } from '@sveltestrap/sveltestrap';
   import ChartDownload from "./ChartDownload.svelte";
 
   export let type;

@@ -1,6 +1,6 @@
 
   <script>
-    import { Button, Container, Row, Col, Form, FormGroup, Label, Input, ListGroup, ListGroupItem } from 'sveltestrap';
+    import { Button, Container, Row, Col, Form, FormGroup, Label, Input, ListGroup, ListGroupItem } from '@sveltestrap/sveltestrap';
     import { saveAs } from 'file-saver';
     import CodeMirrorEditor from 'svelte-codemirror-editor';
     import { python } from '@codemirror/lang-python';

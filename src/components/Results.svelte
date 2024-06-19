@@ -2,8 +2,8 @@
   import ChartContainer from "./Chart/ChartContainer.svelte";
   import status_delta from "$data/status_delta2.js";
   import simulation_info from "$data/simulation_info.json";
-  import { Col, Container, Row} from "sveltestrap";
-  import { Button, Modal, ModalBody, ModalFooter, Input } from "sveltestrap";
+  import { Col, Container, Row} from "@sveltestrap/sveltestrap";
+  import { Button, Modal, ModalBody, ModalFooter, Input } from "@sveltestrap/sveltestrap";
 
   //getting simulation info
   const nodeStates = simulation_info["states"];
