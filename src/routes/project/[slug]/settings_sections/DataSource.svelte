@@ -31,6 +31,7 @@
 	let hasHeader2;
 	let graphGenerateType;
 	let graphGenerateDegree;
+	let graphGenerateCount;
 
 	onMount(() => {
 		if (dataSource === 'previously-uploaded') {
@@ -59,7 +60,8 @@
 		} else if (dataSource === 'generate-graph') {
 			fileOrRandom = {
 				generateType: graphGenerateType,
-				degree: graphGenerateDegree
+				degree: parseInt(graphGenerateDegree),
+				count: parseInt(graphGenerateCount)
 			};
 		} else {
 			fileOrRandom = 'Error';
@@ -196,15 +198,21 @@
 							items={[
 								{ value: 'random', name: 'Random' },
 								{ value: 'barabasi-albert', name: 'Barabasi-Albert' },
-								{ value: 'watts-strogatz', name: 'Watts-Strogatz:' }
+								{ value: 'watts-strogatz', name: 'Watts-Strogatz' }
 							]}
 						/>
 					</Label>
 				</div>
 				<div class="my-4">
 					<Label>
-						Select an option
+						Degree:
 						<NumberInput bind:value={graphGenerateDegree} class="mt-2" />
+					</Label>
+				</div>
+				<div class="my-4">
+					<Label>
+						Node count:
+						<NumberInput bind:value={graphGenerateCount} class="mt-2" />
 					</Label>
 				</div>
 			</div>

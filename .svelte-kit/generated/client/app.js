@@ -16,7 +16,8 @@ export const nodes = [
 	() => import('./nodes/12'),
 	() => import('./nodes/13'),
 	() => import('./nodes/14'),
-	() => import('./nodes/15')
+	() => import('./nodes/15'),
+	() => import('./nodes/16')
 ];
 
 export const server_loads = [];
@@ -27,15 +28,16 @@ export const dictionary = {
 		"/methodlab": [4],
 		"/project/[slug]": [5],
 		"/results": [6],
-		"/sidebar": [7],
-		"/sidebar/crud/products": [8],
-		"/sidebar/crud/results": [9],
-		"/sidebar/crud/users": [10],
-		"/sidebar/dashboard": [11],
-		"/sidebar/layouts/sidebar": [12],
-		"/sidebar/playground/sidebar": [13],
-		"/sidebar/settings": [14],
-		"/welcome": [15]
+		"/settings": [7],
+		"/sidebar": [8],
+		"/sidebar/crud/products": [9],
+		"/sidebar/crud/results": [10],
+		"/sidebar/crud/users": [11],
+		"/sidebar/dashboard": [12],
+		"/sidebar/layouts/sidebar": [13],
+		"/sidebar/playground/sidebar": [14],
+		"/sidebar/settings": [15],
+		"/welcome": [16]
 	};
 
 export const hooks = {

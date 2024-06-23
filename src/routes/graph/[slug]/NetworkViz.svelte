@@ -12,9 +12,25 @@
 	import { select, selectAll } from 'd3-selection';
 	import { drag } from 'd3-drag';
 	import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force';
-	import { Range, Label, Drawer, Button, CloseButton, P, Input } from 'flowbite-svelte';
+	import {
+		A,
+		Range,
+		Helper,
+		Label,
+		Drawer,
+		Button,
+		CloseButton,
+		P,
+		Card,
+		Input
+	} from 'flowbite-svelte';
 	import { Tabs, TabItem, List, Li, Search, Dropdown, DropdownItem } from 'flowbite-svelte';
-	import { SearchOutline, ChevronDownOutline } from 'flowbite-svelte-icons';
+	import {
+		SearchOutline,
+		ChevronDownOutline,
+		CirclePlusSolid,
+		CloseCircleSolid
+	} from 'flowbite-svelte-icons';
 
 	import { schemeCategory10 } from 'd3-scale-chromatic';
 	import {
@@ -23,6 +39,8 @@
 		AdjustmentsVerticalSolid
 	} from 'flowbite-svelte-icons';
 	import { sineIn } from 'svelte/easing';
+
+	import DownloadGraph from './DownloadGraph.svelte';
 
 	let d3 = {
 		zoom,
@@ -61,6 +79,7 @@
 	let neighbors = new Set(); // Set to store neighbors of the hovered node
 
 	let svg;
+	let iterations = [];
 	let width = 1000;
 	let height = 800;
 	const nodeRadius = 5;
@@ -70,6 +89,53 @@
 	$: console.log('iteration:', curr_iteration, 'graph:', graph);
 	let links = graph.links.map((d) => Object.create(d));
 	let nodes = graph.nodes.map((d) => Object.create(d));
+
+	function addIteration(svg) {
+		iterations.push(svg);
+	}
+
+	// Search logic
+	let searchId = '';
+	let nodeInfo = null;
+	let errorMessage = '';
+
+	function searchNode() {
+		const nodeId = parseInt(searchId);
+		nodeInfo = graph.nodes.find((node) => node.id === nodeId);
+		if (!nodeInfo) {
+			errorMessage = `Node with ID ${nodeId} not found.`;
+		} else {
+			errorMessage = '';
+			showConnectedEdges();
+		}
+	}
+
+	let edgeSearchInput = '';
+	let edgeInfo = null;
+	let edgeErrorMessage = '';
+
+	let connectedEdges = [];
+	let showEdgesBool = false;
+	$: console.log(showEdgesBool);
+
+	function searchEdge() {
+		const [sourceId, targetId] = edgeSearchInput.split(/[ ,]+/).map(Number);
+		edgeInfo = graph.links.find(
+			(link) =>
+				(link.source === sourceId && link.target === targetId) ||
+				(link.source === targetId && link.target === sourceId)
+		);
+		if (!edgeInfo) {
+			edgeErrorMessage = `Edge between nodes ${sourceId} and ${targetId} not found.`;
+		} else {
+			edgeErrorMessage = '';
+		}
+	}
+
+	function showConnectedEdges() {
+		const nodeId = parseInt(searchId);
+		connectedEdges = graph.links.filter((link) => link.source === nodeId || link.target === nodeId);
+	}
 
 	// Setting color range for the nodes
 	let colors = {}; // Object to store colors for each node state
@@ -236,6 +302,39 @@
 	];
 
 	let selectedInspectCategory = 'Nodes';
+
+	function downloadSVG() {
+		// Get the SVG element
+		const svgElement = document.getElementById('graph1');
+
+		if (!svgElement) {
+			console.error('SVG element not found.');
+			return;
+		}
+
+		// Get the SVG content as XML
+		const svgXml = new XMLSerializer().serializeToString(svgElement);
+
+		// Create a Blob containing the SVG data
+		const blob = new Blob([svgXml], { type: 'image/svg+xml' });
+
+		// Create a URL for the Blob
+		const url = URL.createObjectURL(blob);
+
+		// Create a link element and set its attributes
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'graph.svg'; // File name for download
+		a.style.display = 'none';
+
+		// Append the link to the body and trigger the download
+		document.body.appendChild(a);
+		a.click();
+
+		// Clean up
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
 </script>
 
 <svelte:window on:resize={resize} />
@@ -243,10 +342,13 @@
 <div class="center-container">
 	<div class="grid-container">
 		<div class="left-align">
+			<button on:click={downloadSVG}>Download SVG</button>
+
 			<Label>Current iteration: {curr_iteration}/{epoch_num - 1}</Label>
 			<Range
 				id="range-minmax"
 				min="0"
+				step={snapshot_period}
 				max={epoch_num - 1}
 				bind:value={curr_iteration}
 				on:change={updateGraph}
@@ -258,9 +360,12 @@
 		<div class="right-align">
 			<Button on:click={() => (editSizeandColorsHidden = false)}>Edit node size and colors</Button>
 		</div>
+		<div class="right-align">
+			<DownloadGraph svgComponent={svg} {iterations} />
+		</div>
 	</div>
 	<div>
-		<svg bind:this={svg} {width} {height}>
+		<svg id="graph1" bind:this={svg} {width} {height}>
 			<g>
 				{#each links as link}
 					<line
@@ -269,11 +374,6 @@
 						y1={link.source.y}
 						x2={link.target.x}
 						y2={link.target.y}
-						stroke-opacity={hoveredData
-							? hoveredData.id === link.source.id || hoveredData.id === link.target.id
-								? '.8'
-								: '.3'
-							: '.8'}
 						transform="translate({transform.x} {transform.y}) scale({transform.k} {transform.k})"
 					>
 						<title>{link.source.id}</title>
@@ -281,6 +381,7 @@
 				{/each}
 
 				{#each nodes as point}
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<circle
 						class="node"
 						r="5"
@@ -352,16 +453,84 @@
 				{/each}
 			</Dropdown>
 		</div>
-		<Search size="md" class="rounded-none py-2.5" placeholder="123" />
-		<Button class="rounded-s-none !p-2.5">
-			<SearchOutline class="h-6 w-6" />
+		<div>
+			{#if selectedInspectCategory === 'Nodes'}
+				<Search size="md" class="rounded-none py-2.5" placeholder="123" bind:value={searchId} />
+			{:else}
+				<Search
+					size="md"
+					class="rounded-none py-2.5"
+					placeholder="123, 456"
+					bind:value={edgeSearchInput}
+				/>
+			{/if}
+		</div>
+		<Button
+			on:click={() => {
+				if (selectedInspectCategory === 'Nodes') {
+					searchNode();
+				} else if (selectedInspectCategory === 'Edges') {
+					searchEdge();
+				}
+			}}
+			class="rounded-s-none !p-2.5"
+		>
+			<SearchOutline class="h-5 w-5" />
 		</Button>
 	</form>
 
-	<div class="grid grid-cols-2 gap-4">
+	{#if selectedInspectCategory === 'Nodes'}
+		<Helper class="text-gray-600">Search: Enter node ID</Helper>
+		<Card class="my-4">
+			<h6 class="mb-2 font-bold tracking-tight text-gray-900 dark:text-white">Node Info</h6>
+			{#if nodeInfo}
+				<List tag="ul" class="space-y-1 dark:text-gray-400">
+					{#each Object.entries(nodeInfo) as [key, value]}
+						<Li><strong>{key}:</strong> {value}</Li>
+					{/each}
+				</List>
+				{#if showEdgesBool}
+					<A on:click={() => (showEdgesBool = !showEdgesBool)} class="mt-2"
+						><CloseCircleSolid class="mr-2" />Hide Connected Edges</A
+					>
+				{:else}
+					<A on:click={() => (showEdgesBool = !showEdgesBool)} class="mt-2"
+						><CirclePlusSolid class="mr-2" />Show Connected Edges</A
+					>
+				{/if}
+
+				{#if connectedEdges.length > 0 && showEdgesBool}
+					<List tag="ul" class="ml-2 mt-2 space-y-1 dark:text-gray-400">
+						{#each connectedEdges as edge}
+							<Li><strong>Source:</strong> {edge.source}, <strong>Target:</strong> {edge.target}</Li
+							>
+						{/each}
+					</List>
+				{/if}
+			{:else if errorMessage}
+				<P class="text-red-500">{errorMessage}</P>
+			{/if}
+		</Card>
+	{:else if selectedInspectCategory === 'Edges'}
+		<Helper>Search: Enter source and target IDs (separated by space or comma)</Helper>
+		<Card class="my-4">
+			<h6 class="mb-2 font-bold tracking-tight text-gray-900 dark:text-white">Edge Info</h6>
+			{#if edgeInfo}
+				<List tag="ul" class="space-y-1 dark:text-gray-400">
+					{#each Object.entries(edgeInfo) as [key, value]}
+						<Li><strong>{key}:</strong> {value}</Li>
+					{/each}
+				</List>
+			{:else if edgeErrorMessage}
+				<P class="text-red-500">{edgeErrorMessage}</P>
+			{/if}
+		</Card>
+	{/if}
+
+	<!-- <div class="grid grid-cols-2 gap-4">
 		<Button color="light" href="/">Learn more</Button>
 		<Button href="/" class="px-4">Get access <ArrowRightOutline class="ms-2 h-5 w-5" /></Button>
-	</div>
+	</div> -->
 </Drawer>
 
 <Drawer
@@ -425,7 +594,7 @@
 	}
 
 	line {
-		stroke: #999;
+		stroke: red;
 	}
 
 	.center-container {

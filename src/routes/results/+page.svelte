@@ -3,7 +3,7 @@
 
 	import { chart } from 'svelte-apexcharts';
 	import { Button, Modal, Input, Select, Heading, P, Span, Spinner } from 'flowbite-svelte';
-	import { ChartLineUpOutline } from 'flowbite-svelte-icons';
+	import { ChartLineUpOutline, TrashBinSolid } from 'flowbite-svelte-icons';
 
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
@@ -149,6 +149,8 @@
 	let charts = [];
 	let chartId = 0;
 
+	$: console.log(charts);
+
 	const addChart = () => {
 		// const chartType = chartTypeSelection === "lineChart" ? "line" : "bar";
 		const chartType = chartTypeSelection;
@@ -160,9 +162,60 @@
 				type: chartType,
 				options: {
 					chart: {
+						id: chartId,
 						type: chartType,
 						width: '100%',
-						height: '400px'
+						height: '400px',
+						selection: {
+							enabled: true
+						},
+						toolbar: {
+							show: true,
+							offsetX: 0,
+							offsetY: 0,
+							tools: {
+								download: true,
+								selection: false,
+								zoom: true,
+								zoomin: true,
+								zoomout: true,
+								pan: true,
+								reset: true | '<img src="/static/icons/reset.png" width="20">',
+								customIcons: [
+									{
+										icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="shrink-0 h-5 w-5" role="img" aria-label="trash bin solid" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"></path></svg>',
+										index: 4,
+										title: 'Delete',
+										class: 'custom-icon',
+										click: function (chart, options, e) {
+											// chart.destroy();
+											removeChart(options.config.chart.id);
+											// console.log('chart inside func:', chart);
+											// console.log('options inside func:', options);
+											// console.log('event inside func:', e);
+										}
+									}
+								]
+							},
+							export: {
+								csv: {
+									filename: 'chart.csv',
+									columnDelimiter: ',',
+									headerCategory: 'category',
+									headerValue: 'value',
+									dateFormatter(timestamp) {
+										return new Date(timestamp).toDateString();
+									}
+								},
+								svg: {
+									filename: 'chart.svg'
+								},
+								png: {
+									filename: 'chart.png'
+								}
+							},
+							autoSelected: 'zoom'
+						}
 					},
 					series: yVars.map((yVar) => ({
 						name: yVar,
@@ -191,7 +244,10 @@
 	};
 
 	const removeChart = (id) => {
+		console.log('id:', id);
+		console.log('before', charts);
 		charts = charts.filter((chart) => chart.id !== id);
+		console.log('after', charts);
 	};
 
 	// Helper function to split charts into rows of two
@@ -209,11 +265,15 @@
 {#if loadingInformation}
 	<div class="text-center">
 		<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold  md:text-5xl lg:text-6xl">
+			Results
+		</Heading>
+
+		<Heading tag="h6">
 			Project: <Span gradient>{$project.name}</Span>
 		</Heading>
-		<P class="my-6 text-center text-lg dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
-			Simulation: {$simulationName}
-		</P>
+		<Heading tag="h6" class="mb-4">
+			Simulation: <Span gradient>{$simulationName}</Span>
+		</Heading>
 		<Spinner class="mt-4" size="10" />
 		<P class="my-2 text-center text-gray-400 dark:text-gray-400 sm:px-16 lg:text-lg xl:px-24">
 			Loading the information
@@ -268,7 +328,7 @@
 			</Select>
 		</div>
 		<div>
-			<label for="data-type">Select data type:</label>
+			<label for="data-type">Select data source:</label>
 			<Select id="data-type" bind:value={selectedFile} on:input={() => (isFileSelected = true)}>
 				{#each paramFileList as option}
 					<option value={option}>{option}</option>
@@ -284,10 +344,16 @@
 			</Select>
 		</div>
 		<div>
-			<Input id="x-title" bind:value={xTitle} placeholder="Enter title for x-axis" />
+			<label for="chart-title">Enter title for the chart:</label>
+			<Input id="chart-title" bind:value={chartTitle} placeholder="chart title" />
 		</div>
 		<div>
-			<Input id="y-title" bind:value={yTitle} placeholder="Enter title for y-axis" />
+			<label for="x-title">Enter title for x-axis:</label>
+			<Input id="x-title" bind:value={xTitle} placeholder="x-axis" />
+		</div>
+		<div>
+			<label for="y-title">Enter title for y-axis:</label>
+			<Input id="y-title" bind:value={yTitle} placeholder="y-axis" />
 		</div>
 		<div>
 			<Button on:click={addLine}>Add variable to chart</Button>

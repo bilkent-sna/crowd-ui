@@ -149,6 +149,22 @@ pub fn load_methods(project_name : String) -> String {
     return result;
 }
 
+pub fn get_conf(project_name : String) -> String {
+    pyo3::prepare_freethreaded_python();
+
+    let mut result = String::new();
+    Python::with_gil(|py| {
+        let test_module: Bound<PyModule> = PyModule::import_bound(py, "crowd.api.general_methods").unwrap();
+
+        let new_class = test_module.getattr("GeneralMethods").unwrap().call0().unwrap();
+
+        let args = PyTuple::new_bound(py, vec![project_name]); 
+        result = new_class.call_method1("get_conf", args).unwrap().to_string();
+        // println!("Result: {:?}", result);
+    });
+    return result;
+}
+
 pub fn save_methods(project_name : String, code: String){
     pyo3::prepare_freethreaded_python();
 
@@ -160,6 +176,22 @@ pub fn save_methods(project_name : String, code: String){
 
         let args = (project_name, code); 
         new_class.call_method1("save_methods", args).unwrap().to_string();
+        // println!("Result: {:?}", result);
+    });
+   
+}
+
+pub fn save_conf(project_name : String, content: String){
+    pyo3::prepare_freethreaded_python();
+
+    // let mut result = String::new();
+    Python::with_gil(|py| {
+        let test_module: Bound<PyModule> = PyModule::import_bound(py, "crowd.api.general_methods").unwrap();
+
+        let new_class = test_module.getattr("GeneralMethods").unwrap().call0().unwrap();
+
+        let args = (project_name, content); 
+        new_class.call_method1("save_conf", args).unwrap().to_string();
         // println!("Result: {:?}", result);
     });
    

@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{api::file, generate_context, generate_handler, Builder};
+use tauri::{ generate_context, generate_handler, Builder};
 
 mod python_backend;
 mod general_py_backend;
@@ -218,10 +218,24 @@ fn run_python_load_methods(project_name : String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
+fn run_python_get_conf(project_name : String) -> String {
+    let results = general_py_backend::get_conf(project_name);
+    // println!("Inside main.rs printing conf file");
+    // println!("{}", results);
+    return results;
+}
+
+#[tauri::command(rename_all = "snake_case")]
 fn run_python_save_methods(project_name : String, code : String) {
     general_py_backend::save_methods(project_name, code);
     // println!("Inside main.rs printing parameter file");
     // println!("{}", results);
+    
+}
+
+#[tauri::command(rename_all = "snake_case")]
+fn run_python_save_conf(project_name : String, content : String) {
+    general_py_backend::save_conf(project_name, content);
     
 }
 
@@ -244,6 +258,13 @@ fn run_python_create_project(name: String, date: String, info: String) {
 #[tauri::command(rename_all = "snake_case")]
 fn run_python_send_conf_and_run(data: String, project_name: String, epochs: i32, snapshot_period: i32) -> String {
     let results = project_py_backend::send_conf_and_run(data, project_name, epochs, snapshot_period);
+    println!("Inside main.rs, simulation successfully ran");
+    return results
+}
+
+#[tauri::command(rename_all = "snake_case")]
+fn run_python_init_and_run_simulation(project_name: String, epochs: i32, snapshot_period: i32) -> String {
+    let results = project_py_backend::init_and_run_simulation(project_name, epochs, snapshot_period);
     println!("Inside main.rs, simulation successfully ran");
     return results
 }
@@ -277,8 +298,11 @@ fn main() {
             run_python_load_methods,
             run_python_save_methods,
             run_python_save_methods_list_view,
+            run_python_get_conf,
+            run_python_save_conf,
             run_python_create_project,
-            run_python_send_conf_and_run
+            run_python_send_conf_and_run,
+            run_python_init_and_run_simulation
         ])
         .run(generate_context!())
         .expect("Error while running Tauri application");

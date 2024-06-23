@@ -27,7 +27,7 @@
 		project.set(newProject);
 
 		//call python to actually create a project on that side
-		run_python_create_project(newProject.name, newProject.date, newProject.info);
+		run_python_create_project(generateSlug(newProject.name), newProject.date, newProject.info);
 
 		//goto project page
 		goto(`/project/${generateSlug(newProjectName)}`);

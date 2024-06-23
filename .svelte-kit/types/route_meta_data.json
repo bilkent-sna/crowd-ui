@@ -4,6 +4,7 @@
 	"/methodlab": [],
 	"/project/[slug]": [],
 	"/results": [],
+	"/settings": [],
 	"/sidebar": [
 		"src/routes/sidebar/+page.js"
 	],

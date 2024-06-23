@@ -12,7 +12,8 @@
 		Helper,
 		Input,
 		Label,
-		Radio
+		Radio,
+		Spinner
 	} from 'flowbite-svelte';
 	import {
 		CirclePlusSolid,
@@ -52,6 +53,8 @@
 	let showAllSettings = false;
 	let simType = 'false';
 	let isDiffusion = true;
+	let epochs = 0;
+	let snapshotPeriod = 0;
 
 	$: isDiffusion = simType === 'true';
 	$: console.log(isDiffusion);
@@ -78,6 +81,7 @@
 	}
 
 	let simulation_name = '';
+	let isSimulationRunning = false;
 
 	function setSimulationName() {
 		dataFromChildren['name'] = simulation_name;
@@ -85,22 +89,24 @@
 
 	async function sendConfAndRun() {
 		try {
+			isSimulationRunning = true;
 			let response = await invoke('run_python_send_conf_and_run', {
 				data: JSON.stringify(dataFromChildren),
 				project_name: $project.name,
-				epochs: 2,
-				snapshot_period: 1
+				epochs: parseInt(epochs),
+				snapshot_period: parseInt(snapshotPeriod)
 			});
 			let simulationDir = JSON.parse(response);
 			console.log(
 				'Simulation ran successfully and here is the simulation directory:',
 				simulationDir
 			);
-
 			// Set the simulation name and directory stores
 			// This will be used in graph and results pages
 			simulationDirectory.set(simulationDir);
 			simulationName.set(simulation_name);
+
+			isSimulationRunning = false;
 
 			// Ensure the simulation_name is correct
 			const targetUrl = '/graph/' + generateSlug(simulation_name);
@@ -132,9 +138,9 @@
 						<AccordionItem>
 							<span slot="header" class="flex gap-2 text-base">
 								<EditSolid class="mt-0.5" />
-								<span>Simulation name</span>
+								<span>Simulation basics</span>
 							</span>
-							<div>
+							<div class="mb-4">
 								<Label class="mb-2 block">Simulation name</Label>
 								<Input
 									id="sim_name"
@@ -146,6 +152,34 @@
 								/>
 								<Helper class="text-sm-gray mt-2">
 									Reminder: You can use this name to search for this simulation later.
+								</Helper>
+							</div>
+							<div class="mb-4 mt-2">
+								<Label class="mb-2 block">Number of epochs</Label>
+								<Input
+									id="sim_epochs"
+									type="number"
+									required
+									placeholder="Enter an integer"
+									class="w-2/3"
+									bind:value={epochs}
+								/>
+								<Helper class="text-sm-gray mt-2">
+									This number indicates how many iterations you will run this simulation for.
+								</Helper>
+							</div>
+							<div class="mb-4 mt-2">
+								<Label class="mb-2 block">Snapshot period</Label>
+								<Input
+									id="sim_snapshot"
+									required
+									placeholder="Enter an integer"
+									class="w-2/3"
+									bind:value={snapshotPeriod}
+								/>
+								<Helper class="text-sm-gray mt-2">
+									Simulation data (e.g. graph) will be saved every (snapshot period) number of
+									iterations.
 								</Helper>
 							</div>
 						</AccordionItem>
@@ -166,9 +200,9 @@
 								<Radio name="simulation-type" bind:group={simType} value="true"
 									>Diffusion simulation</Radio
 								>
-								<Radio name="simulation-type" bind:group={simType} value="true"
+								<!-- <Radio name="simulation-type" bind:group={simType} value="true"
 									>Link prediction</Radio
-								>
+								> -->
 								<Radio name="simulation-type" bind:group={simType} value="false">Other</Radio>
 							</div>
 						</AccordionItem>
@@ -224,13 +258,32 @@
 					</Accordion>
 					<div class="text-right">
 						{#if isDiffusion}
-							<GradientButton color="greenToBlue" class="my-4" on:click={runSimulation}>
-								Run simulation <ArrowRightOutline class="ml-2" />
-							</GradientButton>
+							{#if isSimulationRunning}
+								<GradientButton color="greenToBlue" class="my-4" on:click={runSimulation}>
+									<Spinner type="border" color="white" size={5} />Run simulation <ArrowRightOutline
+										class="ml-2"
+									/>
+								</GradientButton>
+							{:else}
+								<GradientButton color="greenToBlue" class="my-4" on:click={runSimulation}>
+									Run simulation <ArrowRightOutline class="ml-2" />
+								</GradientButton>
+							{/if}
 						{:else}
-							<GradientButton color="greenToBlue" class="my-4">
-								Save and go to Method Lab <ArrowRightOutline class="ml-2" />
-							</GradientButton>
+							{#if isSimulationRunning}
+								<GradientButton color="greenToBlue" class="mb-1 mt-4">
+									<Spinner type="border" size="5" color="white" />Run custom simulation <ArrowRightOutline
+										class="ml-2"
+									/>
+								</GradientButton>
+							{:else}
+								<GradientButton color="greenToBlue" class="mb-1 mt-4">
+									Run custom simulation <ArrowRightOutline class="ml-2" />
+								</GradientButton>
+							{/if}
+							<Helper class="text-sm-gray text-gray-500">
+								Reminder: Only run the simulation after completing required methods in Method Lab.
+							</Helper>
 						{/if}
 					</div>
 				</div>

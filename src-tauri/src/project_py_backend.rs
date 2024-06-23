@@ -32,3 +32,19 @@ pub fn send_conf_and_run(data: String, project_name: String, epochs: i32, snapsh
 
     return result;
 }
+
+pub fn init_and_run_simulation(project_name: String, epochs: i32, snapshot_period: i32) -> String{
+    pyo3::prepare_freethreaded_python();
+
+    let mut result = String::new();
+    Python::with_gil(|py| {
+        let test_module = PyModule::import_bound(py, "crowd.api.project_api").unwrap();
+        
+        let args = ( project_name, epochs, snapshot_period);
+        // println!("args inside python_backend.rs: {:?}", args);
+        
+        result = test_module.getattr("ProjectFunctions").unwrap().call0().unwrap().call_method1("init_and_run_simulation", args).unwrap().to_string();
+    });
+
+    return result;
+}

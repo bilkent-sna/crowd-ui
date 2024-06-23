@@ -3,6 +3,8 @@
 	import { BellSolid } from 'flowbite-svelte-icons';
 	import '../../app.pcss';
 	import { goto } from '$app/navigation';
+	import { project, simulationName } from '$lib/stores/projects';
+	import { generateSlug } from '$lib/utils';
 
 	export let fluid = true;
 
@@ -15,6 +17,16 @@
 			.catch((error) => {
 				console.error('Navigation error:', error);
 			});
+	}
+	function navigateNetwork() {
+		if ($project.name !== '' && $simulationName !== '') {
+			goto('/graph/' + generateSlug($simulationName));
+		}
+	}
+	function navigateProject() {
+		if ($project.name !== '') {
+			goto('/project/' + generateSlug($project.name));
+		}
 	}
 </script>
 
@@ -34,11 +46,11 @@
 	<div class="ms-auto flex items-center gap-2 p-1">
 		<!-- <ToolbarButton size="lg"><BellSolid /></ToolbarButton> -->
 		<ToolbarButton size="lg" href="/">Home</ToolbarButton>
-		<ToolbarButton size="lg">Project</ToolbarButton>
-		<ToolbarButton size="lg">Network</ToolbarButton>
+		<ToolbarButton size="lg" on:click={navigateProject}>Project</ToolbarButton>
+		<ToolbarButton size="lg" on:click={navigateNetwork}>Network</ToolbarButton>
 		<ToolbarButton size="lg" on:click={() => goto('/results')}>Results</ToolbarButton>
 		<ToolbarButton size="lg" on:click={goMethods}>Method Lab</ToolbarButton>
-		<ToolbarButton size="lg">Settings</ToolbarButton>
+		<ToolbarButton size="lg" href="/settings">Settings</ToolbarButton>
 		<DarkMode />
 		<NavHamburger />
 	</div>
