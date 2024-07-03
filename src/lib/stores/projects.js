@@ -19,3 +19,7 @@ export const simulationName = writable('');
 export const simulationDirectory = writable('');
 
 export const simulationType = writable('');
+
+//if it is a node simulation, node based simulation networks will be instantiated in the backend
+//stored in project settings
+export const nodeOrEdge = writable('');

@@ -37,7 +37,8 @@
 		project,
 		simulationDirectory,
 		simulationName,
-		simulationType
+		simulationType,
+		nodeOrEdge
 	} from '$lib/stores/projects';
 	import { generateSlug } from '$lib/utils';
 	import { goto } from '$app/navigation';
@@ -119,8 +120,45 @@
 		}
 	}
 
+	async function runEdgeSimulation() {
+		try {
+			isSimulationRunning = true;
+			let response = await invoke('run_python_edge_conf_run', {
+				data: JSON.stringify(dataFromChildren),
+				project_name: $project.name,
+				epochs: parseInt(epochs),
+				snapshot_period: parseInt(snapshotPeriod)
+			});
+			let simulationDir = JSON.parse(response);
+			console.log(
+				'Simulation ran successfully and here is the simulation directory:',
+				simulationDir
+			);
+			// Set the simulation name and directory stores
+			// This will be used in graph and results pages
+			simulationDirectory.set(simulationDir);
+			simulationName.set(simulation_name);
+
+			isSimulationRunning = false;
+
+			// Ensure the simulation_name is correct
+			const targetUrl = '/graph/' + generateSlug(simulation_name);
+			console.log('Navigating to:', targetUrl);
+
+			// Go to the page of visualization of the resulting graph
+			goto(targetUrl); // Optionally await to ensure navigation happens
+		} catch (error) {
+			console.error('Error sending data:', error);
+		}
+	}
+
 	function runSimulation() {
-		sendConfAndRun();
+		console.log('nodeedge', $nodeOrEdge);
+		if ($nodeOrEdge === 'node') {
+			sendConfAndRun();
+		} else if ($nodeOrEdge === 'edge') {
+			runEdgeSimulation();
+		}
 	}
 </script>
 
@@ -190,22 +228,24 @@
 							</span>
 							<DataSource on:message={handleInfoFromChild} />
 						</AccordionItem>
-						<AccordionItem>
-							<span slot="header" class="flex gap-2 text-base">
-								<AdjustmentsHorizontalSolid class="mt-0.5" />
-								<span>Simulation type</span>
-							</span>
-							<div>
-								<Label class="pb-2">The simulation type will be:</Label>
-								<Radio name="simulation-type" bind:group={simType} value="true"
-									>Diffusion simulation</Radio
-								>
-								<!-- <Radio name="simulation-type" bind:group={simType} value="true"
-									>Link prediction</Radio
-								> -->
-								<Radio name="simulation-type" bind:group={simType} value="false">Other</Radio>
-							</div>
-						</AccordionItem>
+						{#if $nodeOrEdge == 'node'}
+							<AccordionItem>
+								<span slot="header" class="flex gap-2 text-base">
+									<AdjustmentsHorizontalSolid class="mt-0.5" />
+									<span>Simulation type</span>
+								</span>
+								<div>
+									<Label class="pb-2">The simulation type will be:</Label>
+									<Radio name="simulation-type" bind:group={simType} value="true"
+										>Diffusion simulation</Radio
+									>
+									<!-- <Radio name="simulation-type" bind:group={simType} value="true"
+										>Link prediction</Radio
+									> -->
+									<Radio name="simulation-type" bind:group={simType} value="false">Other</Radio>
+								</div>
+							</AccordionItem>
+						{/if}
 						{#if isDiffusion}
 							<AccordionItem>
 								<span slot="header" class="flex gap-2 text-base">
@@ -277,7 +317,7 @@
 									/>
 								</GradientButton>
 							{:else}
-								<GradientButton color="greenToBlue" class="mb-1 mt-4">
+								<GradientButton color="greenToBlue" class="mb-1 mt-4" on:click={runSimulation}>
 									Run custom simulation <ArrowRightOutline class="ml-2" />
 								</GradientButton>
 							{/if}

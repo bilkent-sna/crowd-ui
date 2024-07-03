@@ -374,6 +374,11 @@
 						y1={link.source.y}
 						x2={link.target.x}
 						y2={link.target.y}
+						stroke-opacity={hoveredData
+							? hoveredData.id === link.source.id || hoveredData.id === link.target.id
+								? '.9'
+								: '.1'
+							: '.9'}
 						transform="translate({transform.x} {transform.y}) scale({transform.k} {transform.k})"
 					>
 						<title>{link.source.id}</title>
@@ -594,7 +599,7 @@
 	}
 
 	line {
-		stroke: red;
+		stroke: #999;
 	}
 
 	.center-container {

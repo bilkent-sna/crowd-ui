@@ -202,6 +202,14 @@ fn run_python_load_simulation_graph(project_name : String, simulation_directory:
 }
 
 #[tauri::command(rename_all = "snake_case")]
+fn run_python_load_added_edges(project_name : String, simulation_directory: String) -> String {
+    let results = general_py_backend::load_added_edges(project_name, simulation_directory);
+    // println!("Inside main.rs printing added edges");
+    // println!("{}", results);
+    return results;
+}
+
+#[tauri::command(rename_all = "snake_case")]
 fn run_python_load_parameter_file(project_name : String, simulation_directory: String, file_name: String) -> String {
     let results = general_py_backend::load_parameter_file(project_name, simulation_directory, file_name);
     // println!("Inside main.rs printing parameter file");
@@ -247,11 +255,10 @@ fn run_python_save_methods_list_view(project_name : String, list_view : String) 
   
 }
 
-
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_create_project(name: String, date: String, info: String) {
+fn run_python_create_project(name: String, date: String, info: String, node_or_edge: String) {
     println!("Inside main.rs before python call, name: {}, date:{}, info:{}", name, date, info);
-    project_py_backend::create_project(name, date, info);
+    project_py_backend::create_project(name, date, info, node_or_edge);
     println!("Inside main.rs, project successfully created");
 }
 
@@ -265,6 +272,20 @@ fn run_python_send_conf_and_run(data: String, project_name: String, epochs: i32,
 #[tauri::command(rename_all = "snake_case")]
 fn run_python_init_and_run_simulation(project_name: String, epochs: i32, snapshot_period: i32) -> String {
     let results = project_py_backend::init_and_run_simulation(project_name, epochs, snapshot_period);
+    println!("Inside main.rs, simulation successfully ran");
+    return results
+}
+
+#[tauri::command(rename_all = "snake_case")]
+fn run_python_edge_conf_run(data: String, project_name: String, epochs: i32, snapshot_period: i32) -> String {
+    let results = project_py_backend::edge_conf_run(data, project_name, epochs, snapshot_period);
+    println!("Inside main.rs, simulation successfully ran");
+    return results
+}
+
+#[tauri::command(rename_all = "snake_case")]
+fn run_python_edge_sim_run(project_name: String, epochs: i32, snapshot_period: i32) -> String {
+    let results = project_py_backend::edge_sim_run(project_name, epochs, snapshot_period);
     println!("Inside main.rs, simulation successfully ran");
     return results
 }
@@ -294,6 +315,7 @@ fn main() {
             run_python_save_dataset,
             run_python_load_simulation_info,
             run_python_load_simulation_graph,
+            run_python_load_added_edges,
             run_python_load_parameter_file,
             run_python_load_methods,
             run_python_save_methods,
@@ -302,7 +324,9 @@ fn main() {
             run_python_save_conf,
             run_python_create_project,
             run_python_send_conf_and_run,
-            run_python_init_and_run_simulation
+            run_python_init_and_run_simulation,
+            run_python_edge_conf_run,
+            run_python_edge_sim_run
         ])
         .run(generate_context!())
         .expect("Error while running Tauri application");

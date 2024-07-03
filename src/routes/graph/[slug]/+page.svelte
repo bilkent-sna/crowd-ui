@@ -1,20 +1,27 @@
 <script>
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
-	import { project, simulationName, simulationDirectory } from '$lib/stores/projects';
+	import { project, simulationName, simulationDirectory, nodeOrEdge } from '$lib/stores/projects';
 	import { Heading, P, Span, Spinner } from 'flowbite-svelte';
 	import NetworkViz from './NetworkViz.svelte';
+	import EdgeSimViz from './EdgeSimViz.svelte';
 
 	// A boolean which will set to true when we are loading the simulation data
 	// by sending a request to backend side
 	let loadingSimulation = true;
 	let simulationGraph;
 	let simulationInfo;
+	let addedEdges;
 
 	onMount(async () => {
 		loadingSimulation = true;
 		await loadSimulationGraph();
 		await loadSimulationInfo();
+
+		if ($nodeOrEdge === 'edge') {
+			await loadAddedEdges();
+		}
+
 		loadingSimulation = false;
 	});
 
@@ -49,6 +56,20 @@
 			console.error('Cannot load simulation graph', error);
 		}
 	}
+
+	async function loadAddedEdges() {
+		try {
+			let result = await invoke('run_python_load_added_edges', {
+				project_name: $project.name,
+				simulation_directory: $simulationDirectory
+			});
+
+			addedEdges = JSON.parse(result);
+			console.log('Added edges in JS:', addedEdges);
+		} catch (error) {
+			console.error('Cannot load added edges', error);
+		}
+	}
 </script>
 
 {#if loadingSimulation}
@@ -74,7 +95,15 @@
 		</P>
 	</div>
 	{#if simulationGraph && simulationInfo}
-		<NetworkViz data={simulationGraph} simulation_info={simulationInfo} />
+		{#if $nodeOrEdge === 'node'}
+			<NetworkViz data={simulationGraph} simulation_info={simulationInfo} />
+		{:else if $nodeOrEdge === 'edge' && addedEdges}
+			<EdgeSimViz
+				data={simulationGraph}
+				simulation_info={simulationInfo}
+				new_addition={addedEdges}
+			/>
+		{/if}
 	{:else}
 		<div class="text-center">
 			<Spinner class="mt-4" size="10" />

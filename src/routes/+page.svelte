@@ -1,5 +1,5 @@
 <script>
-	import { Heading, P, Button, Span } from 'flowbite-svelte';
+	import { Heading, P, Button, Span, Radio } from 'flowbite-svelte';
 	import { Modal, Label, Input, Checkbox } from 'flowbite-svelte';
 	import { ArrowRightOutline } from 'flowbite-svelte-icons';
 
@@ -8,12 +8,13 @@
 
 	import ListProjects from './welcome/ListProjects.svelte';
 	import { generateSlug } from '$lib/utils';
-	import { project } from '$lib/stores/projects';
+	import { nodeOrEdge, project } from '$lib/stores/projects';
 
 	//add project logic here
 	let addProjectOpen = false;
 	let newProjectName = '';
 	let newProjectInfo = '';
+	let nodeEdgeSelect = '';
 
 	//called when create project button is clicked in the modal
 	function createProject() {
@@ -26,20 +27,35 @@
 		console.log(newProject.date);
 		project.set(newProject);
 
+		nodeOrEdge.set(nodeEdgeSelect);
+
 		//call python to actually create a project on that side
-		run_python_create_project(generateSlug(newProject.name), newProject.date, newProject.info);
+		run_python_create_project(
+			generateSlug(newProject.name),
+			newProject.date,
+			newProject.info,
+			nodeEdgeSelect
+		);
 
 		//goto project page
 		goto(`/project/${generateSlug(newProjectName)}`);
 	}
 
-	async function run_python_create_project(name, date, info) {
+	async function run_python_create_project(name, date, info, nodeEdgeSelect) {
 		try {
-			await invoke('run_python_create_project', { name, date, info });
+			await invoke('run_python_create_project', {
+				name: name,
+				date: date,
+				info: info,
+				node_or_edge: nodeEdgeSelect
+			});
 			console.log('Project creation finished on Python side.');
 		} catch (error) {
 			console.error('Error creating project:', error);
-		}
+		} // finally {
+		// 	//goto project page
+		// 	goto(`/project/${generateSlug(name)}`);
+		// }
 	}
 
 	function getCurrentDateFormatted() {
@@ -80,6 +96,11 @@
 				required
 				bind:value={newProjectInfo}
 			/>
+		</Label>
+		<Label class="space-y-2">
+			<span>Project will be:</span>
+			<Radio name="node-diffusion" bind:group={nodeEdgeSelect} value="node">Node simulation</Radio>
+			<Radio name="edge-diffusion" bind:group={nodeEdgeSelect}>Edge simulation</Radio>
 		</Label>
 		<Button class="w-full1" on:click={createProject}>
 			Create project<ArrowRightOutline class="ms-2 h-6 w-6" />

@@ -21,8 +21,8 @@
 
 	let allSimulations = [];
 
-	onMount(() => {
-		run_python_list_simulations(generateSlug($project.name));
+	onMount(async () => {
+		await run_python_list_simulations(generateSlug($project.name));
 	});
 
 	async function run_python_list_simulations(project_name) {

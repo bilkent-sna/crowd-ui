@@ -6,7 +6,7 @@
 	import { invoke } from '@tauri-apps/api/tauri';
 
 	import { generateSlug } from '$lib/utils';
-	import { project } from '$lib/stores/projects';
+	import { project, nodeOrEdge } from '$lib/stores/projects';
 
 	let allProjects = [];
 
@@ -47,7 +47,14 @@
 					<A
 						href={`/project/${generateSlug(currProject.name)}`}
 						class="font-medium hover:underline"
-						on:click={() => project.set(currProject)}
+						on:click={() => {
+							project.set({
+								name: currProject.name,
+								date: currProject.date,
+								info: currProject.info
+							});
+							nodeOrEdge.set(currProject.nodeOrEdge);
+						}}
 					>
 						<!-- <a href="/project/test1" class="font-medium hover:underline"> -->
 						{currProject.name}

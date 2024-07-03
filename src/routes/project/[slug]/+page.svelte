@@ -8,27 +8,6 @@
 	import SimulationSettings from './SimulationSettings.svelte';
 
 	let loadingProject = false;
-
-	// onMount(async () => {
-	// 	loadingProject = true;
-	// 	try {
-	// 		// Call the Python function through Tauri
-	// 		//get yaml?
-	// 		// const result = await invoke('run_python_test_time');
-	// 		const projectData = { name: 'Hello' };
-
-	// 		// Ensure projectData is an object
-	// 		if (typeof projectData === 'object' && projectData !== null) {
-	// 			project.set(projectData);
-	// 		} else {
-	// 			console.error('Expected an object, but got:', projectData);
-	// 		}
-	// 	} catch (error) {
-	// 		console.error('Error fetching project details:', error);
-	// 	} finally {
-	// 		loadingProject = false;
-	// 	}
-	// });
 </script>
 
 {#if loadingProject}
