@@ -1,4 +1,6 @@
 <script>
+	// @ts-nocheck
+
 	import {
 		NumberInput,
 		Radio,
@@ -29,9 +31,13 @@
 	let hasHeader;
 	let graphFileType2;
 	let hasHeader2;
-	let graphGenerateType;
+	let graphGenerateType = '';
 	let graphGenerateDegree;
 	let graphGenerateCount;
+	let graphGenerateM;
+	let graphGenerateP;
+	let graphGenerateK;
+	let graphGenerateTries;
 
 	onMount(() => {
 		if (dataSource === 'previously-uploaded') {
@@ -59,10 +65,42 @@
 			};
 		} else if (dataSource === 'generate-graph') {
 			fileOrRandom = {
-				generateType: graphGenerateType,
-				degree: parseInt(graphGenerateDegree),
-				count: parseInt(graphGenerateCount)
+				generateType: graphGenerateType
 			};
+			if (
+				![
+					'karate-club-graph',
+					'davis-southern-woman',
+					'florentine-families',
+					'les-miserables'
+				].includes(graphGenerateType) &&
+				dataSource === 'generate-graph' &&
+				graphGenerateType !== ''
+			)
+				fileOrRandom['count'] = parseInt(graphGenerateCount);
+
+			if (graphGenerateType === 'random-regular')
+				fileOrRandom['degree'] = parseInt(graphGenerateDegree);
+
+			if (['barabasi-albert', 'powerlaw-cluster-graph'].includes(graphGenerateType))
+				fileOrRandom['m'] = parseInt(graphGenerateM);
+
+			if (
+				['watts-strogatz', 'connected-watts-strogatz', 'newman-watts-strogatz'].includes(
+					graphGenerateType
+				)
+			)
+				fileOrRandom['k'] = parseInt(graphGenerateK);
+
+			if (
+				!['complete-graph', 'barabasi-albert', 'random-regular'].includes(graphGenerateType) &&
+				dataSource === 'generate-graph' &&
+				graphGenerateType !== ''
+			)
+				fileOrRandom['p'] = parseInt(graphGenerateP);
+
+			if (graphGenerateType === 'connected-watts-strogatz')
+				fileOrRandom['tries'] = parseInt(graphGenerateTries);
 		} else {
 			fileOrRandom = 'Error';
 		}
@@ -196,25 +234,74 @@
 							bind:value={graphGenerateType}
 							class="mt-2"
 							items={[
-								{ value: 'random', name: 'Random' },
+								{ value: 'random-regular', name: 'Random Regular' },
+								{ value: 'erdos-renyi', name: 'Erdos-Renyi' },
 								{ value: 'barabasi-albert', name: 'Barabasi-Albert' },
-								{ value: 'watts-strogatz', name: 'Watts-Strogatz' }
+								{ value: 'watts-strogatz', name: 'Watts-Strogatz' },
+								{ value: 'connected-watts-strogatz', name: 'Connected Watts-Strogatz' },
+								{ value: 'newman-watts-strogatz', name: 'Newman-Watts-Strogatz' },
+								{ value: 'powerlaw-cluster-graph', name: 'Powerlaw Cluster' },
+								{ value: 'complete-graph', name: 'Complete' },
+								{ value: 'karate-club-graph', name: 'Karate Club' },
+								{ value: 'davis-southern-woman', name: 'Davis Southern Woman' },
+								{ value: 'florentine-families', name: 'Florentine Families' },
+								{ value: 'les-miserables', name: 'Les Miserables' }
 							]}
 						/>
 					</Label>
+					<Helper class="text-sm-gray mt-2"
+						>To learn more about these graph types and their parameters, check NetworkX graph
+						generators page.</Helper
+					>
 				</div>
-				<div class="my-4">
-					<Label>
-						Degree:
-						<NumberInput bind:value={graphGenerateDegree} class="mt-2" />
-					</Label>
-				</div>
-				<div class="my-4">
-					<Label>
-						Node count:
-						<NumberInput bind:value={graphGenerateCount} class="mt-2" />
-					</Label>
-				</div>
+				{#if !['karate-club-graph', 'davis-southern-woman', 'florentine-families', 'les-miserables'].includes(graphGenerateType) && dataSource === 'generate-graph' && graphGenerateType !== ''}
+					<div class="my-4">
+						<Label>
+							Node count:
+							<NumberInput bind:value={graphGenerateCount} class="mt-2" />
+						</Label>
+					</div>
+					{#if graphGenerateType === 'random-regular'}
+						<div class="my-4">
+							<Label>
+								Degree:
+								<NumberInput bind:value={graphGenerateDegree} class="mt-2" />
+							</Label>
+						</div>
+					{/if}
+					{#if ['barabasi-albert', 'powerlaw-cluster-graph'].includes(graphGenerateType)}
+						<div class="my-4">
+							<Label>
+								m:
+								<NumberInput bind:value={graphGenerateM} class="mt-2" />
+							</Label>
+						</div>
+					{/if}
+					{#if ['watts-strogatz', 'connected-watts-strogatz', 'newman-watts-strogatz'].includes(graphGenerateType)}
+						<div class="my-4">
+							<Label>
+								k:
+								<NumberInput bind:value={graphGenerateK} class="mt-2" />
+							</Label>
+						</div>
+					{/if}
+					{#if !['complete-graph', 'barabasi-albert', 'random-regular'].includes(graphGenerateType) && dataSource === 'generate-graph' && graphGenerateType !== ''}
+						<div class="my-4">
+							<Label>
+								p:
+								<NumberInput bind:value={graphGenerateP} class="mt-2" />
+							</Label>
+						</div>
+					{/if}
+					{#if graphGenerateType === 'connected-watts-strogatz'}
+						<div class="my-4">
+							<Label>
+								tries:
+								<NumberInput bind:value={graphGenerateTries} class="mt-2" />
+							</Label>
+						</div>
+					{/if}
+				{/if}
 			</div>
 		</div>
 	{/if}

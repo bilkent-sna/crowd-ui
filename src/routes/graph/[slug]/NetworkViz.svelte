@@ -40,7 +40,7 @@
 	} from 'flowbite-svelte-icons';
 	import { sineIn } from 'svelte/easing';
 
-	import DownloadGraph from './DownloadGraph.svelte';
+	// import DownloadGraph from './DownloadGraph.svelte';
 
 	let d3 = {
 		zoom,
@@ -303,38 +303,38 @@
 
 	let selectedInspectCategory = 'Nodes';
 
-	function downloadSVG() {
-		// Get the SVG element
-		const svgElement = document.getElementById('graph1');
+	// function downloadSVG() {
+	// 	// Get the SVG element
+	// 	const svgElement = document.getElementById('graph1');
 
-		if (!svgElement) {
-			console.error('SVG element not found.');
-			return;
-		}
+	// 	if (!svgElement) {
+	// 		console.error('SVG element not found.');
+	// 		return;
+	// 	}
 
-		// Get the SVG content as XML
-		const svgXml = new XMLSerializer().serializeToString(svgElement);
+	// 	// Get the SVG content as XML
+	// 	const svgXml = new XMLSerializer().serializeToString(svgElement);
 
-		// Create a Blob containing the SVG data
-		const blob = new Blob([svgXml], { type: 'image/svg+xml' });
+	// 	// Create a Blob containing the SVG data
+	// 	const blob = new Blob([svgXml], { type: 'image/svg+xml' });
 
-		// Create a URL for the Blob
-		const url = URL.createObjectURL(blob);
+	// 	// Create a URL for the Blob
+	// 	const url = URL.createObjectURL(blob);
 
-		// Create a link element and set its attributes
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = 'graph.svg'; // File name for download
-		a.style.display = 'none';
+	// 	// Create a link element and set its attributes
+	// 	const a = document.createElement('a');
+	// 	a.href = url;
+	// 	a.download = 'graph.svg'; // File name for download
+	// 	a.style.display = 'none';
 
-		// Append the link to the body and trigger the download
-		document.body.appendChild(a);
-		a.click();
+	// 	// Append the link to the body and trigger the download
+	// 	document.body.appendChild(a);
+	// 	a.click();
 
-		// Clean up
-		document.body.removeChild(a);
-		URL.revokeObjectURL(url);
-	}
+	// 	// Clean up
+	// 	document.body.removeChild(a);
+	// 	URL.revokeObjectURL(url);
+	// }
 </script>
 
 <svelte:window on:resize={resize} />
@@ -342,7 +342,7 @@
 <div class="center-container">
 	<div class="grid-container">
 		<div class="left-align">
-			<button on:click={downloadSVG}>Download SVG</button>
+			<!-- <button on:click={downloadSVG}>Download SVG</button> -->
 
 			<Label>Current iteration: {curr_iteration}/{epoch_num - 1}</Label>
 			<Range
@@ -361,7 +361,7 @@
 			<Button on:click={() => (editSizeandColorsHidden = false)}>Edit node size and colors</Button>
 		</div>
 		<div class="right-align">
-			<DownloadGraph svgComponent={svg} {iterations} />
+			<!-- <DownloadGraph svgComponent={svg} {iterations} /> -->
 		</div>
 	</div>
 	<div>

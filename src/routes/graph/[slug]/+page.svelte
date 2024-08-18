@@ -95,7 +95,7 @@
 		</P>
 	</div>
 	{#if simulationGraph && simulationInfo}
-		{#if $nodeOrEdge === 'node'}
+		{#if $nodeOrEdge === 'node' || $nodeOrEdge === 'custom'}
 			<NetworkViz data={simulationGraph} simulation_info={simulationInfo} />
 		{:else if $nodeOrEdge === 'edge' && addedEdges}
 			<EdgeSimViz
