@@ -24,7 +24,7 @@ pub fn send_conf_and_run(data: String, project_name: String, epochs: i32, snapsh
     Python::with_gil(|py| {
         let test_module = PyModule::import_bound(py, "crowd.api.project_api").unwrap();
         
-        let args = (data, project_name, epochs, snapshot_period);
+        let args = (data, project_name, epochs, snapshot_period, 2);
         // println!("args inside python_backend.rs: {:?}", args);
         
         result = test_module.getattr("ProjectFunctions").unwrap().call0().unwrap().call_method1("get_conf_and_run", args).unwrap().to_string();
@@ -57,7 +57,7 @@ pub fn init_and_run_simulation(project_name: String, epochs: i32, snapshot_perio
     Python::with_gil(|py| {
         let test_module = PyModule::import_bound(py, "crowd.api.project_api").unwrap();
         
-        let args = ( project_name, epochs, snapshot_period);
+        let args = ( project_name, epochs, snapshot_period, 2);
         // println!("args inside python_backend.rs: {:?}", args);
         
         result = test_module.getattr("ProjectFunctions").unwrap().call0().unwrap().call_method1("init_and_run_simulation", args).unwrap().to_string();

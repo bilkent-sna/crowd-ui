@@ -35,6 +35,22 @@ pub fn list_simulations(project_name : String) -> String {
     return result;
 }
 
+pub fn list_sim_and_count(project_name : String) -> String {
+    pyo3::prepare_freethreaded_python();
+
+    let mut result = String::new();
+    Python::with_gil(|py| {
+        let test_module: Bound<PyModule> = PyModule::import_bound(py, "crowd.api.general_methods").unwrap();
+
+        let new_class = test_module.getattr("GeneralMethods").unwrap().call0().unwrap();
+
+        let args = PyTuple::new_bound(py, vec![project_name]);
+        result = new_class.call_method1("list_sim_and_count", args).unwrap().to_string();
+        // println!("Result: {:?}", result);
+    });
+    return result;
+}
+
 pub fn list_parameters(project_name : String, simulation_directory: String) -> String {
     pyo3::prepare_freethreaded_python();
 

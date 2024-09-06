@@ -33,7 +33,7 @@
 <Navbar {fluid} color="default">
 	<div class="flex w-fit items-center justify-start">
 		<NavBrand href="/" class="ms-2 md:me-24">
-			<img src="/images/bilkent_social_systems_group.png" class="me-3 h-6 sm:h-8" alt="Temp Logo" />
+			<img src="/images/Firefly3.jpg" class="me-3 h-6 sm:h-8" alt="Temp Logo" />
 			<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white sm:text-2xl">
 				Crowd
 			</span>
@@ -51,6 +51,7 @@
 		<ToolbarButton size="lg" on:click={() => goto('/results')}>Results</ToolbarButton>
 		<ToolbarButton size="lg" on:click={goMethods}>Method Lab</ToolbarButton>
 		<ToolbarButton size="lg" href="/settings">Settings</ToolbarButton>
+		<ToolbarButton size="lg" href="/">Help</ToolbarButton>
 		<DarkMode />
 		<NavHamburger />
 	</div>

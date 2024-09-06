@@ -6,6 +6,7 @@ use tauri::{ generate_context, generate_handler, Builder};
 mod python_backend;
 mod general_py_backend;
 mod project_py_backend;
+mod merge_py_backend;
 
 // #[tauri::command]
 // fn greet(name: &str) -> String {
@@ -162,6 +163,12 @@ fn run_python_list_simulations(project_name : String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
+fn run_python_list_sim_and_count(project_name : String) -> String {
+    let results = general_py_backend::list_sim_and_count(project_name);
+    return results;
+}
+
+#[tauri::command(rename_all = "snake_case")]
 fn run_python_list_parameters(project_name : String, simulation_directory: String) -> String {
     let results = general_py_backend::list_parameters(project_name, simulation_directory);
     // println!("Inside main.rs printing simulations list parameters");
@@ -290,6 +297,26 @@ fn run_python_edge_sim_run(project_name: String, epochs: i32, snapshot_period: i
     return results
 }
 
+#[tauri::command(rename_all = "snake_case")]
+fn run_python_merge_parent_sim(project_name: String, 
+    parent_simulation_dir: String,
+    simulation_dir: String, 
+    json_file_name: String, 
+    merge_method: String) -> String{
+    let results = merge_py_backend::merge_parent_sim(project_name, parent_simulation_dir, simulation_dir, json_file_name, merge_method);
+    return results
+}
+
+#[tauri::command(rename_all = "snake_case")]
+fn run_python_merge_other_sim(project_name: String, 
+    parent_simulation_dir: String,
+    simulation_dir: String, 
+    json_file_name: String, 
+    merge_dir_dict: String) -> String{
+    let results = merge_py_backend::merge_other_sim(project_name, parent_simulation_dir, simulation_dir, json_file_name, merge_dir_dict);
+    return results
+}
+
 fn main() {
     // let app = tauri::Builder::default()
     //     .invoke_handler(tauri::generate_handler![query_database, query_result_types, get_results_by_type, run_python_class_parameter, run_python_method_parameter])
@@ -310,6 +337,7 @@ fn main() {
             run_python_test_time,
             run_python_list_projects,
             run_python_list_simulations,
+            run_python_list_sim_and_count,
             run_python_list_parameters,
             run_python_list_datasets,
             run_python_save_dataset,
@@ -326,7 +354,9 @@ fn main() {
             run_python_send_conf_and_run,
             run_python_init_and_run_simulation,
             run_python_edge_conf_run,
-            run_python_edge_sim_run
+            run_python_edge_sim_run,
+            run_python_merge_parent_sim,
+            run_python_merge_other_sim
         ])
         .run(generate_context!())
         .expect("Error while running Tauri application");

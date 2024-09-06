@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
 	import { project, simulationName, simulationDirectory } from '$lib/stores/projects';
+	import DataMerge from './DataMerge.svelte';
 
 	// A boolean which will set to true when we are loading information from the backend
 	let loadingInformation = true;
@@ -225,11 +226,21 @@
 						categories: data_to_send.map((item) => item[xVar]),
 						title: {
 							text: xTitle
+						},
+						labels: {
+							formatter: function (value) {
+								return parseFloat(value).toFixed(2); // Format to 2 decimal places
+							}
 						}
 					},
 					yaxis: {
 						title: {
 							text: yTitle
+						},
+						labels: {
+							formatter: function (value) {
+								return parseFloat(value).toFixed(2); // Format to 2 decimal places
+							}
 						}
 					},
 					title: {
@@ -300,6 +311,7 @@
 			{/if}
 		</p>
 
+		<DataMerge />
 		<Button on:click={addChartToggle}><ChartLineUpOutline class="mr-2" /> Add chart</Button>
 
 		<div class="container mx-auto p-4">
