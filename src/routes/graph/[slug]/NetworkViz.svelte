@@ -56,13 +56,6 @@
 		forceCenter
 	};
 
-	// import data from "$data/graph.js";
-	//import data from "$data/graph_100.js";
-	// import data from "$data/graph_1000.js";
-	//import data from "$data/graph_higgs200.js"
-	// import data from "$data/graph_200.js"
-	// import simulation_info from "$data/simulation_info.json"
-
 	// The data needed for the graph which will be provided by the parent component
 	export let data;
 	export let simulation_info;
@@ -165,6 +158,24 @@
 		initializeSimulation();
 	});
 
+	let alpha_var = 0;
+	let alpha_decay_var = 0;
+
+	//The following block sets the graph loading animation speed based on the number of nodes
+	let node_count = nodes.length;
+	if (node_count < 500) {
+		alpha_var = 0.3;
+		alpha_decay_var = 0.05;
+	} else if (node_count < 2000) {
+		alpha_var = 0.3;
+		alpha_decay_var = 0.15;
+	} else if (node_count < 10000) {
+		alpha_var = 0.3;
+		alpha_decay_var = 0.15;
+	} else {
+		console.log("Graph is too large, don't visualize");
+	}
+
 	function initializeSimulation() {
 		simulation = d3
 			.forceSimulation(nodes)
@@ -174,8 +185,8 @@
 			)
 			.force('charge', d3.forceManyBody().strength(-110))
 			.force('center', d3.forceCenter(width / 2, height / 2))
-			.alpha(0.3) // [0,1] how much movement, how fast
-			.alphaDecay(0.05)
+			.alpha(alpha_var) // [0,1] how much movement, how fast
+			.alphaDecay(alpha_decay_var)
 			.on('tick', simulationUpdate);
 
 		d3.select(svg)
@@ -203,8 +214,8 @@
 		simulation.nodes(nodes);
 		simulation.force('link').links(links);
 		simulation
-			.alpha(0.3) // [0,1] how much movement, how fast
-			.alphaDecay(0.05) //[0, 1] the rate which alpha approaches zero. how long does it take btw simulation states
+			.alpha(alpha_var) // [0,1] how much movement, how fast
+			.alphaDecay(alpha_decay_var) //[0, 1] the rate which alpha approaches zero. how long does it take btw simulation states
 			.restart(); // Restart simulation with new data
 	}
 

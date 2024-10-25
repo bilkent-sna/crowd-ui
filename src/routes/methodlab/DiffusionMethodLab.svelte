@@ -68,7 +68,11 @@
 		functions = extractFunctionNames(code);
 		functions.forEach((func) => {
 			if (!functionSettings[func]) {
-				functionSettings[func] = { every_iteration: false, after_simulation: false };
+				functionSettings[func] = {
+					before_iteration: false,
+					after_iteration: false,
+					after_simulation: false
+				};
 			}
 		});
 	}
@@ -119,10 +123,16 @@
 						<P><b>{func}</b></P>
 						<div class="mt-2">
 							<Checkbox
-								id="every_iteration_{func}"
-								bind:checked={functionSettings[func].every_iteration}
+								id="before_iteration_{func}"
+								bind:checked={functionSettings[func].before_iteration}
 							>
-								Every iteration
+								Before iteration
+							</Checkbox>
+							<Checkbox
+								id="after_iteration_{func}"
+								bind:checked={functionSettings[func].after_iteration}
+							>
+								After iteration
 							</Checkbox>
 							<Checkbox
 								id="after_simulation_{func}"

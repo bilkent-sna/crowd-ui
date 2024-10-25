@@ -226,12 +226,12 @@
 						categories: data_to_send.map((item) => item[xVar]),
 						title: {
 							text: xTitle
-						},
-						labels: {
-							formatter: function (value) {
-								return parseFloat(value).toFixed(2); // Format to 2 decimal places
-							}
 						}
+						// labels: {
+						// 	formatter: function (value) {
+						// 		return parseFloat(value).toFixed(2); // Format to 2 decimal places
+						// 	}
+						// }
 					},
 					yaxis: {
 						title: {

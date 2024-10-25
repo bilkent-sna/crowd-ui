@@ -5,38 +5,47 @@
 	import gifshot from 'gifshot';
 	import { CameraPhotoSolid, ImageSolid } from 'flowbite-svelte-icons';
 
-	export let svgComponent;
-	export let iterations;
-
-	console.log(svgComponent);
+	export let svgComponent; // Bound SVG element
+	export let iterations; // Array of SVG elements for GIF
 
 	let format = 'png';
 
 	function downloadCurrentIteration() {
 		const serializer = new XMLSerializer();
+
+		// Adjust line styling to ensure visibility
+		svgComponent.querySelectorAll('line').forEach((line) => {
+			line.setAttribute('stroke-width', '2'); // Thicker line
+			line.setAttribute('stroke-opacity', '1'); // Fully opaque
+		});
+
 		const svgString = serializer.serializeToString(svgComponent);
-		console.log(svgString);
 		const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-		console.log(svgBlob);
 
-		if (format === 'svg') {
-			saveAs(svgBlob, 'graph.svg');
-		} else {
-			const canvas = document.createElement('canvas');
-			const ctx = canvas.getContext('2d');
-			const img = new window.Image();
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d');
+		const img = new Image();
 
-			img.onload = () => {
-				canvas.width = img.width;
-				canvas.height = img.height;
-				ctx.drawImage(img, 0, 0);
+		// Extract SVG dimensions and viewBox
+		const { width, height } = svgComponent.getBoundingClientRect();
+		const viewBox = svgComponent.getAttribute('viewBox')?.split(' ') || [0, 0, width, height];
 
-				canvas.toBlob((blob) => {
-					saveAs(blob, `graph.${format}`);
-				}, `image/${format}`);
-			};
-			img.src = URL.createObjectURL(svgBlob);
-		}
+		canvas.width = parseFloat(viewBox[2]);
+		canvas.height = parseFloat(viewBox[3]);
+
+		// Set canvas background to white
+		ctx.fillStyle = 'white';
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		img.onload = () => {
+			ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+			canvas.toBlob((blob) => {
+				saveAs(blob, `graph.${format}`);
+			}, `image/${format}`);
+		};
+
+		img.src = URL.createObjectURL(svgBlob);
 	}
 
 	function downloadGif() {
@@ -49,12 +58,14 @@
 		gifshot.createGIF(
 			{
 				images: frames,
-				interval: 2,
+				interval: 2, // 2 seconds between frames
 				loop: false
 			},
-			function (obj) {
+			(obj) => {
 				if (!obj.error) {
 					saveAs(obj.image, 'graph.gif');
+				} else {
+					console.error('GIF creation failed:', obj.error);
 				}
 			}
 		);
@@ -66,10 +77,12 @@
 		<CameraPhotoSolid class="mr-2 h-5 w-5" />
 		Download Current ({format.toUpperCase()})
 	</Button>
+
 	<Button on:click={downloadGif} color="green">
 		<ImageSolid class="mr-2 h-5 w-5" />
 		Download GIF
 	</Button>
+
 	<select bind:value={format} class="rounded border p-2">
 		<option value="png">PNG</option>
 		<option value="svg">SVG</option>

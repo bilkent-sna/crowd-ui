@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{ generate_context, generate_handler, Builder};
+use tauri::{ generate_context, generate_handler, AppHandle, Builder};
 
 mod python_backend;
 mod general_py_backend;
@@ -169,6 +169,12 @@ fn run_python_list_sim_and_count(project_name : String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
+fn run_python_get_sub_simulations_info(project_name : String, simulation_directory: String) -> String{
+    let results = general_py_backend::get_subsimulations_info(project_name, simulation_directory);
+    return results;
+}
+
+#[tauri::command(rename_all = "snake_case")]
 fn run_python_list_parameters(project_name : String, simulation_directory: String) -> String {
     let results = general_py_backend::list_parameters(project_name, simulation_directory);
     // println!("Inside main.rs printing simulations list parameters");
@@ -270,9 +276,11 @@ fn run_python_create_project(name: String, date: String, info: String, node_or_e
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_send_conf_and_run(data: String, project_name: String, epochs: i32, snapshot_period: i32) -> String {
-    let results = project_py_backend::send_conf_and_run(data, project_name, epochs, snapshot_period);
-    println!("Inside main.rs, simulation successfully ran");
+fn run_python_send_conf_and_run(data: String, project_name: String, epochs: i32, snapshot_period: i32, batch_num: i32) -> String {
+// fn run_python_send_conf_and_run(app_handle: AppHandle,data: String, project_name: String, epochs: i32, snapshot_period: i32) -> String {
+    // let results = project_py_backend::send_conf_and_run(app_handle, data, project_name, epochs, snapshot_period);
+    // println!("Inside main.rs, simulation successfully ran");
+    let results = project_py_backend::send_conf_and_run(data, project_name, epochs, snapshot_period, batch_num);
     return results
 }
 
@@ -338,6 +346,7 @@ fn main() {
             run_python_list_projects,
             run_python_list_simulations,
             run_python_list_sim_and_count,
+            run_python_get_sub_simulations_info,
             run_python_list_parameters,
             run_python_list_datasets,
             run_python_save_dataset,

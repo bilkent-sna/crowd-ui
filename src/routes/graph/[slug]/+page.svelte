@@ -1,7 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
-	import { project, simulationName, simulationDirectory, nodeOrEdge } from '$lib/stores/projects';
+	import {
+		project,
+		simulationName,
+		simulationDirectory,
+		nodeOrEdge,
+		runNumber
+	} from '$lib/stores/projects';
 	import { Heading, P, Span, Spinner } from 'flowbite-svelte';
 	import NetworkViz from './NetworkViz.svelte';
 	import EdgeSimViz from './EdgeSimViz.svelte';
@@ -34,7 +40,7 @@
 
 			simulationInfo = JSON.parse(result);
 
-			console.log('Simulation info in JS:', result);
+			// console.log('Simulation info in JS:', result);
 
 			return result;
 		} catch (error) {
@@ -49,7 +55,7 @@
 			});
 
 			simulationGraph = JSON.parse(result);
-			console.log('Simulation graph in JS:', result);
+			// console.log('Simulation graph in JS:', result);
 
 			return result;
 		} catch (error) {
@@ -65,7 +71,7 @@
 			});
 
 			addedEdges = JSON.parse(result);
-			console.log('Added edges in JS:', addedEdges);
+			// console.log('Added edges in JS:', addedEdges);
 		} catch (error) {
 			console.error('Cannot load added edges', error);
 		}
@@ -78,7 +84,7 @@
 			Project: <Span gradient>{$project.name}</Span>
 		</Heading>
 		<P class="my-6 text-center text-lg dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
-			Simulation: {$simulationName}
+			Simulation: {$simulationName}-{$runNumber}
 		</P>
 		<Spinner class="mt-4" size="10" />
 		<P class="my-2 text-center text-gray-400 dark:text-gray-400 sm:px-16 lg:text-lg xl:px-24">
@@ -91,7 +97,7 @@
 			Project: <Span gradient>{$project.name}</Span>
 		</Heading>
 		<P class="my-6 text-center text-lg dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
-			Simulation: {$simulationName}
+			Simulation: {$simulationName}-{$runNumber}
 		</P>
 	</div>
 	{#if simulationGraph && simulationInfo}

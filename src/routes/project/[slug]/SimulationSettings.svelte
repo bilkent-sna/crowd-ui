@@ -38,7 +38,8 @@
 		simulationDirectory,
 		simulationName,
 		simulationType,
-		nodeOrEdge
+		nodeOrEdge,
+		runNumber
 	} from '$lib/stores/projects';
 	import { generateSlug } from '$lib/utils';
 	import { goto } from '$app/navigation';
@@ -56,6 +57,7 @@
 	let isDiffusion = true;
 	let epochs = 0;
 	let snapshotPeriod = 0;
+	let batchNumber = 0;
 
 	$: isDiffusion = simType === 'true';
 	$: console.log(isDiffusion);
@@ -95,7 +97,8 @@
 				data: JSON.stringify(dataFromChildren),
 				project_name: $project.name,
 				epochs: parseInt(epochs),
-				snapshot_period: parseInt(snapshotPeriod)
+				snapshot_period: parseInt(snapshotPeriod),
+				batch_num: parseInt(batchNumber)
 			});
 			let simulationDir = JSON.parse(response);
 			console.log(
@@ -105,6 +108,7 @@
 			// Set the simulation name and directory stores
 			// This will be used in graph and results pages
 			simulationDirectory.set(simulationDir);
+			runNumber.set(1);
 			simulationName.set(simulation_name);
 
 			isSimulationRunning = false;
@@ -218,6 +222,21 @@
 								<Helper class="text-sm-gray mt-2">
 									Simulation data (e.g. graph) will be saved every (snapshot period) number of
 									iterations.
+								</Helper>
+							</div>
+							<div class="mb-4 mt-2">
+								<Label class="mb-2 block">Batch number</Label>
+								<Input
+									id="sim_batch"
+									required
+									placeholder="Enter an integer"
+									class="w-2/3"
+									bind:value={batchNumber}
+								/>
+								<Helper class="text-sm-gray mt-2">
+									This number indicates how many times you will run this simulation for. By running
+									a simulation multiple times and aggregating results, you can solve stochasticity
+									issue.
 								</Helper>
 							</div>
 						</AccordionItem>

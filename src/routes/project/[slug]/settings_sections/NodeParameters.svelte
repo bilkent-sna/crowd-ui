@@ -11,7 +11,10 @@
 		Input,
 		Button,
 		GradientButton,
-		Radio
+		Radio,
+		Helper,
+		Select,
+		P
 	} from 'flowbite-svelte';
 	import {
 		ArrowRightOutline,
@@ -20,7 +23,9 @@
 		TrashBinSolid
 	} from 'flowbite-svelte-icons';
 
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { project } from '$lib/stores/projects';
+	import { invoke } from '@tauri-apps/api/tauri';
 
 	const dispatch = createEventDispatcher();
 
@@ -33,6 +38,7 @@
 	let numericalRange2;
 	let addNodeParameterOpen = false;
 	let chosenType;
+	let chosenInit;
 
 	let categoryOptions = [];
 	let addOptionName = '';
@@ -48,9 +54,84 @@
 
 	$: console.log(nodeParameters);
 
+	// source file for category options part
+	let dataSource = '';
+	$: console.log(dataSource);
+
+	let selectedFile = null;
+	let datasetFiles = [];
+	let selectedDataset = '';
+	let datasetSaveSuccessful = false;
+
+	onMount(() => {
+		if (dataSource === 'previously-uploaded') {
+			loadDatasetFiles();
+		}
+	});
+
+	async function loadDatasetFiles() {
+		try {
+			if ($project.name !== '') {
+				const name = $project.name;
+				const result = await invoke('run_python_list_datasets', { project_name: name });
+				datasetFiles = JSON.parse(result);
+				if (datasetFiles.length === 0) {
+					datasetFiles[0] = 'No datasets found. Try upload instead.';
+				}
+			} else {
+				console.log('Project name empty. Cannot load dataset files');
+			}
+		} catch (error) {
+			console.error('Error loading dataset files:', error);
+		}
+	}
+
+	function handleFileChange(event) {
+		datasetSaveSuccessful = false;
+		selectedFile = event.target.files[0];
+	}
+
+	async function uploadFile() {
+		if (selectedFile) {
+			const reader = new FileReader();
+			reader.onload = async () => {
+				const arrayBuffer = reader.result;
+				const fileContent = new Uint8Array(arrayBuffer);
+
+				try {
+					await invoke('run_python_save_dataset', {
+						project_name: $project.name,
+						file_name: selectedFile.name,
+						file_content: Array.from(fileContent)
+					});
+					console.log('File uploaded successfully');
+					datasetSaveSuccessful = true;
+				} catch (error) {
+					console.error('Error uploading file:', error);
+				}
+			};
+			reader.readAsArrayBuffer(selectedFile);
+		}
+	}
+
 	function addNodeCategorical() {
 		addNodeParameterOpen = false;
-		categoryOptions = optionsString.split(',').map((item) => item.trim());
+		if (chosenInit === 'from-list') {
+			categoryOptions = optionsString.split(',').map((item) => item.trim());
+		} else if (
+			chosenInit === 'from-file' &&
+			dataSource === 'upload-options' &&
+			selectedFile !== null
+		) {
+			// categoryOptions = 'datasets/' + selectedFile.name;
+			categoryOptions = selectedFile.name;
+		} else if (
+			chosenInit === 'from-file' &&
+			dataSource === 'previously-uploaded' &&
+			selectedDataset !== ''
+		) {
+			categoryOptions = selectedDataset;
+		}
 		nodeCategorical = [...nodeCategorical, { name: nodeParameterName, options: categoryOptions }];
 		nodeParameterName = '';
 		optionsString = '';
@@ -142,7 +223,7 @@
 		<h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add a node parameter</h3>
 		<Label class="space-y-2">
 			<span>Enter a name for the node parameter:</span>
-			<Input placeholder="nodetype name" required bind:value={nodeParameterName} />
+			<Input placeholder="age" required bind:value={nodeParameterName} />
 		</Label>
 		<Label class="space-y-2">
 			<span>Choose the parameter type:</span>
@@ -166,13 +247,62 @@
 		{:else if chosenType === 'categorical'}
 			<!-- categorical -->
 			<Label class="space-y-2">
-				<span>Enter the name of the category you want to add:</span>
-				<Input placeholder="gender" required bind:value={addOptionName} />
-			</Label>
-			<Label class="space-y-2">
-				<span>Enter the options in the category, separated by a comma:</span>
-				<Input placeholder="male, female" required bind:value={optionsString} />
-			</Label>
+				<span>Choose an initialization method for the parameter:</span>
+				<Radio name="cat-init-choose" bind:group={chosenInit} value="from-list"
+					>Enter the options</Radio
+				>
+				<Radio name="cat-init-choose" bind:group={chosenInit} value="from-file"
+					>Load from file</Radio
+				></Label
+			>
+			{#if chosenInit === 'from-list'}
+				<Label class="space-y-2">
+					<span>Enter the options in the category, separated by a comma:</span>
+					<Input placeholder="male, female" required bind:value={optionsString} />
+				</Label>
+			{:else if chosenInit === 'from-file'}
+				<Label
+					>Choose a source for the category options:
+					<Radio name="source-choose" bind:group={dataSource} value="upload-options"
+						>Upload options</Radio
+					>
+					<Radio
+						name="source-choose"
+						bind:group={dataSource}
+						value="previously-uploaded"
+						on:change={loadDatasetFiles}>Previously uploaded data</Radio
+					></Label
+				>
+				{#if dataSource === 'upload-options'}
+					<div class="my-2">
+						<div class="mx-auto">
+							<Label class="mb-2 block">Upload File</Label>
+							<Helper class="text-sm-gray my-2 text-gray-600"
+								>Important: The file should only include the name of the options. Each option should
+								be separated with comma or new line.</Helper
+							>
+							<Input type="file" on:change={handleFileChange} class="w-full" />
+							<Helper class="text-sm-gray mt-1">Supported file extensions: CSV</Helper>
+							<Button on:click={uploadFile} class="mt-4 px-4 py-2">Upload</Button>
+							{#if datasetSaveSuccessful}
+								<P class="mt-2 text-xs text-green-600">Data saved successfully.</P>
+							{/if}
+						</div>
+					</div>
+				{:else if dataSource === 'previously-uploaded'}
+					<div class="my-4">
+						<div class="mx-auto w-2/3">
+							<Label class="mb-2 block">Select Dataset</Label>
+							<Select bind:value={selectedDataset} class="w-full">
+								{#each datasetFiles as file}
+									<option>{file}</option>
+								{/each}
+							</Select>
+							<Helper class="text-sm-gray mt-2">Select a previously uploaded dataset.</Helper>
+						</div>
+					</div>
+				{/if}
+			{/if}
 			<Button class="w-full1" on:click={addNodeCategorical}>
 				Add node parameter<ArrowRightOutline class="ms-2 h-6 w-6" />
 			</Button>

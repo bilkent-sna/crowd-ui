@@ -18,4 +18,4 @@
 	</div>
 </div>
 
-<Footer class="bottom-0 mx-auto w-full flex-none" slot="footer" />
+<!-- <Footer class="bottom-0 mx-auto w-full flex-none" slot="footer" /> -->
