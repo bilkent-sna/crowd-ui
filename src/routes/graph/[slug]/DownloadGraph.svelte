@@ -1,91 +1,145 @@
 <script>
 	import { onMount } from 'svelte';
-	import { Button } from 'flowbite-svelte';
+	import { Button, Select } from 'flowbite-svelte';
 	import { saveAs } from 'file-saver';
 	import gifshot from 'gifshot';
-	import { CameraPhotoSolid, ImageSolid } from 'flowbite-svelte-icons';
+	import { DownloadOutline } from 'flowbite-svelte-icons';
+	import ButtonGroup from 'flowbite-svelte/ButtonGroup.svelte';
 
 	export let svgComponent; // Bound SVG element
 	export let iterations; // Array of SVG elements for GIF
 
 	let format = 'png';
 
-	function downloadCurrentIteration() {
+	function createStyleElementFromCSS() {
+		const style = document.createElement('style');
+		const cssRules = Array.from(document.styleSheets)
+			.map((sheet) => {
+				try {
+					return Array.from(sheet.cssRules)
+						.map((rule) => rule.cssText)
+						.join('\n');
+				} catch (e) {
+					console.warn('Could not access stylesheet:', sheet, e);
+					return ''; // Ignore any cross-origin errors
+				}
+			})
+			.join('\n');
+
+		style.textContent = cssRules;
+		return style;
+	}
+
+	/*
+		code for this function is from: https://takuti.me/note/javascript-save-svg-as-image/
+	*/
+
+	// Helper: Create the SVG string with proper XML header
+	function createSVGWithHeaders(svgElement) {
 		const serializer = new XMLSerializer();
+		const styleElement = createStyleElementFromCSS();
 
-		// Adjust line styling to ensure visibility
-		svgComponent.querySelectorAll('line').forEach((line) => {
-			line.setAttribute('stroke-width', '2'); // Thicker line
-			line.setAttribute('stroke-opacity', '1'); // Fully opaque
-		});
+		// Clone the original SVG to avoid modifying it
+		const svgClone = svgElement.cloneNode(true);
 
-		const svgString = serializer.serializeToString(svgComponent);
+		// Insert CSS styles at the top of the SVG
+		svgClone.insertBefore(styleElement, svgClone.firstChild);
+
+		// Serialize the SVG to a string
+		const svgContent = serializer.serializeToString(svgClone);
+
+		// Construct the complete SVG with XML declaration at the very top
+		const svgString =
+			`<?xml version="1.0" encoding="UTF-8"?>\n` +
+			`<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n` +
+			svgContent;
+
+		return svgString;
+	}
+
+	// Download the current iteration as PNG, JPEG, or SVG
+	function downloadCurrentIteration() {
+		const svgString = createSVGWithHeaders(svgComponent);
 		const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
 
+		// Handle SVG download directly
+		if (format === 'svg') {
+			saveAs(svgBlob, 'graph.svg');
+			return;
+		}
+
+		// For PNG or JPEG, render SVG on a canvas
 		const canvas = document.createElement('canvas');
 		const ctx = canvas.getContext('2d');
-		const img = new Image();
 
-		// Extract SVG dimensions and viewBox
 		const { width, height } = svgComponent.getBoundingClientRect();
 		const viewBox = svgComponent.getAttribute('viewBox')?.split(' ') || [0, 0, width, height];
 
 		canvas.width = parseFloat(viewBox[2]);
 		canvas.height = parseFloat(viewBox[3]);
 
-		// Set canvas background to white
+		// Ensure a white background for JPEG
 		ctx.fillStyle = 'white';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		const img = new Image();
 
 		img.onload = () => {
 			ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
+			// Export the canvas content as PNG or JPEG
 			canvas.toBlob((blob) => {
 				saveAs(blob, `graph.${format}`);
 			}, `image/${format}`);
 		};
 
+		// Set the SVG blob as the image source
 		img.src = URL.createObjectURL(svgBlob);
 	}
 
-	function downloadGif() {
-		const frames = iterations.map((svgElement) => {
-			const serializer = new XMLSerializer();
-			const svgString = serializer.serializeToString(svgElement);
-			return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
-		});
+	function downloadGif() {}
 
-		gifshot.createGIF(
-			{
-				images: frames,
-				interval: 2, // 2 seconds between frames
-				loop: false
-			},
-			(obj) => {
-				if (!obj.error) {
-					saveAs(obj.image, 'graph.gif');
-				} else {
-					console.error('GIF creation failed:', obj.error);
-				}
-			}
-		);
+	const downloadTypes = [
+		{
+			value: 'png',
+			name: 'PNG'
+		},
+		{
+			value: 'svg',
+			name: 'SVG'
+		},
+		{
+			value: 'jpeg',
+			name: 'JPEG'
+		},
+		{
+			value: 'gif',
+			name: 'GIF'
+		}
+	];
+
+	function download() {
+		if (format === 'gif') {
+			downloadGif();
+		} else {
+			downloadCurrentIteration();
+		}
 	}
 </script>
 
-<div class="flex space-x-2">
-	<Button on:click={downloadCurrentIteration} color="blue">
-		<CameraPhotoSolid class="mr-2 h-5 w-5" />
-		Download Current ({format.toUpperCase()})
+<!-- Button Group -->
+<ButtonGroup class="flex items-center overflow-hidden rounded-lg border shadow-md">
+	<Button
+		on:click={download}
+		class="bg-primary-600 px-4 py-2 text-white hover:bg-primary-800 hover:text-gray-50"
+	>
+		<DownloadOutline class="h-5 w-5" />
+		<!-- Download -->
 	</Button>
 
-	<Button on:click={downloadGif} color="green">
-		<ImageSolid class="mr-2 h-5 w-5" />
-		Download GIF
-	</Button>
-
-	<select bind:value={format} class="rounded border p-2">
-		<option value="png">PNG</option>
-		<option value="svg">SVG</option>
-		<option value="jpeg">JPEG</option>
-	</select>
-</div>
+	<Select
+		items={downloadTypes}
+		bind:value={format}
+		class="w-20 cursor-pointer border-none bg-white px-4 py-2 hover:bg-gray-50"
+	/>
+</ButtonGroup>

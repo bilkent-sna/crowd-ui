@@ -5,7 +5,7 @@
         Base code for d3 & svelte graph by Mark Hughes 
         from: https://github.com/happybeing/d3-fdg-svelte/tree/master?tab=readme-ov-file
     */
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { scaleLinear, scaleOrdinal } from 'd3-scale';
 	import { zoom, zoomIdentity } from 'd3-zoom';
 	// import { schemeCategory10 } from 'd3-scale-chromatic'; // Imported for color scheme
@@ -29,7 +29,11 @@
 		SearchOutline,
 		ChevronDownOutline,
 		CirclePlusSolid,
-		CloseCircleSolid
+		CloseCircleSolid,
+		BackwardStepSolid,
+		ForwardStepSolid,
+		PlaySolid,
+		PauseSolid
 	} from 'flowbite-svelte-icons';
 
 	import { schemeCategory10 } from 'd3-scale-chromatic';
@@ -40,7 +44,7 @@
 	} from 'flowbite-svelte-icons';
 	import { sineIn } from 'svelte/easing';
 
-	// import DownloadGraph from './DownloadGraph.svelte';
+	import DownloadGraph from './DownloadGraph.svelte';
 
 	let d3 = {
 		zoom,
@@ -83,9 +87,16 @@
 	let links = graph.links.map((d) => Object.create(d));
 	let nodes = graph.nodes.map((d) => Object.create(d));
 
-	function addIteration(svg) {
-		iterations.push(svg);
+	function updateWidth() {
+		width = window.innerWidth * 0.9; // 90% of the window width
 	}
+
+	// Set initial width and update on window resize
+	window.addEventListener('resize', updateWidth);
+	updateWidth(); // Set width on component load
+
+	// Cleanup listener when the component is destroyed
+	onDestroy(() => window.removeEventListener('resize', updateWidth));
 
 	// Search logic
 	let searchId = '';
@@ -269,11 +280,29 @@
 	}
 
 	function changeIteration(delta) {
-		// curr_iteration = (curr_iteration + delta + data.length) % data.length;  // Update iteration index
-		curr_iteration = curr_iteration + delta;
+		let new_value = curr_iteration + delta;
+		if (new_value < 0) {
+			curr_iteration = 0;
+		} else if (new_value >= epoch_num) {
+			curr_iteration = epoch_num - 1;
+		} else {
+			curr_iteration = new_value;
+		}
 		updateGraph(); // Update graph with new data
 	}
 
+	// Custom logic to snap to the last iteration if close to the end
+	function handleSliderChange(event) {
+		let value = parseInt(event.target.value);
+
+		// If the slider is at the last step, move to the final epoch
+		if (value + snapshot_period >= epoch_num) {
+			curr_iteration = epoch_num - 1; // Snap to last iteration
+		} else {
+			curr_iteration = value;
+		}
+		updateGraph();
+	}
 	function getNeighbors(node) {
 		const neighbors = new Set();
 		links.forEach((link) => {
@@ -314,47 +343,27 @@
 
 	let selectedInspectCategory = 'Nodes';
 
-	// function downloadSVG() {
-	// 	// Get the SVG element
-	// 	const svgElement = document.getElementById('graph1');
-
-	// 	if (!svgElement) {
-	// 		console.error('SVG element not found.');
-	// 		return;
-	// 	}
-
-	// 	// Get the SVG content as XML
-	// 	const svgXml = new XMLSerializer().serializeToString(svgElement);
-
-	// 	// Create a Blob containing the SVG data
-	// 	const blob = new Blob([svgXml], { type: 'image/svg+xml' });
-
-	// 	// Create a URL for the Blob
-	// 	const url = URL.createObjectURL(blob);
-
-	// 	// Create a link element and set its attributes
-	// 	const a = document.createElement('a');
-	// 	a.href = url;
-	// 	a.download = 'graph.svg'; // File name for download
-	// 	a.style.display = 'none';
-
-	// 	// Append the link to the body and trigger the download
-	// 	document.body.appendChild(a);
-	// 	a.click();
-
-	// 	// Clean up
-	// 	document.body.removeChild(a);
-	// 	URL.revokeObjectURL(url);
-	// }
+	let play = false;
+	function playToggle() {
+		play = !play;
+	}
 </script>
 
 <svelte:window on:resize={resize} />
 
 <div class="center-container">
-	<div class="grid-container">
+	<div class="grid-container my-2">
+		<div class="left-align"></div>
+		<div>
+			<A on:click={() => changeIteration(-snapshot_period)}><BackwardStepSolid /></A>
+			{#if !play}
+				<A on:click={playToggle}><PlaySolid /></A>
+			{:else}
+				<A on:click={playToggle}><PauseSolid /></A>
+			{/if}
+			<A on:click={() => changeIteration(snapshot_period)}><ForwardStepSolid /></A>
+		</div>
 		<div class="left-align">
-			<!-- <button on:click={downloadSVG}>Download SVG</button> -->
-
 			<Label>Current iteration: {curr_iteration}/{epoch_num - 1}</Label>
 			<Range
 				id="range-minmax"
@@ -362,20 +371,22 @@
 				step={snapshot_period}
 				max={epoch_num - 1}
 				bind:value={curr_iteration}
-				on:change={updateGraph}
+				on:change={handleSliderChange}
 			/>
 		</div>
-		<div class="right-align">
+	</div>
+	<div class="grid-container">
+		<div class="left-align">
 			<Button on:click={() => (inspectNodesHidden = false)}>Inspect nodes</Button>
 		</div>
-		<div class="right-align">
-			<Button on:click={() => (editSizeandColorsHidden = false)}>Edit node size and colors</Button>
+		<div>
+			<DownloadGraph svgComponent={svg} {iterations} />
 		</div>
 		<div class="right-align">
-			<!-- <DownloadGraph svgComponent={svg} {iterations} /> -->
+			<Button on:click={() => (editSizeandColorsHidden = false)}>Edit node style</Button>
 		</div>
 	</div>
-	<div>
+	<div style="border: 1px solid black;" class="mt-2">
 		<svg id="graph1" bind:this={svg} {width} {height}>
 			<g>
 				{#each links as link}
@@ -390,7 +401,7 @@
 								? '.9'
 								: '.1'
 							: '.9'}
-						transform="translate({transform.x} {transform.y}) scale({transform.k} {transform.k})"
+						transform="translate({transform.x} {transform.y}) scale({transform.k})"
 					>
 						<title>{link.source.id}</title>
 					</line>
@@ -421,7 +432,7 @@
 							hoveredData = null;
 							neighbors = new Set();
 						}}
-						transform="translate({transform.x} {transform.y}) scale({transform.k} {transform.k})"
+						transform="translate({transform.x} {transform.y}) scale({transform.k})"
 					>
 						<title>{point.id}</title></circle
 					>
@@ -601,7 +612,6 @@
 <style>
 	svg {
 		float: left;
-		border: 1px solid black;
 	}
 
 	circle {
