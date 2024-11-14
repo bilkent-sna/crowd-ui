@@ -36,7 +36,8 @@
 	}
 
 	async function run_python_get_sub_simulations_info(item) {
-		let parent_dir_name = getFileName(item.start_time);
+		// let parent_dir_name = getFileName(item.start_time);
+		let parent_dir_name = item.directory_name;
 		console.log('parent dir:', parent_dir_name, 'project_name', generateSlug($project.name));
 		try {
 			const result = await invoke('run_python_get_sub_simulations_info', {
@@ -75,19 +76,18 @@
 		}
 	}
 
-	function getFileName(start_time) {
+	//Not used because of recent changes, may remove
+	function formattedDate(directory_name) {
 		// Extract the date and time parts
-		const [datePart, timePart] = start_time.split(' ');
-
-		// Extract the hours and minutes from the time part
-		const [hours, minutes] = timePart.split(':');
+		const [datePart, timePart] = directory_name.split('=');
 
 		// Format and return the desired string
-		return `${datePart}=${hours}-${minutes}`;
+		// return `${datePart} ${hours}:${minutes}:${seconds}`;
+		return `${datePart} ${timePart}`;
 	}
 
-	function setSimulationDirectory(start_time) {
-		simulationDirectory.set(getFileName(start_time));
+	function setSimulationDirectory(directory_name) {
+		simulationDirectory.set(directory_name);
 	}
 </script>
 
@@ -114,7 +114,7 @@
 							class="hover:cursor-pointer"
 							on:click={() => toggleRow(item)}
 						>
-							<TableBodyCell>{item.date}</TableBodyCell>
+							<TableBodyCell>{formattedDate(item.directory_name)}</TableBodyCell>
 							<TableBodyCell>{item.name.slice(0, -2)}</TableBodyCell>
 							<TableBodyCell>{item.epoch_num}</TableBodyCell>
 							<TableBodyCell>{item.states}</TableBodyCell>
@@ -145,7 +145,7 @@
 															<a
 																href={'/graph/' + generateSlug(item.name) + '-' + subSimID}
 																on:click={() => {
-																	setSimulationDirectory(item.start_time);
+																	setSimulationDirectory(item.directory_name);
 																	simulationName.set(generateSlug(item.name.slice(0, -2)));
 																	runNumber.set(subSimID);
 																}}

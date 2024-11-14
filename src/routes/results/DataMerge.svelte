@@ -263,7 +263,7 @@
 		</div>
 		<div>
 			<A on:click={addLine} class="mb-2"
-				><CirclePlusSolid class="mr-2 h-4 w-4" />Add variable to chart</A
+				><CirclePlusSolid class="mr-2 h-4 w-4" />Add simulation to merge</A
 			>
 			<List
 				tag="ul"
