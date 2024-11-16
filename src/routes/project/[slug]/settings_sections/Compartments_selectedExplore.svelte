@@ -172,11 +172,11 @@
 	function parseUserInput(stringToParse, confSectionName) {
 		let separated = stringToParse.split(',');
 		const len = separated.length;
-		confSectionName = 'c' + compartmentCounter + '.' + confSectionName;
+		confSectionName = 'c' + (compartmentCounter + 1) + '.' + confSectionName;
 
 		if (len > 1) {
 			// Add to model exploration
-			explorationInfo['compartments.' + confSectionName] = {
+			explorationInfo[confSectionName] = {
 				path: 'definitions.pd-model.compartments.' + confSectionName,
 				values: separated
 			};
@@ -195,28 +195,12 @@
 		compartmentCounter++;
 		compartmentName = 'c' + compartmentCounter;
 		addCompartmentOpen = false;
-
-		// Loop through currentCompartment properties and parse user inputs
-		if (currentCompartment) {
-			for (const key in currentCompartment) {
-				currentCompartment[key] = parseUserInput(currentCompartment[key], key);
-			}
-		}
-
 		compartments = [...compartments, { name: compartmentName, content: currentCompartment }];
 		currentCompartment = null;
 	}
 
 	function removeCompartment(name) {
-		// Remove the compartment from the compartments array
 		compartments = compartments.filter((compartment) => compartment.name !== name);
-
-		// Remove this compartment's entries from explorationInfo
-		for (const key in explorationInfo) {
-			if (key.startsWith('compartments.' + name + '.')) {
-				delete explorationInfo[key];
-			}
-		}
 	}
 </script>
 
@@ -269,202 +253,145 @@
 				on:input={setCurrent}
 			/>
 		</Label>
-		<!-- Model exploration elements for all compartments except conditional compositon -->
+
+		<!-- Model exploration elements for all compartments except conditional composition -->
 		{#if selectedType !== 'conditional-composition'}
 			<div class="mt-4">
 				<Label class="pb-2">Test with different values:</Label>
 				<Radio name="explore-radio" bind:group={exploreCheck} value={true}>Yes</Radio>
 				<Radio name="explore-radio" bind:group={exploreCheck} value={false}>No</Radio>
 				{#if exploreCheck}
-					<P class="mt-3 text-sm"
-						>Enter values you want to explore separated with a comma in the inputs below. See
+					<P class="mt-3 text-sm">
+						Enter values you want to explore separated with a comma in the inputs below. See
 						documentation to check which sections of compartments can accept multiple values for
-						model exploration.</P
-					>
+						model exploration.
+					</P>
 				{/if}
 			</div>
 		{/if}
+
 		{#if selectedType === 'node-stochastic'}
 			<div>
 				<Label>Ratio:</Label>
-				<Input type="text" bind:value={nodeStochasticComp.ratio} on:input={setCurrent} />
+				<Input
+					type="text"
+					value={nodeStochasticComp.ratio}
+					on:input={(event) => {
+						setCurrent();
+						nodeStochasticComp.ratio = event.target.value;
+					}}
+					on:blur={() => {
+						nodeStochasticComp.ratio = parseUserInput(nodeStochasticComp.ratio, 'ratio');
+					}}
+				/>
 				<Label>Triggering Status:</Label>
 				<Input
 					type="text"
-					bind:value={nodeStochasticComp.triggering_status}
-					on:input={setCurrent}
+					value={nodeStochasticComp.triggering_status}
+					on:input={(event) => {
+						setCurrent();
+						nodeStochasticComp.triggering_status = event.target.value;
+					}}
+					on:blur={() => {
+						nodeStochasticComp.triggering_status = parseUserInput(
+							nodeStochasticComp.triggering_status,
+							'triggering_status'
+						);
+					}}
 				/>
-				<Label>Composed:</Label>
-				<Select bind:value={nodeStochasticComp.composed} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
 			</div>
 		{:else if selectedType === 'node-categorical'}
 			<div>
-				<Label>Attribute:</Label>
-				<Input type="text" bind:value={nodeCategoricalComp.attribute} on:input={setCurrent} />
 				<Label>Value:</Label>
-				<Input type="text" bind:value={nodeCategoricalComp.value} on:input={setCurrent} />
+				<Input
+					type="text"
+					value={nodeCategoricalComp.value}
+					on:input={(event) => {
+						setCurrent();
+						nodeCategoricalComp.value = event.target.value;
+					}}
+					on:blur={() => {
+						nodeCategoricalComp.value = parseUserInput(nodeCategoricalComp.value, 'value');
+					}}
+				/>
 				<Label>Probability:</Label>
-				<Input type="text" bind:value={nodeCategoricalComp.probability} on:input={setCurrent} />
-				<Label>Composed:</Label>
-				<Select bind:value={nodeStochasticComp.composed} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
+				<Input
+					type="text"
+					value={nodeCategoricalComp.probability}
+					on:input={(event) => {
+						setCurrent();
+						nodeCategoricalComp.probability = event.target.value;
+					}}
+					on:blur={() => {
+						nodeCategoricalComp.probability = parseUserInput(
+							nodeCategoricalComp.probability,
+							'probability'
+						);
+					}}
+				/>
 			</div>
 		{:else if selectedType === 'node-numerical-attribute'}
 			<div>
-				<Label>Attribute:</Label>
-				<Input type="text" bind:value={nodeNumericalAttrComp.attribute} on:input={setCurrent} />
 				<Label>Value:</Label>
-				<Input type="text" bind:value={nodeNumericalAttrComp.value} on:input={setCurrent} />
-				<Label>Operator:</Label>
-				<Input type="text" bind:value={nodeNumericalAttrComp.operator} on:input={setCurrent} />
-				<Label>Probability:</Label>
-				<Input type="text" bind:value={nodeNumericalAttrComp.probability} on:input={setCurrent} />
-				<Label>Triggering Status:</Label>
 				<Input
 					type="text"
-					bind:value={nodeNumericalAttrComp.triggering_status}
-					on:input={setCurrent}
+					value={nodeNumericalAttrComp.value}
+					on:input={(event) => {
+						setCurrent();
+						nodeNumericalAttrComp.value = event.target.value;
+					}}
+					on:blur={() => {
+						nodeNumericalAttrComp.value = parseUserInput(nodeNumericalAttrComp.value, 'value');
+					}}
 				/>
-				<Label>Composed:</Label>
-				<Select bind:value={nodeStochasticComp.composed} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
-			</div>
-		{:else if selectedType === 'node-numerical-variable'}
-			<div>
-				<Label>Variable:</Label>
-				<Input type="text" bind:value={nodeNumericalVarComp.variable} on:input={setCurrent} />
-				<Label>Variable Type:</Label>
-				<Input type="text" bind:value={nodeNumericalVarComp.variable_type} on:input={setCurrent} />
-				<Label>Value:</Label>
-				<Input type="text" bind:value={nodeNumericalVarComp.value} on:input={setCurrent} />
-				<Label>Value Type:</Label>
-				<Input type="text" bind:value={nodeNumericalVarComp.value_type} on:input={setCurrent} />
-				<Label>Operator:</Label>
-				<Input type="text" bind:value={nodeNumericalVarComp.operator} on:input={setCurrent} />
 				<Label>Probability:</Label>
-				<Input type="text" bind:value={nodeNumericalVarComp.probability} on:input={setCurrent} />
-				<Label>Triggering Status:</Label>
 				<Input
 					type="text"
-					bind:value={nodeNumericalVarComp.triggering_status}
-					on:input={setCurrent}
+					value={nodeNumericalAttrComp.probability}
+					on:input={(event) => {
+						setCurrent();
+						nodeNumericalAttrComp.probability = event.target.value;
+					}}
+					on:blur={() => {
+						nodeNumericalAttrComp.probability = parseUserInput(
+							nodeNumericalAttrComp.probability,
+							'probability'
+						);
+					}}
 				/>
-				<Label>Composed:</Label>
-				<Select bind:value={nodeStochasticComp.composed} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
-			</div>
-		{:else if selectedType === 'node-threshold'}
-			<div>
-				<Label>Threshold:</Label>
-				<Input type="text" bind:value={nodeTresholdComp.treshold} on:input={setCurrent} />
-				<Label>Triggering Status:</Label>
-				<Input type="text" bind:value={nodeTresholdComp.triggering_status} on:input={setCurrent} />
-				<Label>Composed:</Label>
-				<Select bind:value={nodeStochasticComp.composed} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
-			</div>
-		{:else if selectedType === 'edge-categorical'}
-			<div>
-				<Label>Attribute:</Label>
-				<Input type="text" bind:value={edgeCategoricalComp.attribute} on:input={setCurrent} />
-				<Label>Value:</Label>
-				<Input type="text" bind:value={edgeCategoricalComp.value} on:input={setCurrent} />
-				<Label>Probability:</Label>
-				<Input type="text" bind:value={edgeCategoricalComp.probability} on:input={setCurrent} />
-				<Label>Triggering Status:</Label>
-				<Input
-					type="text"
-					bind:value={edgeCategoricalComp.triggering_status}
-					on:input={setCurrent}
-				/>
-				<Label>Composed:</Label>
-				<Select bind:value={nodeStochasticComp.composed} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
 			</div>
 		{:else if selectedType === 'edge-numerical'}
 			<div>
-				<Label>Attribute:</Label>
-				<Input type="text" bind:value={edgeNumericalComp.attribute} on:input={setCurrent} />
 				<Label>Value:</Label>
-				<Input type="text" bind:value={edgeNumericalComp.value} on:input={setCurrent} />
-				<Label>Operator:</Label>
-				<Input type="text" bind:value={edgeNumericalComp.operator} on:input={setCurrent} />
-				<Label>Probability:</Label>
-				<Input type="text" bind:value={edgeNumericalComp.probability} on:input={setCurrent} />
-				<Label>Triggering Status:</Label>
-				<Input type="text" bind:value={edgeNumericalComp.triggering_status} on:input={setCurrent} />
-				<Label>Composed:</Label>
-				<Select bind:value={nodeStochasticComp.composed} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
-			</div>
-		{:else if selectedType === 'edge-stochastic'}
-			<div>
-				<Label>Threshold:</Label>
-				<Input type="text" bind:value={edgeStochasticComp.treshold} on:input={setCurrent} />
-				<Label>Triggering Status:</Label>
 				<Input
 					type="text"
-					bind:value={edgeStochasticComp.triggering_status}
-					on:input={setCurrent}
+					value={edgeNumericalComp.value}
+					on:input={(event) => {
+						setCurrent();
+						edgeNumericalComp.value = event.target.value;
+					}}
+					on:blur={() => {
+						edgeNumericalComp.value = parseUserInput(edgeNumericalComp.value, 'value');
+					}}
 				/>
-				<Label>Composed:</Label>
-				<Select bind:value={nodeStochasticComp.composed} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
-			</div>
-		{:else if selectedType === 'count-down'}
-			<div>
-				<Label>Name:</Label>
-				<Input type="text" bind:value={countDownComp.name} on:input={setCurrent} />
-				<Label>Iteration Count:</Label>
-				<Input type="text" bind:value={countDownComp.iteration_count} on:input={setCurrent} />
-			</div>
-		{:else if selectedType === 'conditional-composition'}
-			<div>
-				<Label>Condition:</Label>
-				<Select bind:value={conditionalCompositionComp.condition} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
-				<Label>First Branch:</Label>
-				<Select bind:value={conditionalCompositionComp.first_branch} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
-				<Label>Second Branch:</Label>
-				<Select bind:value={conditionalCompositionComp.second_branch} on:change={setCurrent}>
-					{#each compartmentNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</Select>
+				<Label>Probability:</Label>
+				<Input
+					type="text"
+					value={edgeNumericalComp.probability}
+					on:input={(event) => {
+						setCurrent();
+						edgeNumericalComp.probability = event.target.value;
+					}}
+					on:blur={() => {
+						edgeNumericalComp.probability = parseUserInput(
+							edgeNumericalComp.probability,
+							'probability'
+						);
+					}}
+				/>
 			</div>
 		{/if}
+
 		<Button class="w-full1" on:click={addCompartments}>
 			Add compartment<ArrowRightOutline class="ms-2 h-6 w-6" />
 		</Button>

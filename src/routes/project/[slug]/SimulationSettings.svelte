@@ -80,7 +80,61 @@
 		const childName = event.detail.name;
 		const content = event.detail.contents;
 		console.log('Name:', childName, 'Content: ', content);
-		dataFromChildren[childName] = content;
+
+		// Check if model exploration is requested for this component
+		if ('model_exp' in content) {
+			dataFromChildren[childName] = content.conf;
+
+			// Initialize 'model-exploration' as an object
+			if (!('model-exploration' in dataFromChildren)) {
+				dataFromChildren['model-exploration'] = {};
+			}
+
+			if (Object.keys(content.model_exp).length > 0) {
+				// Add or update new exploration selections
+				Object.assign(dataFromChildren['model-exploration'], content.model_exp);
+
+				// Remove outdated entries based on keys from content.conf
+
+				for (const key in dataFromChildren['model-exploration']) {
+					const splitKey = key.split('.');
+					if (childName === splitKey[0]) {
+						const baseKey = splitKey[1];
+						let existsInConf = true;
+
+						// If conf is array:
+						if (Array.isArray(content.conf)) {
+							// Check if baseKey exists in any of the objects in content.conf
+							existsInConf = content.conf.some((item) => item.name === baseKey);
+						} else if (childName === 'dataSource') {
+							// If conf is dict
+							if (!(baseKey in content.conf['structure']['fileOrRandom'])) {
+								existsInConf = false;
+							}
+						} else if (childName === 'nodeParameters') {
+							const arrToCheck = content.conf['numerical'];
+							existsInConf = arrToCheck.some((item) => item.name === baseKey);
+						}
+
+						// If baseKey is not in content.conf, delete it
+						if (!existsInConf) {
+							console.log(`Deleting key: ${key}`);
+							delete dataFromChildren['model-exploration'][key];
+						}
+					}
+				}
+			} else {
+				// The content got deleted. Remove all associated entries.
+				for (const key in dataFromChildren['model-exploration']) {
+					if (key.startsWith(childName + '.')) {
+						console.log(`Deleting key due to empty model_exp: ${key}`);
+						delete dataFromChildren['model-exploration'][key];
+					}
+				}
+			}
+		} else {
+			dataFromChildren[childName] = content;
+		}
 	}
 
 	let simulation_name = '';

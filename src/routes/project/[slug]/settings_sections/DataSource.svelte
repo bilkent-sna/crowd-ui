@@ -39,6 +39,9 @@
 	let graphGenerateK;
 	let graphGenerateTries;
 
+	let exploreCheck = false;
+	let explorationInfo = {};
+
 	onMount(() => {
 		if (dataSource === 'previously-uploaded') {
 			loadDatasetFiles();
@@ -77,42 +80,68 @@
 				dataSource === 'generate-graph' &&
 				graphGenerateType !== ''
 			)
-				fileOrRandom['count'] = parseInt(graphGenerateCount);
+				fileOrRandom['count'] = parseUserInput(graphGenerateCount, 'count');
 
 			if (graphGenerateType === 'random-regular')
-				fileOrRandom['degree'] = parseInt(graphGenerateDegree);
+				fileOrRandom['degree'] = parseUserInput(graphGenerateDegree, 'degree');
 
 			if (['barabasi-albert', 'powerlaw-cluster-graph'].includes(graphGenerateType))
-				fileOrRandom['m'] = parseInt(graphGenerateM);
+				fileOrRandom['m'] = parseUserInput(graphGenerateM, 'm');
 
 			if (
 				['watts-strogatz', 'connected-watts-strogatz', 'newman-watts-strogatz'].includes(
 					graphGenerateType
 				)
 			)
-				fileOrRandom['k'] = parseInt(graphGenerateK);
+				fileOrRandom['k'] = parseUserInput(graphGenerateK, 'k');
 
 			if (
 				!['complete-graph', 'barabasi-albert', 'random-regular'].includes(graphGenerateType) &&
 				dataSource === 'generate-graph' &&
 				graphGenerateType !== ''
 			)
-				fileOrRandom['p'] = parseInt(graphGenerateP);
+				fileOrRandom['p'] = parseUserInput(graphGenerateP, 'p');
 
 			if (graphGenerateType === 'connected-watts-strogatz')
-				fileOrRandom['tries'] = parseInt(graphGenerateTries);
+				fileOrRandom['tries'] = parseUserInput(graphGenerateTries, 'tries');
 		} else {
 			fileOrRandom = 'Error';
 		}
 
-		const theMessage = {
+		const confInfo = {
 			structure: {
 				fileOrRandom
 			}
 		};
 
+		const theMessage = {
+			conf: confInfo,
+			model_exp: explorationInfo
+		};
+
 		const sender = 'dataSource';
 		dispatch('message', { name: sender, contents: theMessage });
+	}
+
+	function parseUserInput(stringToParse, confSectionName) {
+		let separated = stringToParse.split(',');
+		const len = separated.length;
+
+		if (len > 1) {
+			// Add to model exploration
+			explorationInfo['dataSource.' + confSectionName] = {
+				path: 'structure.random.' + confSectionName,
+				values: separated
+			};
+			// Return first value to be put to conf
+			return parseInt(separated[0]);
+		} else if (len === 1) {
+			// No model exploration, just return the number
+			return parseInt(stringToParse);
+		} else if (len < 1) {
+			console.log('Error parsing user input in data source.');
+			return null;
+		}
 	}
 
 	async function loadDatasetFiles() {
@@ -255,17 +284,27 @@
 					>
 				</div>
 				{#if !['karate-club-graph', 'davis-southern-woman', 'florentine-families', 'les-miserables'].includes(graphGenerateType) && dataSource === 'generate-graph' && graphGenerateType !== ''}
-					<div class="my-4">
+					<div class="mt-4">
+						<Label class="pb-2">Test with different values:</Label>
+						<Radio name="explore-radio" bind:group={exploreCheck} value={true}>Yes</Radio>
+						<Radio name="explore-radio" bind:group={exploreCheck} value={false}>No</Radio>
+						{#if exploreCheck}
+							<P class="mt-3 text-sm"
+								>Enter values you want to explore separated with a comma in the inputs below.</P
+							>
+						{/if}
+					</div>
+					<div class="mb-4 mt-1">
 						<Label>
 							Node count:
-							<NumberInput bind:value={graphGenerateCount} class="mt-2" />
+							<Input bind:value={graphGenerateCount} class="mt-2" />
 						</Label>
 					</div>
 					{#if graphGenerateType === 'random-regular'}
 						<div class="my-4">
 							<Label>
 								Degree:
-								<NumberInput bind:value={graphGenerateDegree} class="mt-2" />
+								<Input bind:value={graphGenerateDegree} class="mt-2" />
 							</Label>
 						</div>
 					{/if}
@@ -273,7 +312,7 @@
 						<div class="my-4">
 							<Label>
 								m:
-								<NumberInput bind:value={graphGenerateM} class="mt-2" />
+								<Input bind:value={graphGenerateM} class="mt-2" />
 							</Label>
 						</div>
 					{/if}
@@ -281,7 +320,7 @@
 						<div class="my-4">
 							<Label>
 								k:
-								<NumberInput bind:value={graphGenerateK} class="mt-2" />
+								<Input bind:value={graphGenerateK} class="mt-2" />
 							</Label>
 						</div>
 					{/if}
@@ -289,7 +328,7 @@
 						<div class="my-4">
 							<Label>
 								p:
-								<NumberInput bind:value={graphGenerateP} class="mt-2" />
+								<Input bind:value={graphGenerateP} class="mt-2" />
 							</Label>
 						</div>
 					{/if}
@@ -297,7 +336,7 @@
 						<div class="my-4">
 							<Label>
 								tries:
-								<NumberInput bind:value={graphGenerateTries} class="mt-2" />
+								<Input bind:value={graphGenerateTries} class="mt-2" />
 							</Label>
 						</div>
 					{/if}

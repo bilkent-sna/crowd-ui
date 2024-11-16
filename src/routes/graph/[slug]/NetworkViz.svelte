@@ -22,7 +22,9 @@
 		CloseButton,
 		P,
 		Card,
-		Input
+		Input,
+		ButtonGroup,
+		Select
 	} from 'flowbite-svelte';
 	import { Tabs, TabItem, List, Li, Search, Dropdown, DropdownItem } from 'flowbite-svelte';
 	import {
@@ -33,7 +35,8 @@
 		BackwardStepSolid,
 		ForwardStepSolid,
 		PlaySolid,
-		PauseSolid
+		PauseSolid,
+		DownloadOutline
 	} from 'flowbite-svelte-icons';
 
 	import { schemeCategory10 } from 'd3-scale-chromatic';
@@ -71,12 +74,13 @@
 	const nodeStates = simulation_info['states'];
 
 	let curr_iteration = 0; // Current iteration
+	let iteration_nums = generateIterationsArray(epoch_num, snapshot_period);
+	let iteration_index = 0;
 
 	let hoveredData = null;
 	let neighbors = new Set(); // Set to store neighbors of the hovered node
 
 	let svg;
-	let iterations = [];
 	let width = 1000;
 	let height = 800;
 	const nodeRadius = 5;
@@ -279,30 +283,34 @@
 		({ width, height } = svg.getBoundingClientRect());
 	}
 
-	function changeIteration(delta) {
-		let new_value = curr_iteration + delta;
-		if (new_value < 0) {
-			curr_iteration = 0;
-		} else if (new_value >= epoch_num) {
-			curr_iteration = epoch_num - 1;
-		} else {
-			curr_iteration = new_value;
+	function generateIterationsArray(epoch_num, snapshot_period) {
+		let iterations = [];
+		for (let i = 0; i < epoch_num; i += snapshot_period) {
+			iterations.push(i);
 		}
-		updateGraph(); // Update graph with new data
+		// Ensure the last iteration is included if not already present
+		if (iterations[iterations.length - 1] !== epoch_num - 1) {
+			iterations.push(epoch_num - 1);
+		}
+		return iterations;
 	}
 
-	// Custom logic to snap to the last iteration if close to the end
-	function handleSliderChange(event) {
-		let value = parseInt(event.target.value);
+	function changeIteration(delta) {
+		let new_index = iteration_index + delta;
 
-		// If the slider is at the last step, move to the final epoch
-		if (value + snapshot_period >= epoch_num) {
-			curr_iteration = epoch_num - 1; // Snap to last iteration
-		} else {
-			curr_iteration = value;
-		}
+		// Keep the index within bounds
+		if (new_index < 0) new_index = 0;
+		else if (new_index >= iteration_nums.length) new_index = iteration_nums.length - 1;
+
+		iteration_index = new_index;
+		curr_iteration = iteration_nums[iteration_index];
 		updateGraph();
 	}
+
+	function handleSliderChange(event) {
+		changeIteration(0);
+	}
+
 	function getNeighbors(node) {
 		const neighbors = new Set();
 		links.forEach((link) => {
@@ -344,33 +352,76 @@
 	let selectedInspectCategory = 'Nodes';
 
 	let play = false;
+	let intervalId;
+
 	function playToggle() {
 		play = !play;
+		if (play) {
+			intervalId = setInterval(() => {
+				if (iteration_index < iteration_nums.length - 1) {
+					changeIteration(1);
+				} else {
+					// Stop at the end of iterations
+					playToggle();
+				}
+			}, 2000); // Move to the next iteration every 2 seconds
+		} else {
+			clearInterval(intervalId);
+		}
+	}
+
+	let downloadTrigger = false;
+	let format = 'png';
+	const downloadTypes = [
+		{
+			value: 'png',
+			name: 'PNG'
+		},
+		{
+			value: 'svg',
+			name: 'SVG'
+		},
+		{
+			value: 'jpeg',
+			name: 'JPEG'
+		},
+		{
+			value: 'gif',
+			name: 'GIF'
+		}
+	];
+	function handleDownloadClick() {
+		// Toggle the value of downloadTrigger to trigger download in DownloadGraph child component
+		downloadTrigger = true;
+	}
+
+	function handleDownloadComplete() {
+		console.log('Download completed');
+		downloadTrigger = false;
 	}
 </script>
 
-<svelte:window on:resize={resize} />
+<svelte:window on:resize={resize} on:beforeunload={() => clearInterval(intervalId)} />
 
 <div class="center-container">
 	<div class="grid-container my-2">
 		<div class="left-align"></div>
 		<div>
-			<A on:click={() => changeIteration(-snapshot_period)}><BackwardStepSolid /></A>
+			<A on:click={() => changeIteration(-1)}><BackwardStepSolid /></A>
 			{#if !play}
 				<A on:click={playToggle}><PlaySolid /></A>
 			{:else}
 				<A on:click={playToggle}><PauseSolid /></A>
 			{/if}
-			<A on:click={() => changeIteration(snapshot_period)}><ForwardStepSolid /></A>
+			<A on:click={() => changeIteration(1)}><ForwardStepSolid /></A>
 		</div>
 		<div class="left-align">
 			<Label>Current iteration: {curr_iteration}/{epoch_num - 1}</Label>
 			<Range
 				id="range-minmax"
 				min="0"
-				step={snapshot_period}
-				max={epoch_num - 1}
-				bind:value={curr_iteration}
+				max={iteration_nums.length - 1}
+				bind:value={iteration_index}
 				on:change={handleSliderChange}
 			/>
 		</div>
@@ -380,12 +431,33 @@
 			<Button on:click={() => (inspectNodesHidden = false)}>Inspect nodes</Button>
 		</div>
 		<div>
-			<DownloadGraph svgComponent={svg} {iterations} />
+			<!-- Button Group -->
+			<ButtonGroup class="flex items-center overflow-hidden rounded-lg border shadow-md">
+				<Button
+					on:click={handleDownloadClick}
+					class="bg-primary-600 px-4 py-2 text-white hover:bg-primary-800 hover:text-gray-50"
+				>
+					<DownloadOutline class="h-5 w-5" />
+					<!-- Download -->
+				</Button>
+
+				<Select
+					items={downloadTypes}
+					bind:value={format}
+					class="w-20 cursor-pointer border-none bg-white px-4 py-2 hover:bg-gray-50"
+				/>
+			</ButtonGroup>
 		</div>
 		<div class="right-align">
 			<Button on:click={() => (editSizeandColorsHidden = false)}>Edit node style</Button>
 		</div>
 	</div>
+	{#if downloadTrigger}
+		<div class="grid-container my-2">
+			<P class="text-gray-600">Processing the download, please wait.</P>
+		</div>
+	{/if}
+
 	<div style="border: 1px solid black;" class="mt-2">
 		<svg id="graph1" bind:this={svg} {width} {height}>
 			<g>
@@ -440,6 +512,22 @@
 			</g>
 		</svg>
 	</div>
+</div>
+
+<div>
+	<DownloadGraph
+		svgComponent={svg}
+		{iteration_nums}
+		{data}
+		{width}
+		{height}
+		{nodeRadius}
+		{nodeStates}
+		{colorRange}
+		{downloadTrigger}
+		{format}
+		on:complete={handleDownloadComplete}
+	/>
 </div>
 
 <Drawer

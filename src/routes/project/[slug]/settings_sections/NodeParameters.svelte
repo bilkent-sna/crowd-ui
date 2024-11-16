@@ -30,7 +30,11 @@
 	const dispatch = createEventDispatcher();
 
 	function sendNodeParametersToParent() {
-		dispatch('message', { name: 'nodeParameters', contents: nodeParameters });
+		const theMessage = {
+			conf: nodeParameters,
+			model_exp: explorationInfo
+		};
+		dispatch('message', { name: 'nodeParameters', contents: theMessage });
 	}
 
 	let nodeParameterName = '';
@@ -46,6 +50,9 @@
 
 	let nodeNumerical = [];
 	let nodeCategorical = [];
+
+	let explorationInfo = {};
+	let exploreCheck = false;
 
 	$: nodeParameters = {
 		numerical: nodeNumerical,
@@ -142,16 +149,53 @@
 		addNodeParameterOpen = false;
 		nodeNumerical = [
 			...nodeNumerical,
-			{ name: nodeParameterName, range: [numericalRange1, numericalRange2] }
+			{
+				name: nodeParameterName,
+				range: parseNumericalInput(nodeParameterName, numericalRange1, numericalRange2)
+			}
 		];
 		nodeParameterName = '';
 		numericalRange1 = 0;
 		numericalRange2 = 0;
 	}
 
+	function parseNumericalInput(confSectionName, startRanges, endRanges) {
+		let separatedStart = startRanges.split(',');
+		let separatedEnd = endRanges.split(',');
+
+		// If lengths of both ranges are not the same, go until the min length
+		let lenToGo = Math.min(separatedStart.length, separatedEnd.length);
+
+		// Add to model exploration
+		if (lenToGo > 1) {
+			// Fill in an array with the ranges
+			let exploreArray = [];
+			for (let i = 0; i < lenToGo; i++) {
+				exploreArray = [...exploreArray, [separatedStart[i], separatedEnd[i]]];
+			}
+			// Add to exploration dict
+			explorationInfo['nodeParameters.' + confSectionName] = {
+				path: 'definitions.pd-model.node-parameters.' + confSectionName,
+				values: exploreArray
+			};
+
+			// Return first value to be put to conf
+			return [separatedStart[0], separatedEnd[0]];
+		} else {
+			// No model exploration, just return the range
+			return [startRanges, endRanges];
+		}
+	}
+
 	function removeNodeParameter(type, name) {
 		if (type === 'numerical') {
 			nodeNumerical = nodeNumerical.filter((item) => item.name !== name);
+			// Remove this parameter's entries from explorationInfo
+			for (const key in explorationInfo) {
+				if (key.startsWith('nodeParameters.' + name)) {
+					delete explorationInfo[key];
+				}
+			}
 		} else if (type === 'categorical') {
 			nodeCategorical = nodeCategorical.filter((item) => item.name !== name);
 		}
@@ -233,6 +277,18 @@
 		>
 
 		{#if chosenType === 'numerical'}
+			<div class="mt-4">
+				<Label class="pb-2">Test with different values:</Label>
+				<Radio name="explore-radio" bind:group={exploreCheck} value={true}>Yes</Radio>
+				<Radio name="explore-radio" bind:group={exploreCheck} value={false}>No</Radio>
+				{#if exploreCheck}
+					<P class="mt-3 text-sm"
+						>Enter values you want to explore separated with a comma in the inputs below. See
+						documentation to check which sections of compartments can accept multiple values for
+						model exploration.</P
+					>
+				{/if}
+			</div>
 			<Label class="space-y-2">
 				<span>Set the min value of the range:</span>
 				<Input placeholder="10" required bind:value={numericalRange1} />
