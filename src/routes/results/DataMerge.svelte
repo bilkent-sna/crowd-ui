@@ -2,7 +2,8 @@
 	// @ts-nocheck
 
 	import { Button, Helper, Modal, P, Radio, Select, Label, Hr, A, List, Li } from 'flowbite-svelte';
-	import { invoke } from '@tauri-apps/api/tauri';
+	//import { invoke } from '@tauri-apps/api/core';
+	import { invoke } from '@tauri-apps/api/core';
 	import { project, simulationName, simulationDirectory } from '$lib/stores/projects';
 	import {
 		ChartLineUpOutline,

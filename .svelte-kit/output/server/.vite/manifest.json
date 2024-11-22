@@ -93,7 +93,7 @@
     ]
   },
   "_app.js": {
-    "file": "_app/immutable/assets/app.BLLJXn_3.css",
+    "file": "_app/immutable/assets/app.BbIXrM5j.css",
     "src": "_app.js"
   },
   "_client.js": {
@@ -159,7 +159,7 @@
       "_P.js"
     ],
     "css": [
-      "_app/immutable/assets/app.BLLJXn_3.css"
+      "_app/immutable/assets/app.BbIXrM5j.css"
     ]
   },
   "src/routes/+layout.svelte": {
@@ -176,7 +176,7 @@
       "_projects.js"
     ],
     "css": [
-      "_app/immutable/assets/app.BLLJXn_3.css"
+      "_app/immutable/assets/app.BbIXrM5j.css"
     ]
   },
   "src/routes/+page.svelte": {
@@ -211,7 +211,7 @@
       "_P.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.DjgRIEUc.css"
+      "_app/immutable/assets/_page.CAsPBSpY.css"
     ]
   },
   "src/routes/methodlab/+page.svelte": {

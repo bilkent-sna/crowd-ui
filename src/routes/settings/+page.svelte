@@ -8,7 +8,8 @@
 	import { Button, Heading, Input, Label, Modal, P, Span, Spinner } from 'flowbite-svelte';
 	import YAML from 'yaml'; // Import the yaml library
 
-	import { invoke } from '@tauri-apps/api/tauri';
+	//import { invoke } from '@tauri-apps/api/core';
+	import { invoke } from '@tauri-apps/api/core';
 	import { project, simulationName, simulationDirectory } from '$lib/stores/projects';
 	import { generateSlug } from '$lib/utils';
 	import { goto } from '$app/navigation';

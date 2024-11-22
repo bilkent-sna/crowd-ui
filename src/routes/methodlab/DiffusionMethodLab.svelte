@@ -6,7 +6,8 @@
 	import CodeMirrorEditor from 'svelte-codemirror-editor';
 	import { python } from '@codemirror/lang-python';
 	import { onMount } from 'svelte';
-	import { invoke } from '@tauri-apps/api/tauri';
+	//import { invoke } from '@tauri-apps/api/core';
+	import { invoke } from '@tauri-apps/api/core';
 	import { project } from '$lib/stores/projects';
 
 	let code = '';

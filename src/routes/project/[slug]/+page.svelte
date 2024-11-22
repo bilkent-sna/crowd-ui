@@ -1,7 +1,8 @@
 <script>
 	import { Heading, P, Button, Span, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-	import { invoke } from '@tauri-apps/api/tauri';
+	//import { invoke } from '@tauri-apps/api/core';
+	import { invoke } from '@tauri-apps/api/core';
 	import { project } from '$lib/stores/projects';
 
 	import SimulationsList from './SimulationsList.svelte';

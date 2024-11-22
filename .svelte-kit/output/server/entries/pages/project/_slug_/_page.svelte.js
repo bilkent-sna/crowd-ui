@@ -1,7 +1,7 @@
-import { c as create_ssr_component, a as compute_rest_props, i as getContext, d as spread, e as escape_attribute_value, f as escape_object, b as add_attribute, j as escape, h as subscribe, v as validate_component } from "../../../../chunks/ssr.js";
+import { c as create_ssr_component, a as compute_rest_props, i as getContext, b as spread, e as escape_attribute_value, d as escape_object, f as add_attribute, j as escape, h as subscribe, v as validate_component } from "../../../../chunks/ssr.js";
 import { H as Heading, S as Span } from "../../../../chunks/Span.js";
 import { P } from "../../../../chunks/P.js";
-import "@tauri-apps/api/tauri";
+import "@tauri-apps/api/core";
 import { p as project, n as nodeOrEdge, b as simulationType } from "../../../../chunks/projects.js";
 import { A } from "../../../../chunks/A.js";
 import { twMerge } from "tailwind-merge";

@@ -1,4 +1,4 @@
-import { c as create_ssr_component, s as setContext, b as add_attribute, i as getContext, j as escape, a as compute_rest_props, d as spread, e as escape_attribute_value, f as escape_object, v as validate_component, k as each } from "../../chunks/ssr.js";
+import { c as create_ssr_component, s as setContext, f as add_attribute, i as getContext, j as escape, a as compute_rest_props, b as spread, e as escape_attribute_value, d as escape_object, v as validate_component, k as each } from "../../chunks/ssr.js";
 import { B as Button } from "../../chunks/Button.js";
 import { R as Radio } from "../../chunks/Radio.js";
 import { L as Label } from "../../chunks/Label.js";
@@ -7,7 +7,7 @@ import { M as Modal } from "../../chunks/Modal.js";
 import { H as Heading, S as Span } from "../../chunks/Span.js";
 import { P } from "../../chunks/P.js";
 import { A as ArrowRightOutline } from "../../chunks/ArrowRightOutline.js";
-import "@tauri-apps/api/tauri";
+import "@tauri-apps/api/core";
 import "../../chunks/client.js";
 import { twMerge } from "tailwind-merge";
 import { A } from "../../chunks/A.js";

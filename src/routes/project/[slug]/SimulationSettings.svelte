@@ -31,7 +31,8 @@
 	} from 'flowbite-svelte-icons';
 
 	import { onMount } from 'svelte';
-	import { invoke } from '@tauri-apps/api/tauri';
+	//import { invoke } from '@tauri-apps/api/core';
+	import { invoke } from '@tauri-apps/api/core';
 
 	import {
 		project,

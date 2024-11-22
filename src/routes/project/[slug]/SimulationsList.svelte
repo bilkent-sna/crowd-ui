@@ -14,7 +14,8 @@
 	} from 'flowbite-svelte';
 
 	import { onMount } from 'svelte';
-	import { invoke } from '@tauri-apps/api/tauri';
+	import { invoke } from '@tauri-apps/api/core';
+	//import { invoke } from '@tauri-apps/api/core';
 
 	import { project, simulationDirectory, simulationName, runNumber } from '$lib/stores/projects';
 	import { generateSlug } from '$lib/utils';

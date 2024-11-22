@@ -25,7 +25,8 @@
 
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { project } from '$lib/stores/projects';
-	import { invoke } from '@tauri-apps/api/tauri';
+	//import { invoke } from '@tauri-apps/api/core';
+	import { invoke } from '@tauri-apps/api/core';
 
 	const dispatch = createEventDispatcher();
 

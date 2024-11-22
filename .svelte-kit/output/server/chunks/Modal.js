@@ -1,4 +1,4 @@
-import { c as create_ssr_component, a as compute_rest_props, v as validate_component, b as add_attribute, l as createEventDispatcher, j as escape, g as compute_slots } from "./ssr.js";
+import { c as create_ssr_component, a as compute_rest_props, v as validate_component, f as add_attribute, l as createEventDispatcher, j as escape, g as compute_slots } from "./ssr.js";
 import { twMerge } from "tailwind-merge";
 import { F as Frame } from "./Frame.js";
 import { T as ToolbarButton } from "./Input.js";

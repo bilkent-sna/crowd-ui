@@ -1,4 +1,4 @@
-import { c as create_ssr_component, a as compute_rest_props, d as spread, f as escape_object, e as escape_attribute_value, b as add_attribute } from "./ssr.js";
+import { c as create_ssr_component, a as compute_rest_props, b as spread, d as escape_object, e as escape_attribute_value, f as add_attribute } from "./ssr.js";
 import { twMerge } from "tailwind-merge";
 const Label = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let labelClass;

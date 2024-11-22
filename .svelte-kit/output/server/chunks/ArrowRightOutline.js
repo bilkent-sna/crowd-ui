@@ -1,4 +1,4 @@
-import { c as create_ssr_component, a as compute_rest_props, i as getContext, d as spread, e as escape_attribute_value, f as escape_object, b as add_attribute, j as escape } from "./ssr.js";
+import { c as create_ssr_component, a as compute_rest_props, i as getContext, b as spread, e as escape_attribute_value, d as escape_object, f as add_attribute, j as escape } from "./ssr.js";
 import { twMerge } from "tailwind-merge";
 const ArrowRightOutline = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let $$restProps = compute_rest_props($$props, ["size", "role", "color", "withEvents", "title", "strokeWidth", "desc", "ariaLabel"]);

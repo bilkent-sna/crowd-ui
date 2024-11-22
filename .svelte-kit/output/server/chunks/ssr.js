@@ -267,11 +267,11 @@ function style_object_to_string(style_object) {
 }
 export {
   compute_rest_props as a,
-  add_attribute as b,
+  spread as b,
   create_ssr_component as c,
-  spread as d,
+  escape_object as d,
   escape_attribute_value as e,
-  escape_object as f,
+  add_attribute as f,
   compute_slots as g,
   subscribe as h,
   getContext as i,

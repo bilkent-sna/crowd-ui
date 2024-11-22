@@ -1,4 +1,4 @@
-import { c as create_ssr_component, a as compute_rest_props, i as getContext, v as validate_component, d as spread, e as escape_attribute_value, f as escape_object, b as add_attribute, g as compute_slots } from "./ssr.js";
+import { c as create_ssr_component, a as compute_rest_props, i as getContext, v as validate_component, b as spread, e as escape_attribute_value, d as escape_object, f as add_attribute, g as compute_slots } from "./ssr.js";
 import { twMerge } from "tailwind-merge";
 import { L as Label } from "./Label.js";
 const colorClasses = {

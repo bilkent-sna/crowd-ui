@@ -13,7 +13,8 @@
 		GradientButton
 	} from 'flowbite-svelte';
 	import { onMount, createEventDispatcher } from 'svelte';
-	import { invoke } from '@tauri-apps/api/tauri';
+	//import { invoke } from '@tauri-apps/api/core';
+	import { invoke } from '@tauri-apps/api/core';
 
 	import { project } from '$lib/stores/projects';
 

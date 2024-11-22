@@ -3,7 +3,7 @@
 	import { Modal, Label, Input, Checkbox } from 'flowbite-svelte';
 	import { ArrowRightOutline } from 'flowbite-svelte-icons';
 
-	import { invoke } from '@tauri-apps/api/tauri';
+	import { invoke } from '@tauri-apps/api/core';
 	import { goto } from '$app/navigation';
 
 	import ListProjects from './welcome/ListProjects.svelte';

@@ -1,6 +1,8 @@
 <script>
 	import { project } from '$lib/stores/projects';
-	import { invoke } from '@tauri-apps/api/tauri';
+	//import { invoke } from '@tauri-apps/api/core';
+	import { invoke } from '@tauri-apps/api/core';
+
 	import {
 		List,
 		Li,
