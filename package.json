@@ -52,7 +52,7 @@
     "@skeletonlabs/skeleton": "^2.8.0",
     "@skeletonlabs/tw-plugin": "^0.3.1",
     "@sveltestrap/sveltestrap": "^6.2.7",
-    "@tauri-apps/api": "^1.5.3",
+    "@tauri-apps/api": "^1.6.0",
     "apexcharts": "^3.49.1",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",

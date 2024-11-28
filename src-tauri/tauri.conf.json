@@ -23,6 +23,13 @@
 				"removeFile": true,
 				"renameFile": true,
 				"scope": ["$APPDATA/data/*"]
+			},
+			"shell": {
+				"all": false,
+				"execute": false,
+				"open": true,
+				"scope": [],
+				"sidecar": false
 			}
 		},
 		"bundle": {
@@ -59,7 +66,7 @@
 			}
 		},
 		"security": {
-			"csp": null
+			"csp": "default-src 'self';"
 		},
 		"updater": {
 			"active": false

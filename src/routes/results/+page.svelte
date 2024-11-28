@@ -5,7 +5,7 @@
 	import { Button, Modal, Input, Select, Heading, P, Span, Spinner } from 'flowbite-svelte';
 	import { ChartLineUpOutline, TrashBinSolid } from 'flowbite-svelte-icons';
 
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
 	import { project, simulationName, simulationDirectory } from '$lib/stores/projects';
 	import DataMerge from './DataMerge.svelte';
@@ -152,7 +152,7 @@
 
 	$: console.log(charts);
 
-	const addChart = () => {
+	async function addChart() {
 		// const chartType = chartTypeSelection === "lineChart" ? "line" : "bar";
 		const chartType = chartTypeSelection;
 
@@ -185,7 +185,7 @@
 								customIcons: [
 									{
 										icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="shrink-0 h-5 w-5" role="img" aria-label="trash bin solid" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"></path></svg>',
-										index: 4,
+										index: -1,
 										title: 'Delete',
 										class: 'custom-icon',
 										click: function (chart, options, e) {
@@ -200,7 +200,7 @@
 							},
 							export: {
 								csv: {
-									filename: 'chart.csv',
+									filename: 'chart',
 									columnDelimiter: ',',
 									headerCategory: 'category',
 									headerValue: 'value',
@@ -209,13 +209,25 @@
 									}
 								},
 								svg: {
-									filename: 'chart.svg'
+									filename: 'chart'
 								},
 								png: {
-									filename: 'chart.png'
+									filename: 'chart'
 								}
 							},
 							autoSelected: 'zoom'
+						},
+						animations: {
+							enabled: true,
+							speed: 800,
+							animateGradually: {
+								enabled: true,
+								delay: 150
+							},
+							dynamicAnimation: {
+								enabled: true,
+								speed: 350
+							}
 						}
 					},
 					series: yVars.map((yVar) => ({
@@ -226,7 +238,8 @@
 						categories: data_to_send.map((item) => item[xVar]),
 						title: {
 							text: xTitle
-						}
+						},
+						tickAmount: 10
 						// labels: {
 						// 	formatter: function (value) {
 						// 		return parseFloat(value).toFixed(2); // Format to 2 decimal places
@@ -250,16 +263,34 @@
 			}
 		];
 		chartId += 1;
-		console.log(charts[chartId - 1].options);
+		if (chartType === 'bar') {
+			const xLen = data_to_send.map((item) => item[xVar]).length;
+			if (xLen > 10) {
+				charts[charts.length - 1]['options']['dataLabels'] = {
+					enabled: false // Hide values on the bars
+				};
+			}
+		}
+		if (chartType === 'heatmap') {
+			charts[charts.length - 1]['options']['xaxis'] = {};
+		}
+		// console.log(charts[chartId - 1].options);
 		addChartToggle();
-	};
 
-	const removeChart = (id) => {
-		console.log('id:', id);
-		console.log('before', charts);
+		await tick();
+	}
+
+	async function removeChart(id) {
+		const instance = chartInstances.get(id);
+		if (instance) {
+			instance.destroy(); // Properly clean up the chart
+			chartInstances.delete(id);
+		}
+
+		// Remove the chart from the list
 		charts = charts.filter((chart) => chart.id !== id);
-		console.log('after', charts);
-	};
+		renderKey++;
+	}
 
 	// Helper function to split charts into rows of two
 	function chunkArray(array, size) {
@@ -271,6 +302,15 @@
 	}
 
 	let chartTypeSelection;
+	let chartInstances = new Map();
+	let chartElement;
+
+	$: console.log(chartInstances);
+	function saveChartInstance(id, instance) {
+		chartInstances.set(id, instance);
+	}
+
+	let renderKey = 0;
 </script>
 
 {#if loadingInformation}
@@ -314,12 +354,16 @@
 		<DataMerge />
 		<Button on:click={addChartToggle}><ChartLineUpOutline class="mr-2" /> Add chart</Button>
 
-		<div class="container mx-auto p-4">
+		<div class="container mx-auto p-4" key={renderKey}>
 			{#each chunkArray(charts, 2) as row}
 				<div class="-mx-2 flex flex-wrap">
 					{#each row as chart2}
 						<div class="mb-4 w-1/2 px-2">
-							<div use:chart={chart2.options} />
+							<div
+								use:chart={chart2.options}
+								bind:this={chartElement}
+								on:mount={() => saveChartInstance(chart2.id)}
+							/>
 						</div>
 					{/each}
 				</div>

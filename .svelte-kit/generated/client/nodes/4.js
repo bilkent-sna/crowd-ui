@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/methodlab/+page.svelte";
+export { default as component } from "../../../../src/routes/help/+page.svelte";
