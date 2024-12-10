@@ -80,11 +80,14 @@
 
 {#if loadingSimulation}
 	<div class="text-center">
-		<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold  md:text-5xl lg:text-6xl">
-			Project: <Span gradient>{$project.name}</Span>
+		<Heading tag="h1" class="mb-4" customSize="text-3xl font-bold  md:text-4xl lg:text-5xl">
+			Network
 		</Heading>
-		<P class="my-6 text-center text-lg dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
-			Simulation: {$simulationName}-{$runNumber}
+		<P class="mb-2 mt-2 text-center text-lg dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
+			Project: <Span gradient>{$project.name}</Span>
+		</P>
+		<P class="mb-2 mt-1 text-center text-lg dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
+			Simulation: <Span gradient>{$simulationName}-{$runNumber}</Span>
 		</P>
 		<Spinner class="mt-4" size="10" />
 		<P class="my-2 text-center text-gray-400 dark:text-gray-400 sm:px-16 lg:text-lg xl:px-24">
@@ -93,11 +96,14 @@
 	</div>
 {:else}
 	<div class="text-center">
-		<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold  md:text-5xl lg:text-6xl">
-			Project: <Span gradient>{$project.name}</Span>
+		<Heading tag="h1" class="mb-4" customSize="text-3xl font-bold  md:text-4xl lg:text-5xl">
+			Network
 		</Heading>
-		<P class="my-6 text-center text-lg dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
-			Simulation: {$simulationName}-{$runNumber}
+		<P class="mb-1 mt-2 text-center text-lg dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
+			Project: <Span gradient>{$project.name}</Span>
+		</P>
+		<P class="mb-2 mt-1 text-center text-lg dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
+			Simulation: <Span gradient>{$simulationName}-{$runNumber}</Span>
 		</P>
 	</div>
 	{#if simulationGraph && simulationInfo}

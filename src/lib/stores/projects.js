@@ -18,11 +18,11 @@ export const simulationName = writable('');
 // from the python side
 export const simulationDirectory = writable('');
 
-export const simulationType = writable(''); //is diffusion or other
+export const simulationType = writable('other'); //is diffusion or other
 
 //if it is a node simulation, node based simulation networks will be instantiated in the backend
 //stored in project settings
-export const nodeOrEdge = writable('');
+export const nodeOrEdge = writable('node');
 
 // Simulation directory holds the name of the directory, but to get the relevant simulation,
 // we should concatenate it with the run number in the following format:

@@ -315,9 +315,9 @@
 
 {#if loadingInformation}
 	<div class="text-center">
-		<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold  md:text-5xl lg:text-6xl">
-			Results
-		</Heading>
+		<Heading tag="h1" class="mb-4" customSize="text-3xl font-bold  md:text-4xl lg:text-5xl"
+			>Results</Heading
+		>
 
 		<Heading tag="h6">
 			Project: <Span gradient>{$project.name}</Span>
@@ -332,10 +332,9 @@
 	</div>
 {:else}
 	<div class="text-center">
-		<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold  md:text-5xl lg:text-6xl">
-			Results
-		</Heading>
-
+		<Heading tag="h1" class="mb-4" customSize="text-3xl font-bold  md:text-4xl lg:text-5xl"
+			>Results</Heading
+		>
 		<Heading tag="h6">
 			Project: <Span gradient>{$project.name}</Span>
 		</Heading>

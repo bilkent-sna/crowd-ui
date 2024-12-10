@@ -37,18 +37,12 @@
 			goto('/project/' + generateSlug($project.name));
 		}
 	}
-
-	let isMenuOpen = false;
-
-	function toggleMenu() {
-		isMenuOpen = !isMenuOpen;
-	}
 </script>
 
 <Navbar {fluid} color="default">
 	<!-- <div class="flex w-fit items-center justify-start"> -->
 	<NavBrand href="/" class="ms-2 md:me-24">
-		<img src="/images/Firefly3.jpg" class="me-3 h-6 sm:h-8" alt="Temp Logo" />
+		<img src="/images/temp_logo.png" class="me-1 h-8 sm:h-12" alt="Temp Logo" />
 		<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white sm:text-2xl">
 			Crowd
 		</span>
