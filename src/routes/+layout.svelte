@@ -2,8 +2,8 @@
 	import '../app.pcss';
 	import Navbar from './sidebar/Navbar.svelte';
 	// import Sidebar from './sidebar/Sidebar.svelte';
-	import Footer from './sidebar/Footer.svelte';
-	import { goto } from '$app/navigation';
+	// export const prerender = true;
+	export const ssr = false;
 </script>
 
 <header

@@ -69,7 +69,7 @@
 			><ToolbarButton class="text-gray-500 md:text-lg">Settings</ToolbarButton></NavLi
 		>
 		<NavLi href="/help"><ToolbarButton class="text-gray-500 md:text-lg">Help</ToolbarButton></NavLi>
-		<NavLi><DarkMode /></NavLi>
+		<!-- <NavLi><DarkMode /></NavLi> -->
 	</NavUl>
 	<!-- </div> -->
 </Navbar>

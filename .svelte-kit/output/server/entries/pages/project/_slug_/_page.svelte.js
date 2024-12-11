@@ -1,6 +1,7 @@
-import { c as create_ssr_component, a as compute_rest_props, i as getContext, d as spread, e as escape_attribute_value, f as escape_object, b as add_attribute, j as escape, h as subscribe, v as validate_component } from "../../../../chunks/ssr.js";
-import { H as Heading, S as Span } from "../../../../chunks/Span.js";
+import { c as create_ssr_component, b as compute_rest_props, h as getContext, e as spread, f as escape_attribute_value, g as escape_object, a as add_attribute, i as escape, d as subscribe, v as validate_component } from "../../../../chunks/ssr.js";
+import { H as Heading } from "../../../../chunks/Heading.js";
 import { P } from "../../../../chunks/P.js";
+import { S as Span } from "../../../../chunks/Span.js";
 import "@tauri-apps/api/tauri";
 import { p as project, n as nodeOrEdge, b as simulationType } from "../../../../chunks/projects.js";
 import { A } from "../../../../chunks/A.js";
@@ -154,7 +155,7 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     {
       tag: "h1",
       class: "mb-4",
-      customSize: "text-4xl font-extrabold  md:text-5xl lg:text-6xl"
+      customSize: "text-3xl font-bold  md:text-4xl lg:text-5xl"
     },
     {},
     {

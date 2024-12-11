@@ -1,11 +1,11 @@
-import { c as create_ssr_component, s as setContext, b as add_attribute, i as getContext, j as escape, a as compute_rest_props, d as spread, e as escape_attribute_value, f as escape_object, v as validate_component, k as each } from "../../chunks/ssr.js";
+import { c as create_ssr_component, s as setContext, a as add_attribute, h as getContext, i as escape, b as compute_rest_props, e as spread, f as escape_attribute_value, g as escape_object, v as validate_component, j as each } from "../../chunks/ssr.js";
 import { B as Button } from "../../chunks/Button.js";
 import { R as Radio } from "../../chunks/Radio.js";
 import { L as Label } from "../../chunks/Label.js";
-import { I as Input } from "../../chunks/Input.js";
-import { M as Modal } from "../../chunks/Modal.js";
-import { H as Heading, S as Span } from "../../chunks/Span.js";
+import { M as Modal, I as Input } from "../../chunks/Modal.js";
+import { H as Heading } from "../../chunks/Heading.js";
 import { P } from "../../chunks/P.js";
+import { S as Span } from "../../chunks/Span.js";
 import { A as ArrowRightOutline } from "../../chunks/ArrowRightOutline.js";
 import "@tauri-apps/api/tauri";
 import "../../chunks/client.js";
@@ -195,12 +195,12 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   do {
     $$settled = true;
     $$result.head = previous_head;
-    $$rendered = `<div class="text-center">${validate_component(Heading, "Heading").$$render(
+    $$rendered = `<div class="container text-center">${validate_component(Heading, "Heading").$$render(
       $$result,
       {
         tag: "h1",
         class: "mb-4",
-        customSize: "text-4xl font-extrabold  md:text-5xl lg:text-6xl"
+        customSize: "text-3xl font-bold  md:text-4xl lg:text-5xl"
       },
       {},
       {

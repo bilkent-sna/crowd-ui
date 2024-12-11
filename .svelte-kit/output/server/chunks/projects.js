@@ -6,12 +6,14 @@ const project = writable({
 });
 const simulationName = writable("");
 const simulationDirectory = writable("");
-const simulationType = writable("");
-const nodeOrEdge = writable("");
+const simulationType = writable("other");
+const nodeOrEdge = writable("node");
+const runNumber = writable(1);
 export {
   simulationDirectory as a,
   simulationType as b,
   nodeOrEdge as n,
   project as p,
+  runNumber as r,
   simulationName as s
 };

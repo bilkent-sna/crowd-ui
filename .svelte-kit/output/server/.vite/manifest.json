@@ -38,9 +38,9 @@
       "_names.js"
     ]
   },
-  "_Input.js": {
-    "file": "chunks/Input.js",
-    "name": "Input",
+  "_Heading.js": {
+    "file": "chunks/Heading.js",
+    "name": "Heading",
     "imports": [
       "_ssr.js",
       "_names.js"
@@ -53,13 +53,22 @@
       "_ssr.js"
     ]
   },
+  "_List.js": {
+    "file": "chunks/List.js",
+    "name": "List",
+    "imports": [
+      "_ssr.js",
+      "_names.js"
+    ]
+  },
   "_Modal.js": {
     "file": "chunks/Modal.js",
     "name": "Modal",
     "imports": [
       "_ssr.js",
+      "_names.js",
       "_Frame.js",
-      "_Input.js"
+      "_ToolbarButton.js"
     ]
   },
   "_P.js": {
@@ -81,8 +90,7 @@
     "file": "chunks/Span.js",
     "name": "Span",
     "imports": [
-      "_ssr.js",
-      "_names.js"
+      "_ssr.js"
     ]
   },
   "_Spinner.js": {
@@ -92,8 +100,15 @@
       "_ssr.js"
     ]
   },
+  "_ToolbarButton.js": {
+    "file": "chunks/ToolbarButton.js",
+    "name": "ToolbarButton",
+    "imports": [
+      "_ssr.js"
+    ]
+  },
   "_app.js": {
-    "file": "_app/immutable/assets/app.BLLJXn_3.css",
+    "file": "_app/immutable/assets/app.Ct9nuUFv.css",
     "src": "_app.js"
   },
   "_client.js": {
@@ -159,7 +174,7 @@
       "_P.js"
     ],
     "css": [
-      "_app/immutable/assets/app.BLLJXn_3.css"
+      "_app/immutable/assets/app.Ct9nuUFv.css"
     ]
   },
   "src/routes/+layout.svelte": {
@@ -169,14 +184,15 @@
     "isEntry": true,
     "imports": [
       "_ssr.js",
-      "_Input.js",
+      "_ToolbarButton.js",
       "_Frame.js",
       "_index.js",
+      "_names.js",
       "_client.js",
       "_projects.js"
     ],
     "css": [
-      "_app/immutable/assets/app.BLLJXn_3.css"
+      "_app/immutable/assets/app.Ct9nuUFv.css"
     ]
   },
   "src/routes/+page.svelte": {
@@ -189,10 +205,10 @@
       "_Button.js",
       "_Radio.js",
       "_Label.js",
-      "_Input.js",
       "_Modal.js",
-      "_Span.js",
+      "_Heading.js",
       "_P.js",
+      "_Span.js",
       "_ArrowRightOutline.js",
       "_client.js",
       "_A.js"
@@ -207,11 +223,25 @@
       "_ssr.js",
       "_projects.js",
       "_Spinner.js",
-      "_Span.js",
-      "_P.js"
+      "_Heading.js",
+      "_P.js",
+      "_Span.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.DjgRIEUc.css"
+      "_app/immutable/assets/_page.CAsPBSpY.css"
+    ]
+  },
+  "src/routes/help/+page.svelte": {
+    "file": "entries/pages/help/_page.svelte.js",
+    "name": "entries/pages/help/_page.svelte",
+    "src": "src/routes/help/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_Frame.js",
+      "_Heading.js",
+      "_List.js",
+      "_P.js"
     ]
   },
   "src/routes/methodlab/+page.svelte": {
@@ -221,14 +251,15 @@
     "isEntry": true,
     "imports": [
       "_ssr.js",
-      "_Span.js",
+      "_Heading.js",
       "_P.js",
+      "_Span.js",
       "_projects.js",
       "_Button.js",
       "_Radio.js",
       "_Label.js",
       "_Frame.js",
-      "_names.js"
+      "_List.js"
     ],
     "css": [
       "_app/immutable/assets/_page.B46-Xc9H.css"
@@ -241,8 +272,9 @@
     "isEntry": true,
     "imports": [
       "_ssr.js",
-      "_Span.js",
+      "_Heading.js",
       "_P.js",
+      "_Span.js",
       "_projects.js",
       "_A.js",
       "_client.js"
@@ -256,11 +288,11 @@
     "imports": [
       "_ssr.js",
       "_Button.js",
-      "_Input.js",
       "_Modal.js",
       "_Spinner.js",
-      "_Span.js",
+      "_Heading.js",
       "_P.js",
+      "_Span.js",
       "_projects.js"
     ],
     "css": [
@@ -276,10 +308,10 @@
       "_ssr.js",
       "_Button.js",
       "_Label.js",
-      "_Input.js",
       "_Modal.js",
-      "_Span.js",
+      "_Heading.js",
       "_P.js",
+      "_Span.js",
       "_projects.js",
       "_client.js",
       "_ArrowRightOutline.js"

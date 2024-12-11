@@ -7,10 +7,10 @@ function __memo(fn) {
 return {
 	appDir: "_app",
 	appPath: "_app",
-	assets: new Set(["favicon.png","images/bilkent_social_systems_group.png","images/flowbite-svelte-icon-logo.svg","images/trash-bin.png","images/trash-bin.svg"]),
-	mimeTypes: {".png":"image/png",".svg":"image/svg+xml"},
+	assets: new Set(["favicon.png","images/bilkent_social_systems_group.png","images/Firefly1.jpg","images/Firefly2.jpg","images/Firefly3.jpg","images/flowbite-svelte-icon-logo.svg","images/temp_logo.png","images/trash-bin.png","images/trash-bin.svg"]),
+	mimeTypes: {".png":"image/png",".jpg":"image/jpeg",".svg":"image/svg+xml"},
 	_: {
-		client: {"start":"_app/immutable/entry/start.BySQIgw8.js","app":"_app/immutable/entry/app.C3BwNX6t.js","imports":["_app/immutable/entry/start.BySQIgw8.js","_app/immutable/chunks/entry.yFi2Lbzv.js","_app/immutable/chunks/scheduler.Wo7oq_r8.js","_app/immutable/chunks/index.D0gqsM4k.js","_app/immutable/entry/app.C3BwNX6t.js","_app/immutable/chunks/scheduler.Wo7oq_r8.js","_app/immutable/chunks/index.dOt571q0.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
+		client: {"start":"_app/immutable/entry/start.DJts70fE.js","app":"_app/immutable/entry/app.DmQfyBrX.js","imports":["_app/immutable/entry/start.DJts70fE.js","_app/immutable/chunks/entry.CQ8VYxh_.js","_app/immutable/chunks/scheduler.DeiETRut.js","_app/immutable/chunks/index.BdOw7q4z.js","_app/immutable/entry/app.DmQfyBrX.js","_app/immutable/chunks/scheduler.DeiETRut.js","_app/immutable/chunks/index.X0hIwtMb.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -20,7 +20,8 @@ return {
 			__memo(() => import('./nodes/5.js')),
 			__memo(() => import('./nodes/6.js')),
 			__memo(() => import('./nodes/7.js')),
-			__memo(() => import('./nodes/8.js'))
+			__memo(() => import('./nodes/8.js')),
+			__memo(() => import('./nodes/9.js'))
 		],
 		routes: [
 			{
@@ -38,38 +39,45 @@ return {
 				endpoint: null
 			},
 			{
+				id: "/help",
+				pattern: /^\/help\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 4 },
+				endpoint: null
+			},
+			{
 				id: "/methodlab",
 				pattern: /^\/methodlab\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 4 },
+				page: { layouts: [0,], errors: [1,], leaf: 5 },
 				endpoint: null
 			},
 			{
 				id: "/project/[slug]",
 				pattern: /^\/project\/([^/]+?)\/?$/,
 				params: [{"name":"slug","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 5 },
+				page: { layouts: [0,], errors: [1,], leaf: 6 },
 				endpoint: null
 			},
 			{
 				id: "/results",
 				pattern: /^\/results\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 6 },
+				page: { layouts: [0,], errors: [1,], leaf: 7 },
 				endpoint: null
 			},
 			{
 				id: "/settings",
 				pattern: /^\/settings\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 7 },
+				page: { layouts: [0,], errors: [1,], leaf: 8 },
 				endpoint: null
 			},
 			{
 				id: "/welcome",
 				pattern: /^\/welcome\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 8 },
+				page: { layouts: [0,], errors: [1,], leaf: 9 },
 				endpoint: null
 			}
 		],
