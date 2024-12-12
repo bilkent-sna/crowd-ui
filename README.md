@@ -35,7 +35,7 @@ https://github.com/Bilkent-Social-Systems-Research-Group/crowd
 
 #### Step 3: Run Simulations with Crowd
 
-Once the installation is complete, you can start using the Crowd to configure and run simulations:
+Once the installation is complete, you can start using Crowd's GUI to configure and run simulations:
 
 - Launch the Crowd app from your desktop or application menu.
 
@@ -43,5 +43,5 @@ Once the installation is complete, you can start using the Crowd to configure a
 
 - For detailed usage and features, refer to our <a href="https://github.com/Bilkent-Social-Systems-Research-Group/crowd/blob/f404926641f79daa526b0530ac412972fd6e1cca/crowd/docs/examples/sir_example/sir.ipynb" >introductory example</a>. 
 
-If you encounter any issues, feel free to open an issue on our GitHub repository. 
+If you encounter any issues -> open an issue on this repository.
 
