@@ -32,18 +32,12 @@ const Radio = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { value = "" } = $$props;
   let { spacing = "mr-2" } = $$props;
   let background = getContext("background");
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.custom === void 0 && $$bindings.custom && custom !== void 0)
-    $$bindings.custom(custom);
-  if ($$props.inline === void 0 && $$bindings.inline && inline !== void 0)
-    $$bindings.inline(inline);
-  if ($$props.group === void 0 && $$bindings.group && group !== void 0)
-    $$bindings.group(group);
-  if ($$props.value === void 0 && $$bindings.value && value !== void 0)
-    $$bindings.value(value);
-  if ($$props.spacing === void 0 && $$bindings.spacing && spacing !== void 0)
-    $$bindings.spacing(spacing);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.custom === void 0 && $$bindings.custom && custom !== void 0) $$bindings.custom(custom);
+  if ($$props.inline === void 0 && $$bindings.inline && inline !== void 0) $$bindings.inline(inline);
+  if ($$props.group === void 0 && $$bindings.group && group !== void 0) $$bindings.group(group);
+  if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+  if ($$props.spacing === void 0 && $$bindings.spacing && spacing !== void 0) $$bindings.spacing(spacing);
   return `${validate_component(Label, "Label").$$render(
     $$result,
     {

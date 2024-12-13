@@ -1,7 +1,11 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{ generate_context, generate_handler, AppHandle, Builder};
+use tauri::{ generate_context, generate_handler, Builder};
+//use std::fs::OpenOptions;
+// use std::io::Write;
+use tauri_plugin_log::{Builder as LogBuilder, LogTarget};
+
 
 mod python_backend;
 mod general_py_backend;
@@ -335,7 +339,33 @@ fn main() {
     //     .run(tauri::generate_context!())
     //     .expect("Error while running Tauri application");
 
-    Builder::default()
+
+    // let log_file = OpenOptions::new()
+    //     .create(true)
+    //     .append(true)
+    //     .open("log.txt")
+    //     .expect("Cannot create log file");
+
+    // env_logger::Builder::from_default_env()
+    //     .target(env_logger::Target::Pipe(Box::new(log_file)))
+    //     .init();
+    let logger =  LogBuilder::new()
+        .targets([
+            LogTarget::LogDir,
+            LogTarget::Stdout,
+        ])
+        .build();
+
+    let builder = Builder::default()
+        // .plugin(
+        //     LogBuilder::default()
+        //         .targets([
+        //             LogTarget::LogDir,  // Log to a file in the app's log directory
+        //             LogTarget::Stdout, // (Optional) Keep logs in stdout for dev builds
+        //         ])
+        //         .build(),
+        // )  
+        .plugin(logger)
         .invoke_handler(generate_handler![
             query_database, 
             query_result_types, 
@@ -366,7 +396,20 @@ fn main() {
             run_python_edge_sim_run,
             run_python_merge_parent_sim,
             run_python_merge_other_sim
-        ])
-        .run(generate_context!())
-        .expect("Error while running Tauri application");
+        ]);
+
+
+    // Generate the Tauri context
+    let context = tauri::generate_context!();
+
+    // Print the log directory path
+    println!(
+        "Log directory path: {:?}",
+        tauri::api::path::app_log_dir(&context.config()) // Pass the configuration here
+    );
+
+    // Run the app
+    builder
+        .run(context)
+        .expect("error while running tauri application");
 }

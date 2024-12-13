@@ -21,8 +21,7 @@ const Timeline = create_ssr_component(($$result, $$props, $$bindings, slots) => 
     vertical: "relative border-s border-gray-200 dark:border-gray-700",
     default: "relative border-s border-gray-200 dark:border-gray-700"
   };
-  if ($$props.order === void 0 && $$bindings.order && order !== void 0)
-    $$bindings.order(order);
+  if ($$props.order === void 0 && $$bindings.order && order !== void 0) $$bindings.order(order);
   return `<ol${add_attribute("class", twMerge(olClasses[order], $$props.class), 0)}>${slots.default ? slots.default({}) : ``}</ol> `;
 });
 const TimelineItem = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -59,12 +58,9 @@ const TimelineItem = create_ssr_component(($$result, $$props, $$bindings, slots)
     order === "vertical" ? "flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white" : "text-lg font-semibold text-gray-900 dark:text-white",
     $$props.classH3
   );
-  if ($$props.title === void 0 && $$bindings.title && title !== void 0)
-    $$bindings.title(title);
-  if ($$props.date === void 0 && $$bindings.date && date !== void 0)
-    $$bindings.date(date);
-  if ($$props.svgClass === void 0 && $$bindings.svgClass && svgClass !== void 0)
-    $$bindings.svgClass(svgClass);
+  if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+  if ($$props.date === void 0 && $$bindings.date && date !== void 0) $$bindings.date(date);
+  if ($$props.svgClass === void 0 && $$bindings.svgClass && svgClass !== void 0) $$bindings.svgClass(svgClass);
   return `<li${add_attribute("class", liCls, 0)}><div${add_attribute("class", divCls, 0)}></div> ${order !== "default" ? `${slots.icon ? slots.icon({}) : ` <svg aria-hidden="true"${add_attribute("class", svgClass, 0)} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg> `}` : `${date ? `<time${add_attribute("class", timeCls, 0)}>${escape(date)}</time>` : ``}`} ${title ? `<h3${add_attribute("class", h3Cls, 0)}>${escape(title)}</h3>` : ``} ${order !== "default" ? `${date ? `<time${add_attribute("class", timeCls, 0)}>${escape(date)}</time>` : ``}` : ``} ${slots.default ? slots.default({}) : ``}</li> `;
 });
 const CalendarWeekSolid = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -86,20 +82,13 @@ const CalendarWeekSolid = create_ssr_component(($$result, $$props, $$bindings, s
   let ariaDescribedby = `${title.id || ""} ${desc.id || ""}`;
   let hasDescription = false;
   let { ariaLabel = "calendar week solid" } = $$props;
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0)
-    $$bindings.size(size);
-  if ($$props.role === void 0 && $$bindings.role && role !== void 0)
-    $$bindings.role(role);
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.withEvents === void 0 && $$bindings.withEvents && withEvents !== void 0)
-    $$bindings.withEvents(withEvents);
-  if ($$props.title === void 0 && $$bindings.title && title !== void 0)
-    $$bindings.title(title);
-  if ($$props.desc === void 0 && $$bindings.desc && desc !== void 0)
-    $$bindings.desc(desc);
-  if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0)
-    $$bindings.ariaLabel(ariaLabel);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  if ($$props.role === void 0 && $$bindings.role && role !== void 0) $$bindings.role(role);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.withEvents === void 0 && $$bindings.withEvents && withEvents !== void 0) $$bindings.withEvents(withEvents);
+  if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+  if ($$props.desc === void 0 && $$bindings.desc && desc !== void 0) $$bindings.desc(desc);
+  if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
   {
     if (title.id || desc.id) {
       hasDescription = true;

@@ -6,8 +6,7 @@ import { T as ToolbarButton } from "./ToolbarButton.js";
 const CloseButton = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let $$restProps = compute_rest_props($$props, ["name"]);
   let { name = "Close" } = $$props;
-  if ($$props.name === void 0 && $$bindings.name && name !== void 0)
-    $$bindings.name(name);
+  if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
   return `${validate_component(ToolbarButton, "ToolbarButton").$$render($$result, Object.assign({}, { name }, $$restProps, { class: twMerge("ms-auto", $$props.class) }), {}, {
     default: ({ svgSize }) => {
       return `<svg${add_attribute("class", svgSize, 0)} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
@@ -20,12 +19,9 @@ const Wrapper = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { show } = $$props;
   let { use = () => {
   } } = $$props;
-  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0)
-    $$bindings.tag(tag);
-  if ($$props.show === void 0 && $$bindings.show && show !== void 0)
-    $$bindings.show(show);
-  if ($$props.use === void 0 && $$bindings.use && use !== void 0)
-    $$bindings.use(use);
+  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0) $$bindings.tag(tag);
+  if ($$props.show === void 0 && $$bindings.show && show !== void 0) $$bindings.show(show);
+  if ($$props.use === void 0 && $$bindings.use && use !== void 0) $$bindings.use(use);
   return `${show ? `${((tag$1) => {
     return tag$1 ? `<${tag}${spread([escape_object($$restProps)], {})}>${is_void(tag$1) ? "" : `${slots.default ? slots.default({}) : ``}`}${is_void(tag$1) ? "" : `</${tag$1}>`}` : "";
   })(tag)}` : `${slots.default ? slots.default({}) : ``}`} `;
@@ -71,18 +67,12 @@ const Input = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   const rightPadding = { sm: "pe-9", md: "pe-10", lg: "pe-11" };
   const inputPadding = { sm: "p-2", md: "p-2.5", lg: "p-3" };
   let inputClass;
-  if ($$props.type === void 0 && $$bindings.type && type !== void 0)
-    $$bindings.type(type);
-  if ($$props.value === void 0 && $$bindings.value && value !== void 0)
-    $$bindings.value(value);
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0)
-    $$bindings.size(size);
-  if ($$props.defaultClass === void 0 && $$bindings.defaultClass && defaultClass !== void 0)
-    $$bindings.defaultClass(defaultClass);
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.floatClass === void 0 && $$bindings.floatClass && floatClass !== void 0)
-    $$bindings.floatClass(floatClass);
+  if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
+  if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  if ($$props.defaultClass === void 0 && $$bindings.defaultClass && defaultClass !== void 0) $$bindings.defaultClass(defaultClass);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.floatClass === void 0 && $$bindings.floatClass && floatClass !== void 0) $$bindings.floatClass(floatClass);
   _size = size || clampSize(group?.size) || "md";
   {
     {
@@ -185,26 +175,16 @@ const Modal = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   };
   let frameClass;
   let backdropCls = twMerge(backdropClass, $$props.classBackdrop);
-  if ($$props.open === void 0 && $$bindings.open && open !== void 0)
-    $$bindings.open(open);
-  if ($$props.title === void 0 && $$bindings.title && title !== void 0)
-    $$bindings.title(title);
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0)
-    $$bindings.size(size);
-  if ($$props.placement === void 0 && $$bindings.placement && placement !== void 0)
-    $$bindings.placement(placement);
-  if ($$props.autoclose === void 0 && $$bindings.autoclose && autoclose !== void 0)
-    $$bindings.autoclose(autoclose);
-  if ($$props.dismissable === void 0 && $$bindings.dismissable && dismissable !== void 0)
-    $$bindings.dismissable(dismissable);
-  if ($$props.backdropClass === void 0 && $$bindings.backdropClass && backdropClass !== void 0)
-    $$bindings.backdropClass(backdropClass);
-  if ($$props.defaultClass === void 0 && $$bindings.defaultClass && defaultClass !== void 0)
-    $$bindings.defaultClass(defaultClass);
-  if ($$props.outsideclose === void 0 && $$bindings.outsideclose && outsideclose !== void 0)
-    $$bindings.outsideclose(outsideclose);
-  if ($$props.dialogClass === void 0 && $$bindings.dialogClass && dialogClass !== void 0)
-    $$bindings.dialogClass(dialogClass);
+  if ($$props.open === void 0 && $$bindings.open && open !== void 0) $$bindings.open(open);
+  if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  if ($$props.placement === void 0 && $$bindings.placement && placement !== void 0) $$bindings.placement(placement);
+  if ($$props.autoclose === void 0 && $$bindings.autoclose && autoclose !== void 0) $$bindings.autoclose(autoclose);
+  if ($$props.dismissable === void 0 && $$bindings.dismissable && dismissable !== void 0) $$bindings.dismissable(dismissable);
+  if ($$props.backdropClass === void 0 && $$bindings.backdropClass && backdropClass !== void 0) $$bindings.backdropClass(backdropClass);
+  if ($$props.defaultClass === void 0 && $$bindings.defaultClass && defaultClass !== void 0) $$bindings.defaultClass(defaultClass);
+  if ($$props.outsideclose === void 0 && $$bindings.outsideclose && outsideclose !== void 0) $$bindings.outsideclose(outsideclose);
+  if ($$props.dialogClass === void 0 && $$bindings.dialogClass && dialogClass !== void 0) $$bindings.dialogClass(dialogClass);
   {
     dispatch(open ? "open" : "close");
   }

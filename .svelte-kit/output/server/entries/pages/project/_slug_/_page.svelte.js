@@ -26,20 +26,13 @@ const CirclePlusSolid = create_ssr_component(($$result, $$props, $$bindings, slo
   let ariaDescribedby = `${title.id || ""} ${desc.id || ""}`;
   let hasDescription = false;
   let { ariaLabel = "circle plus solid" } = $$props;
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0)
-    $$bindings.size(size);
-  if ($$props.role === void 0 && $$bindings.role && role !== void 0)
-    $$bindings.role(role);
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.withEvents === void 0 && $$bindings.withEvents && withEvents !== void 0)
-    $$bindings.withEvents(withEvents);
-  if ($$props.title === void 0 && $$bindings.title && title !== void 0)
-    $$bindings.title(title);
-  if ($$props.desc === void 0 && $$bindings.desc && desc !== void 0)
-    $$bindings.desc(desc);
-  if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0)
-    $$bindings.ariaLabel(ariaLabel);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  if ($$props.role === void 0 && $$bindings.role && role !== void 0) $$bindings.role(role);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.withEvents === void 0 && $$bindings.withEvents && withEvents !== void 0) $$bindings.withEvents(withEvents);
+  if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+  if ($$props.desc === void 0 && $$bindings.desc && desc !== void 0) $$bindings.desc(desc);
+  if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
   {
     if (title.id || desc.id) {
       hasDescription = true;

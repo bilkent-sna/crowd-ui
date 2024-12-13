@@ -80,30 +80,18 @@ const P = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     preline: "whitespace-pre-line",
     prewrap: "whitespace-pre-wrap"
   };
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.height === void 0 && $$bindings.height && height !== void 0)
-    $$bindings.height(height);
-  if ($$props.align === void 0 && $$bindings.align && align !== void 0)
-    $$bindings.align(align);
-  if ($$props.justify === void 0 && $$bindings.justify && justify !== void 0)
-    $$bindings.justify(justify);
-  if ($$props.italic === void 0 && $$bindings.italic && italic !== void 0)
-    $$bindings.italic(italic);
-  if ($$props.firstupper === void 0 && $$bindings.firstupper && firstupper !== void 0)
-    $$bindings.firstupper(firstupper);
-  if ($$props.upperClass === void 0 && $$bindings.upperClass && upperClass !== void 0)
-    $$bindings.upperClass(upperClass);
-  if ($$props.opacity === void 0 && $$bindings.opacity && opacity !== void 0)
-    $$bindings.opacity(opacity);
-  if ($$props.whitespace === void 0 && $$bindings.whitespace && whitespace !== void 0)
-    $$bindings.whitespace(whitespace);
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0)
-    $$bindings.size(size);
-  if ($$props.space === void 0 && $$bindings.space && space !== void 0)
-    $$bindings.space(space);
-  if ($$props.weight === void 0 && $$bindings.weight && weight !== void 0)
-    $$bindings.weight(weight);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.height === void 0 && $$bindings.height && height !== void 0) $$bindings.height(height);
+  if ($$props.align === void 0 && $$bindings.align && align !== void 0) $$bindings.align(align);
+  if ($$props.justify === void 0 && $$bindings.justify && justify !== void 0) $$bindings.justify(justify);
+  if ($$props.italic === void 0 && $$bindings.italic && italic !== void 0) $$bindings.italic(italic);
+  if ($$props.firstupper === void 0 && $$bindings.firstupper && firstupper !== void 0) $$bindings.firstupper(firstupper);
+  if ($$props.upperClass === void 0 && $$bindings.upperClass && upperClass !== void 0) $$bindings.upperClass(upperClass);
+  if ($$props.opacity === void 0 && $$bindings.opacity && opacity !== void 0) $$bindings.opacity(opacity);
+  if ($$props.whitespace === void 0 && $$bindings.whitespace && whitespace !== void 0) $$bindings.whitespace(whitespace);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  if ($$props.space === void 0 && $$bindings.space && space !== void 0) $$bindings.space(space);
+  if ($$props.weight === void 0 && $$bindings.weight && weight !== void 0) $$bindings.weight(weight);
   colorAndopacity = color.split(" ").map((element) => element.trim()).map((element) => element + "/" + String(opacity)).join(" ");
   classP = twMerge(size && sizes[size], opacity && colorAndopacity || color && color, height && heights[height], weight && weights[weight], space && spaces[space], align && aligns[align], justify && "text-justify", italic && "italic", firstupper && upperClass, whitespace && whitespaces[whitespace], $$props.class);
   return `<p${spread([escape_object($$restProps), { class: escape_attribute_value(classP) }], {})}>${slots.default ? slots.default({}) : ``}</p> `;

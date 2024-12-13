@@ -31,24 +31,15 @@ const Span = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     highlight && highlightClass,
     $$props.class
   );
-  if ($$props.italic === void 0 && $$bindings.italic && italic !== void 0)
-    $$bindings.italic(italic);
-  if ($$props.underline === void 0 && $$bindings.underline && underline !== void 0)
-    $$bindings.underline(underline);
-  if ($$props.linethrough === void 0 && $$bindings.linethrough && linethrough !== void 0)
-    $$bindings.linethrough(linethrough);
-  if ($$props.uppercase === void 0 && $$bindings.uppercase && uppercase !== void 0)
-    $$bindings.uppercase(uppercase);
-  if ($$props.gradient === void 0 && $$bindings.gradient && gradient !== void 0)
-    $$bindings.gradient(gradient);
-  if ($$props.highlight === void 0 && $$bindings.highlight && highlight !== void 0)
-    $$bindings.highlight(highlight);
-  if ($$props.highlightClass === void 0 && $$bindings.highlightClass && highlightClass !== void 0)
-    $$bindings.highlightClass(highlightClass);
-  if ($$props.decorationClass === void 0 && $$bindings.decorationClass && decorationClass !== void 0)
-    $$bindings.decorationClass(decorationClass);
-  if ($$props.gradientClass === void 0 && $$bindings.gradientClass && gradientClass !== void 0)
-    $$bindings.gradientClass(gradientClass);
+  if ($$props.italic === void 0 && $$bindings.italic && italic !== void 0) $$bindings.italic(italic);
+  if ($$props.underline === void 0 && $$bindings.underline && underline !== void 0) $$bindings.underline(underline);
+  if ($$props.linethrough === void 0 && $$bindings.linethrough && linethrough !== void 0) $$bindings.linethrough(linethrough);
+  if ($$props.uppercase === void 0 && $$bindings.uppercase && uppercase !== void 0) $$bindings.uppercase(uppercase);
+  if ($$props.gradient === void 0 && $$bindings.gradient && gradient !== void 0) $$bindings.gradient(gradient);
+  if ($$props.highlight === void 0 && $$bindings.highlight && highlight !== void 0) $$bindings.highlight(highlight);
+  if ($$props.highlightClass === void 0 && $$bindings.highlightClass && highlightClass !== void 0) $$bindings.highlightClass(highlightClass);
+  if ($$props.decorationClass === void 0 && $$bindings.decorationClass && decorationClass !== void 0) $$bindings.decorationClass(decorationClass);
+  if ($$props.gradientClass === void 0 && $$bindings.gradientClass && gradientClass !== void 0) $$bindings.gradientClass(gradientClass);
   return `<span${spread([escape_object($$restProps), { class: escape_attribute_value(classSpan) }], {})}>${slots.default ? slots.default({}) : ``}</span> `;
 });
 export {

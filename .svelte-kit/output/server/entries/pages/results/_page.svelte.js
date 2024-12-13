@@ -33,20 +33,13 @@ const Select = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     lg: "text-base py-3 px-4"
   };
   let selectClass;
-  if ($$props.items === void 0 && $$bindings.items && items !== void 0)
-    $$bindings.items(items);
-  if ($$props.value === void 0 && $$bindings.value && value !== void 0)
-    $$bindings.value(value);
-  if ($$props.placeholder === void 0 && $$bindings.placeholder && placeholder !== void 0)
-    $$bindings.placeholder(placeholder);
-  if ($$props.underline === void 0 && $$bindings.underline && underline !== void 0)
-    $$bindings.underline(underline);
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0)
-    $$bindings.size(size);
-  if ($$props.defaultClass === void 0 && $$bindings.defaultClass && defaultClass !== void 0)
-    $$bindings.defaultClass(defaultClass);
-  if ($$props.underlineClass === void 0 && $$bindings.underlineClass && underlineClass !== void 0)
-    $$bindings.underlineClass(underlineClass);
+  if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+  if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+  if ($$props.placeholder === void 0 && $$bindings.placeholder && placeholder !== void 0) $$bindings.placeholder(placeholder);
+  if ($$props.underline === void 0 && $$bindings.underline && underline !== void 0) $$bindings.underline(underline);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  if ($$props.defaultClass === void 0 && $$bindings.defaultClass && defaultClass !== void 0) $$bindings.defaultClass(defaultClass);
+  if ($$props.underlineClass === void 0 && $$bindings.underlineClass && underlineClass !== void 0) $$bindings.underlineClass(underlineClass);
   selectClass = twMerge(common, underline ? underlineClass : defaultClass, sizes[size], underline && "!px-0", $$props.class);
   return `<select${spread(
     [

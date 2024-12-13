@@ -14,12 +14,9 @@ const Heading = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     h5: "text-xl font-bold",
     h6: "text-lg font-bold"
   };
-  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0)
-    $$bindings.tag(tag);
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.customSize === void 0 && $$bindings.customSize && customSize !== void 0)
-    $$bindings.customSize(customSize);
+  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0) $$bindings.tag(tag);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.customSize === void 0 && $$bindings.customSize && customSize !== void 0) $$bindings.customSize(customSize);
   return `${((tag$1) => {
     return tag$1 ? `<${tag}${spread(
       [

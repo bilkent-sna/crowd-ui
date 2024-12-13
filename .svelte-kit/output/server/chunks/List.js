@@ -6,10 +6,8 @@ const Li = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { icon = false } = $$props;
   let { liClass = "" } = $$props;
   let classLi = twMerge(liClass, icon && "flex items-center", $$props.class);
-  if ($$props.icon === void 0 && $$bindings.icon && icon !== void 0)
-    $$bindings.icon(icon);
-  if ($$props.liClass === void 0 && $$bindings.liClass && liClass !== void 0)
-    $$bindings.liClass(liClass);
+  if ($$props.icon === void 0 && $$bindings.icon && icon !== void 0) $$bindings.icon(icon);
+  if ($$props.liClass === void 0 && $$bindings.liClass && liClass !== void 0) $$bindings.liClass(liClass);
   return `<li${spread([escape_object($$restProps), { class: escape_attribute_value(classLi) }], {})}>${slots.default ? slots.default({}) : ``}</li> `;
 });
 const List = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -27,12 +25,9 @@ const List = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     outside: "list-outside"
   };
   let classList = twMerge(lists[list ?? (tag === "ul" ? "disc" : "decimal")], positions[position], $$props.class);
-  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0)
-    $$bindings.tag(tag);
-  if ($$props.list === void 0 && $$bindings.list && list !== void 0)
-    $$bindings.list(list);
-  if ($$props.position === void 0 && $$bindings.position && position !== void 0)
-    $$bindings.position(position);
+  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0) $$bindings.tag(tag);
+  if ($$props.list === void 0 && $$bindings.list && list !== void 0) $$bindings.list(list);
+  if ($$props.position === void 0 && $$bindings.position && position !== void 0) $$bindings.position(position);
   return `${((tag$1) => {
     return tag$1 ? `<${tag}${spread([escape_object($$restProps), { class: escape_attribute_value(classList) }], {})}>${is_void(tag$1) ? "" : `${slots.default ? slots.default({}) : ``}`}${is_void(tag$1) ? "" : `</${tag$1}>`}` : "";
   })(tag)} `;

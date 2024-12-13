@@ -25,9 +25,7 @@ function subscribe(store, ...callbacks) {
 function compute_rest_props(props, keys) {
   const rest = {};
   keys = new Set(keys);
-  for (const k in props)
-    if (!keys.has(k) && k[0] !== "$")
-      rest[k] = props[k];
+  for (const k in props) if (!keys.has(k) && k[0] !== "$") rest[k] = props[k];
   return rest;
 }
 function compute_slots(slots) {
@@ -45,8 +43,7 @@ function set_current_component(component) {
   current_component = component;
 }
 function get_current_component() {
-  if (!current_component)
-    throw new Error("Function called outside component initialization");
+  if (!current_component) throw new Error("Function called outside component initialization");
   return current_component;
 }
 function onDestroy(fn) {
@@ -112,6 +109,22 @@ const _boolean_attributes = (
   ]
 );
 const boolean_attributes = /* @__PURE__ */ new Set([..._boolean_attributes]);
+const ATTR_REGEX = /[&"<]/g;
+const CONTENT_REGEX = /[&<]/g;
+function escape(value, is_attr = false) {
+  const str = String(value);
+  const pattern = is_attr ? ATTR_REGEX : CONTENT_REGEX;
+  pattern.lastIndex = 0;
+  let escaped = "";
+  let last = 0;
+  while (pattern.test(str)) {
+    const i = pattern.lastIndex - 1;
+    const ch = str[i];
+    escaped += str.substring(last, i) + (ch === "&" ? "&amp;" : ch === '"' ? "&quot;" : "&lt;");
+    last = i + 1;
+  }
+  return escaped + str.substring(last);
+}
 const invalid_attribute_name_character = /[\s'">/=\u{FDD0}-\u{FDEF}\u{FFFE}\u{FFFF}\u{1FFFE}\u{1FFFF}\u{2FFFE}\u{2FFFF}\u{3FFFE}\u{3FFFF}\u{4FFFE}\u{4FFFF}\u{5FFFE}\u{5FFFF}\u{6FFFE}\u{6FFFF}\u{7FFFE}\u{7FFFF}\u{8FFFE}\u{8FFFF}\u{9FFFE}\u{9FFFF}\u{AFFFE}\u{AFFFF}\u{BFFFE}\u{BFFFF}\u{CFFFE}\u{CFFFF}\u{DFFFE}\u{DFFFF}\u{EFFFE}\u{EFFFF}\u{FFFFE}\u{FFFFF}\u{10FFFE}\u{10FFFF}]/u;
 function spread(args, attrs_to_add) {
   const attributes = Object.assign({}, ...args);
@@ -137,14 +150,11 @@ function spread(args, attrs_to_add) {
   }
   let str = "";
   Object.keys(attributes).forEach((name) => {
-    if (invalid_attribute_name_character.test(name))
-      return;
+    if (invalid_attribute_name_character.test(name)) return;
     const value = attributes[name];
-    if (value === true)
-      str += " " + name;
+    if (value === true) str += " " + name;
     else if (boolean_attributes.has(name.toLowerCase())) {
-      if (value)
-        str += " " + name;
+      if (value) str += " " + name;
     } else if (value != null) {
       str += ` ${name}="${value}"`;
     }
@@ -157,8 +167,7 @@ function merge_ssr_styles(style_attribute, style_directive) {
     const colon_index = individual_style.indexOf(":");
     const name = individual_style.slice(0, colon_index).trim();
     const value = individual_style.slice(colon_index + 1).trim();
-    if (!name)
-      continue;
+    if (!name) continue;
     style_object[name] = value;
   }
   for (const name in style_directive) {
@@ -170,22 +179,6 @@ function merge_ssr_styles(style_attribute, style_directive) {
     }
   }
   return style_object;
-}
-const ATTR_REGEX = /[&"]/g;
-const CONTENT_REGEX = /[&<]/g;
-function escape(value, is_attr = false) {
-  const str = String(value);
-  const pattern = is_attr ? ATTR_REGEX : CONTENT_REGEX;
-  pattern.lastIndex = 0;
-  let escaped = "";
-  let last = 0;
-  while (pattern.test(str)) {
-    const i = pattern.lastIndex - 1;
-    const ch = str[i];
-    escaped += str.substring(last, i) + (ch === "&" ? "&amp;" : ch === '"' ? "&quot;" : "&lt;");
-    last = i + 1;
-  }
-  return escaped + str.substring(last);
 }
 function escape_attribute_value(value) {
   const should_escape = typeof value === "string" || value && typeof value === "object";
@@ -211,8 +204,7 @@ const missing_component = {
 };
 function validate_component(component, name) {
   if (!component || !component.$$render) {
-    if (name === "svelte:component")
-      name += " this={...}";
+    if (name === "svelte:component") name += " this={...}";
     throw new Error(
       `<${name}> is not a valid SSR component. You may need to review your build config to ensure that dependencies are compiled, rather than imported as pre-compiled modules. Otherwise you may need to fix a <${name}>.`
     );
@@ -257,8 +249,7 @@ function create_ssr_component(fn) {
   };
 }
 function add_attribute(name, value, boolean) {
-  if (value == null || boolean && !value)
-    return "";
+  if (value == null || boolean && !value) return "";
   const assignment = boolean && value === true ? "" : `="${escape(value, true)}"`;
   return ` ${name}${assignment}`;
 }

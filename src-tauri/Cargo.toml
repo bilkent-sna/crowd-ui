@@ -17,10 +17,12 @@ tauri-build = { version = "1.5.2", features = [] }
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.6.5", features = [ "shell-open", "fs-rename-file", "fs-create-dir", "fs-remove-file", "fs-write-file", "fs-read-file", "fs-copy-file", "fs-read-dir", "fs-remove-dir"] }
+tauri = { version = "1.6.5", features = [ "dialog-all", "shell-open", "fs-rename-file", "fs-create-dir", "fs-remove-file", "fs-write-file", "fs-read-file", "fs-copy-file", "fs-read-dir", "fs-remove-dir"] }
 rusqlite = { version = "0.31.0", features = ["serde_json", "bundled"] }
 #pyo3 = { version = "0.19.2", features = ["extension-module"] }
 pyo3 = { git = "https://github.com/pyo3/pyo3", features = ["extension-module"] }
+tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1"}
+log = "^0.4"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.

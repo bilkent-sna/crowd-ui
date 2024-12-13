@@ -25,18 +25,12 @@ const Spinner = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     custom: customColor
   };
   let fillColorClass = color === void 0 ? "" : fillColorClasses[color] ?? fillColorClasses.blue;
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.bg === void 0 && $$bindings.bg && bg !== void 0)
-    $$bindings.bg(bg);
-  if ($$props.customColor === void 0 && $$bindings.customColor && customColor !== void 0)
-    $$bindings.customColor(customColor);
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0)
-    $$bindings.size(size);
-  if ($$props.currentFill === void 0 && $$bindings.currentFill && currentFill !== void 0)
-    $$bindings.currentFill(currentFill);
-  if ($$props.currentColor === void 0 && $$bindings.currentColor && currentColor !== void 0)
-    $$bindings.currentColor(currentColor);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.bg === void 0 && $$bindings.bg && bg !== void 0) $$bindings.bg(bg);
+  if ($$props.customColor === void 0 && $$bindings.customColor && customColor !== void 0) $$bindings.customColor(customColor);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  if ($$props.currentFill === void 0 && $$bindings.currentFill && currentFill !== void 0) $$bindings.currentFill(currentFill);
+  if ($$props.currentColor === void 0 && $$bindings.currentColor && currentColor !== void 0) $$bindings.currentColor(currentColor);
   return `<svg${spread(
     [
       escape_object($$restProps),

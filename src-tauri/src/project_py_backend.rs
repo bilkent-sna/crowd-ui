@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
 // use pyo3::types::IntoPyDict; 
 // use pyo3::types::PyTuple;
+use log::{info, warn, error};
 
 
 // Beginning of Project Methods from Crowd
@@ -17,21 +18,66 @@ pub fn create_project(name: String, date: String, info: String, node_or_edge: St
     });
 }
 
-pub fn send_conf_and_run(data: String, project_name: String, epochs: i32, snapshot_period: i32, batch_num: i32) -> String{
+pub fn send_conf_and_run(
+    data: String, 
+    project_name: String, 
+    epochs: i32, 
+    snapshot_period: i32, 
+    batch_num: i32
+) -> String {
+    // Prepare the Python GIL (Global Interpreter Lock)
     pyo3::prepare_freethreaded_python();
 
     let mut result = String::new();
+
+    log::info!("Initializing simulation with parameters: data = {}, project_name = {}, epochs = {}, snapshot_period = {}, batch_num = {}",
+        data, project_name, epochs, snapshot_period, batch_num
+    );
+
     Python::with_gil(|py| {
-        let test_module = PyModule::import_bound(py, "crowd.api.project_api").unwrap();
-        
-        let args = (data, project_name, epochs, snapshot_period, batch_num);
-        // println!("args inside python_backend.rs: {:?}", args);
-        
-        result = test_module.getattr("ProjectFunctions").unwrap().call0().unwrap().call_method1("get_conf_and_run", args).unwrap().to_string();
+        match PyModule::import_bound(py, "crowd.api.project_api") {
+            Ok(test_module) => {
+                log::debug!("Successfully imported crowd.api.project_api module");
+
+                let args = (data.clone(), project_name.clone(), epochs, snapshot_period, batch_num);
+
+                match test_module.getattr("ProjectFunctions") {
+                    Ok(project_functions) => {
+                        match project_functions.call0() {
+                            Ok(project_instance) => {
+                                match project_instance.call_method1("get_conf_and_run", args) {
+                                    Ok(py_result) => {
+                                        result = py_result.to_string();
+                                        log::info!("Simulation completed successfully. Result: {}", result);
+                                    }
+                                    Err(e) => {
+                                        log::error!("Error calling get_conf_and_run: {}", e);
+                                    }
+                                }
+                            }
+                            Err(e) => {
+                                log::error!("Error instantiating ProjectFunctions: {}", e);
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        log::error!("Error accessing ProjectFunctions attribute: {}", e);
+                    }
+                }
+            }
+            Err(e) => {
+                log::error!("Error importing crowd.api.project_api: {}", e);
+            }
+        }
     });
 
-    return result;
+    if result.is_empty() {
+        log::warn!("Simulation returned an empty result.");
+    }
+
+    return result
 }
+
 
 // pyo3::prepare_freethreaded_python();
 //     let mut result = String::new();

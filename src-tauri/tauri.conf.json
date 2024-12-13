@@ -10,6 +10,15 @@
 		"productName": "crowd",
 		"version": "0.1.0"
 	},
+	"plugins": {
+		"log": {
+			"level": "debug",
+			"file": {
+				"path": "app.log",
+				"level": "info"
+			}
+		}
+	},
 	"tauri": {
 		"allowlist": {
 			"fs": {
@@ -30,6 +39,9 @@
 				"open": true,
 				"scope": [],
 				"sidecar": false
+			},
+			"dialog": {
+				"all": true
 			}
 		},
 		"bundle": {

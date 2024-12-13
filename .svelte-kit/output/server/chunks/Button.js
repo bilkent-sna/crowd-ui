@@ -82,24 +82,15 @@ const Button = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   };
   const hasBorder = () => outline || color === "alternative" || color === "light";
   let buttonClass;
-  if ($$props.pill === void 0 && $$bindings.pill && pill !== void 0)
-    $$bindings.pill(pill);
-  if ($$props.outline === void 0 && $$bindings.outline && outline !== void 0)
-    $$bindings.outline(outline);
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0)
-    $$bindings.size(size);
-  if ($$props.href === void 0 && $$bindings.href && href !== void 0)
-    $$bindings.href(href);
-  if ($$props.type === void 0 && $$bindings.type && type !== void 0)
-    $$bindings.type(type);
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.shadow === void 0 && $$bindings.shadow && shadow !== void 0)
-    $$bindings.shadow(shadow);
-  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0)
-    $$bindings.tag(tag);
-  if ($$props.checked === void 0 && $$bindings.checked && checked !== void 0)
-    $$bindings.checked(checked);
+  if ($$props.pill === void 0 && $$bindings.pill && pill !== void 0) $$bindings.pill(pill);
+  if ($$props.outline === void 0 && $$bindings.outline && outline !== void 0) $$bindings.outline(outline);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  if ($$props.href === void 0 && $$bindings.href && href !== void 0) $$bindings.href(href);
+  if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.shadow === void 0 && $$bindings.shadow && shadow !== void 0) $$bindings.shadow(shadow);
+  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0) $$bindings.tag(tag);
+  if ($$props.checked === void 0 && $$bindings.checked && checked !== void 0) $$bindings.checked(checked);
   buttonClass = twMerge(
     "text-center font-medium",
     group ? "focus-within:ring-2" : "focus-within:ring-4",

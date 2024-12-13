@@ -76,24 +76,15 @@ const Frame = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     none: ""
   };
   let divClass;
-  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0)
-    $$bindings.tag(tag);
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.rounded === void 0 && $$bindings.rounded && rounded !== void 0)
-    $$bindings.rounded(rounded);
-  if ($$props.border === void 0 && $$bindings.border && border !== void 0)
-    $$bindings.border(border);
-  if ($$props.shadow === void 0 && $$bindings.shadow && shadow !== void 0)
-    $$bindings.shadow(shadow);
-  if ($$props.node === void 0 && $$bindings.node && node !== void 0)
-    $$bindings.node(node);
-  if ($$props.use === void 0 && $$bindings.use && use !== void 0)
-    $$bindings.use(use);
-  if ($$props.options === void 0 && $$bindings.options && options !== void 0)
-    $$bindings.options(options);
-  if ($$props.role === void 0 && $$bindings.role && role !== void 0)
-    $$bindings.role(role);
+  if ($$props.tag === void 0 && $$bindings.tag && tag !== void 0) $$bindings.tag(tag);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.rounded === void 0 && $$bindings.rounded && rounded !== void 0) $$bindings.rounded(rounded);
+  if ($$props.border === void 0 && $$bindings.border && border !== void 0) $$bindings.border(border);
+  if ($$props.shadow === void 0 && $$bindings.shadow && shadow !== void 0) $$bindings.shadow(shadow);
+  if ($$props.node === void 0 && $$bindings.node && node !== void 0) $$bindings.node(node);
+  if ($$props.use === void 0 && $$bindings.use && use !== void 0) $$bindings.use(use);
+  if ($$props.options === void 0 && $$bindings.options && options !== void 0) $$bindings.options(options);
+  if ($$props.role === void 0 && $$bindings.role && role !== void 0) $$bindings.role(role);
   color = color ?? "default";
   {
     setContext("color", color);

@@ -34,16 +34,11 @@ const ToolbarButton = create_ssr_component(($$result, $$props, $$bindings, slots
     md: "w-5 h-5",
     lg: "w-5 h-5"
   };
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.name === void 0 && $$bindings.name && name !== void 0)
-    $$bindings.name(name);
-  if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0)
-    $$bindings.ariaLabel(ariaLabel);
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0)
-    $$bindings.size(size);
-  if ($$props.href === void 0 && $$bindings.href && href !== void 0)
-    $$bindings.href(href);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
+  if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  if ($$props.href === void 0 && $$bindings.href && href !== void 0) $$bindings.href(href);
   buttonClass = twMerge(
     "focus:outline-none whitespace-normal",
     sizing[size],

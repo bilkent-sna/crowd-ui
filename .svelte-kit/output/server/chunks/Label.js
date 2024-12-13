@@ -13,12 +13,9 @@ const Label = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     red: "text-red-700 dark:text-red-500",
     disabled: "text-gray-400 dark:text-gray-500"
   };
-  if ($$props.color === void 0 && $$bindings.color && color !== void 0)
-    $$bindings.color(color);
-  if ($$props.defaultClass === void 0 && $$bindings.defaultClass && defaultClass !== void 0)
-    $$bindings.defaultClass(defaultClass);
-  if ($$props.show === void 0 && $$bindings.show && show !== void 0)
-    $$bindings.show(show);
+  if ($$props.color === void 0 && $$bindings.color && color !== void 0) $$bindings.color(color);
+  if ($$props.defaultClass === void 0 && $$bindings.defaultClass && defaultClass !== void 0) $$bindings.defaultClass(defaultClass);
+  if ($$props.show === void 0 && $$bindings.show && show !== void 0) $$bindings.show(show);
   {
     {
       color = color;
