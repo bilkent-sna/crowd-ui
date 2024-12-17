@@ -10,7 +10,7 @@ pub fn test_crowd_class_parameter() -> String {
     let input2 = 235;
     let mut result = String::new();
     Python::with_gil(|py| {
-        let test_module = PyModule::import_bound(py, "crowd.api.test").unwrap();
+        let test_module = PyModule::import(py, "crowd.api.test").unwrap();
         
         let args = (input1, input2);
 
@@ -29,7 +29,7 @@ pub fn test_crowd_method_parameter() -> String {
     let input2 = 235;
     let mut result = String::new();
     Python::with_gil(|py| {
-        let test_module = PyModule::import_bound(py, "crowd.api.test").unwrap();
+        let test_module = PyModule::import(py, "crowd.api.test").unwrap();
         
         let args = (input1, input2);
         
@@ -44,7 +44,7 @@ pub fn test_crowd_time() -> String {
 
     let mut result = String::new();
     Python::with_gil(|py| {
-        let test_module = PyModule::import_bound(py, "crowd.api.test").unwrap();
+        let test_module = PyModule::import(py, "crowd.api.test").unwrap();
         
         result = test_module.getattr("test2").unwrap().call0().unwrap().call_method0("waitForX").unwrap().to_string();
         println!("Result: {:?}", result);

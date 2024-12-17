@@ -22,7 +22,7 @@
 	"tauri": {
 		"allowlist": {
 			"fs": {
-				"all": false,
+				"all": true,
 				"readFile": true,
 				"writeFile": true,
 				"readDir": true,
@@ -31,7 +31,7 @@
 				"removeDir": true,
 				"removeFile": true,
 				"renameFile": true,
-				"scope": ["$APPDATA/data/*"]
+				"exists": true
 			},
 			"shell": {
 				"all": false,

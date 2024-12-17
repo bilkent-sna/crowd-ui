@@ -1,171 +1,192 @@
 use pyo3::prelude::*;
-// use pyo3::types::IntoPyDict; 
-// use pyo3::types::PyTuple;
+use pyo3::types::PyModule;
 use log::{info, warn, error};
 
+/// Helper function to load the Python `ProjectFunctions` class.
+fn get_project_functions(py: Python<'_>) -> PyResult<PyObject> {
+    // Import required Python modules
+    let sys = PyModule::import(py, "sys")?;
+    let io = PyModule::import(py, "io")?;
+  
+    // Redirect stdout and stderr to an in-memory buffer
+    let string_io = io.getattr("StringIO")?.call0()?;
+    sys.setattr("stdout", string_io)?;
+    sys.setattr("stderr", string_io)?;
 
-// Beginning of Project Methods from Crowd
-pub fn create_project(name: String, date: String, info: String, node_or_edge: String){
+    let test_module = PyModule::import(py, "crowd.api.project_api");
+    match test_module {
+        Ok(module) => match module.getattr("ProjectFunctions") {
+            Ok(class) => match class.call0() {
+                Ok(instance) => Ok(instance.into()),  // Use `.into()` to convert &PyAny to Py<PyAny>
+                Err(e) => {
+                    error!("Error calling ProjectFunctions constructor: {}", e);
+                    Err(e.into())
+                }
+            },
+            Err(e) => {
+                error!("Error getting ProjectFunctions attribute: {}", e);
+                Err(e.into())
+            }
+        },
+        Err(e) => {
+            error!("Error importing crowd.api.project_api: {}", e);
+            Err(e.into())
+        }
+    }
+}
+
+/// Captures and logs Python stdout and stderr after a function call.
+fn log_python_output(py: Python<'_>) {
+    let sys = PyModule::import(py, "sys").expect("Failed to import sys module");
+
+    // Retrieve and log stdout
+    if let Ok(stdout) = sys.getattr("stdout") {
+        if let Ok(output) = stdout.call_method0("getvalue") {
+            let output: String = output.extract().unwrap_or_default();
+            if !output.trim().is_empty() {
+                info!("Python stdout: {}", output);
+            }
+        }
+    }
+
+    // Retrieve and log stderr
+    if let Ok(stderr) = sys.getattr("stderr") {
+        if let Ok(error_output) = stderr.call_method0("getvalue") {
+            let error_output: String = error_output.extract().unwrap_or_default();
+            if !error_output.trim().is_empty() {
+                warn!("Python stderr: {}", error_output);
+            }
+        }
+    }
+}
+
+/// Creates a new project using Python's `crowd.api.project_api.ProjectFunctions.create_project`.
+pub fn create_project(name: String, date: String, info: String, node_or_edge: String) {
     pyo3::prepare_freethreaded_python();
 
     Python::with_gil(|py| {
-        let test_module = PyModule::import_bound(py, "crowd.api.project_api").unwrap();
-        
-        let args = (name, date, info, node_or_edge);
-        println!("args inside python_backend.rs: {:?}", args);
-        
-        test_module.getattr("ProjectFunctions").unwrap().call0().unwrap().call_method1("create_project", args).unwrap().to_string();
+        match get_project_functions(py) {
+            Ok(project_functions) => {
+                // Clone the String values to avoid moving them into the tuple
+                let args = (name.clone(), date.clone(), info.clone(), node_or_edge.clone());
+                match project_functions.call_method1(py, "create_project", args) {
+                    Ok(_) => info!("Project created successfully: {}", name),
+                    Err(e) => error!("Error calling create_project: {}", e),
+                }
+                // Capture and log Python's stdout and stderr
+                log_python_output(py);
+            }
+            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
+        }
     });
 }
 
+
+/// Sends configuration and runs the simulation with parameters.
 pub fn send_conf_and_run(
-    data: String, 
-    project_name: String, 
-    epochs: i32, 
-    snapshot_period: i32, 
-    batch_num: i32
+    data: String,
+    project_name: String,
+    epochs: i32,
+    snapshot_period: i32,
+    batch_num: i32,
 ) -> String {
-    // Prepare the Python GIL (Global Interpreter Lock)
     pyo3::prepare_freethreaded_python();
 
     let mut result = String::new();
-
-    log::info!("Initializing simulation with parameters: data = {}, project_name = {}, epochs = {}, snapshot_period = {}, batch_num = {}",
+    info!("Initializing simulation with parameters: data = {}, project_name = {}, epochs = {}, snapshot_period = {}, batch_num = {}",
         data, project_name, epochs, snapshot_period, batch_num
     );
 
     Python::with_gil(|py| {
-        match PyModule::import_bound(py, "crowd.api.project_api") {
-            Ok(test_module) => {
-                log::debug!("Successfully imported crowd.api.project_api module");
-
-                let args = (data.clone(), project_name.clone(), epochs, snapshot_period, batch_num);
-
-                match test_module.getattr("ProjectFunctions") {
-                    Ok(project_functions) => {
-                        match project_functions.call0() {
-                            Ok(project_instance) => {
-                                match project_instance.call_method1("get_conf_and_run", args) {
-                                    Ok(py_result) => {
-                                        result = py_result.to_string();
-                                        log::info!("Simulation completed successfully. Result: {}", result);
-                                    }
-                                    Err(e) => {
-                                        log::error!("Error calling get_conf_and_run: {}", e);
-                                    }
-                                }
-                            }
-                            Err(e) => {
-                                log::error!("Error instantiating ProjectFunctions: {}", e);
-                            }
-                        }
+        match get_project_functions(py) {
+            Ok(project_functions) => {
+                let args = (data, project_name, epochs, snapshot_period, batch_num);
+                match project_functions.call_method1(py, "get_conf_and_run", args) {
+                    Ok(py_result) => {
+                        result = py_result.to_string();
+                        info!("Simulation completed successfully. Result: {}", result);
                     }
-                    Err(e) => {
-                        log::error!("Error accessing ProjectFunctions attribute: {}", e);
-                    }
+                    Err(e) => error!("Error calling get_conf_and_run: {}", e),
                 }
+                // Capture and log Python's stdout and stderr
+                log_python_output(py);
             }
-            Err(e) => {
-                log::error!("Error importing crowd.api.project_api: {}", e);
-            }
+            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
         }
     });
 
     if result.is_empty() {
-        log::warn!("Simulation returned an empty result.");
+        warn!("Simulation returned an empty result.");
     }
 
-    return result
+    result
 }
 
-
-// pyo3::prepare_freethreaded_python();
-//     let mut result = String::new();
-//      // Arc to share output between threads
-//      let output_capture = Arc::new(Mutex::new(Vec::new()));
-
-//      // Thread for capturing output 
-//      let output_capture_clone = Arc::clone(&output_capture);
-//      thread::spawn(move || {
-//          // Continuously capture stdout from Python
-//          let mut stdout = std::io::stdout();
- 
-//          // Here we would replace stdout with a custom writer if needed
- 
-//          Python::with_gil(|py| {
-//              let test_module = PyModule::import_bound(py, "crowd.api.project_api").unwrap();
-//              let project_functions = test_module.getattr("ProjectFunctions").unwrap();
-//              let args = (data, project_name, epochs, snapshot_period, 2);
-//              let run_method = project_functions.getattr("get_conf_and_run").unwrap();
- 
-//             // Redirect stdout temporarily to capture output
-//             let code = "import sys\nfrom io import StringIO\nsys.stdout = StringIO()\nsys.stderr = StringIO()";
-//             Python::run_bound(code).unwrap();
-
-            
-//              // Call the Python function
-//             result = run_method.call1(args).unwrap().to_string();
- 
-//              // Restore stdout after execution
-//              let output = Python::with_gil(|py| {
-//                 let sys_module = PyModule::import_bound(py, "sys").unwrap();
-
-//                 let captured_output: &str = sys_module.getattr("stdout").unwrap().call_method0("getvalue").unwrap().extract().unwrap();
-//                 captured_output
-//              });
- 
-//              // Emit captured output to JS
-//              app_handle.emit_all("simulation-output", output).unwrap();
-//          });
-//      });
- 
-//     return result;
-
-pub fn edge_conf_run(data: String, project_name: String, epochs: i32, snapshot_period: i32) -> String{
+/// Runs the edge configuration with given parameters.
+pub fn edge_conf_run(data: String, project_name: String, epochs: i32, snapshot_period: i32) -> String {
     pyo3::prepare_freethreaded_python();
 
     let mut result = String::new();
     Python::with_gil(|py| {
-        let test_module = PyModule::import_bound(py, "crowd.api.project_api").unwrap();
-        
-        let args = (data, project_name, epochs, snapshot_period);
-        // println!("args inside python_backend.rs: {:?}", args);
-        
-        result = test_module.getattr("ProjectFunctions").unwrap().call0().unwrap().call_method1("edge_conf_run", args).unwrap().to_string();
+        match get_project_functions(py) {
+            Ok(project_functions) => {
+                let args = (data, project_name, epochs, snapshot_period);
+                match project_functions.call_method1(py, "edge_conf_run", args) {
+                    Ok(py_result) => result = py_result.to_string(),
+                    Err(e) => error!("Error calling edge_conf_run: {}", e),
+                }
+                // Capture and log Python's stdout and stderr
+                log_python_output(py);
+            }
+            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
+        }
     });
 
-    return result;
+    result
 }
 
-
-pub fn init_and_run_simulation(project_name: String, epochs: i32, snapshot_period: i32) -> String{
+/// Initializes and runs a simulation for the given project.
+pub fn init_and_run_simulation(project_name: String, epochs: i32, snapshot_period: i32) -> String {
     pyo3::prepare_freethreaded_python();
 
     let mut result = String::new();
     Python::with_gil(|py| {
-        let test_module = PyModule::import_bound(py, "crowd.api.project_api").unwrap();
-        
-        let args = ( project_name, epochs, snapshot_period, 1);
-        // println!("args inside python_backend.rs: {:?}", args);
-        
-        result = test_module.getattr("ProjectFunctions").unwrap().call0().unwrap().call_method1("init_and_run_simulation", args).unwrap().to_string();
+        match get_project_functions(py) {
+            Ok(project_functions) => {
+                let args = (project_name, epochs, snapshot_period, 1);
+                match project_functions.call_method1(py, "init_and_run_simulation", args) {
+                    Ok(py_result) => result = py_result.to_string(),
+                    Err(e) => error!("Error calling init_and_run_simulation: {}", e),
+                }
+                // Capture and log Python's stdout and stderr
+                log_python_output(py);
+            }
+            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
+        }
     });
 
-    return result;
+    result
 }
 
-pub fn edge_sim_run(project_name: String, epochs: i32, snapshot_period: i32) -> String{
+/// Runs the edge simulation with given parameters.
+pub fn edge_sim_run(project_name: String, epochs: i32, snapshot_period: i32) -> String {
     pyo3::prepare_freethreaded_python();
 
     let mut result = String::new();
     Python::with_gil(|py| {
-        let test_module = PyModule::import_bound(py, "crowd.api.project_api").unwrap();
-        
-        let args = ( project_name, epochs, snapshot_period);
-        // println!("args inside python_backend.rs: {:?}", args);
-        
-        result = test_module.getattr("ProjectFunctions").unwrap().call0().unwrap().call_method1("edge_sim_run", args).unwrap().to_string();
+        match get_project_functions(py) {
+            Ok(project_functions) => {
+                let args = (project_name, epochs, snapshot_period);
+                match project_functions.call_method1(py, "edge_sim_run", args) {
+                    Ok(py_result) => result = py_result.to_string(),
+                    Err(e) => error!("Error calling edge_sim_run: {}", e),
+                }
+                // Capture and log Python's stdout and stderr
+                log_python_output(py);
+            }
+            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
+        }
     });
 
-    return result;
+    result
 }

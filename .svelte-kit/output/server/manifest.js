@@ -10,7 +10,7 @@ return {
 	assets: new Set(["favicon.png","images/bilkent_social_systems_group.png","images/Firefly1.jpg","images/Firefly2.jpg","images/Firefly3.jpg","images/flowbite-svelte-icon-logo.svg","images/temp_logo.png","images/trash-bin.png","images/trash-bin.svg"]),
 	mimeTypes: {".png":"image/png",".jpg":"image/jpeg",".svg":"image/svg+xml"},
 	_: {
-		client: {"start":"_app/immutable/entry/start.C6cRZWjf.js","app":"_app/immutable/entry/app.CwzXrcHn.js","imports":["_app/immutable/entry/start.C6cRZWjf.js","_app/immutable/chunks/entry.CuoOEfTB.js","_app/immutable/chunks/scheduler.CXlSaMum.js","_app/immutable/chunks/index.Bqb73gwf.js","_app/immutable/entry/app.CwzXrcHn.js","_app/immutable/chunks/scheduler.CXlSaMum.js","_app/immutable/chunks/index.BuDDw201.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
+		client: {"start":"_app/immutable/entry/start.C_nAfDVc.js","app":"_app/immutable/entry/app.Chcxh1T6.js","imports":["_app/immutable/entry/start.C_nAfDVc.js","_app/immutable/chunks/entry.DbCCdow5.js","_app/immutable/chunks/scheduler.CXlSaMum.js","_app/immutable/chunks/index.Bqb73gwf.js","_app/immutable/entry/app.Chcxh1T6.js","_app/immutable/chunks/scheduler.CXlSaMum.js","_app/immutable/chunks/index.BuDDw201.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),

@@ -400,7 +400,7 @@ fn main() {
 
 
     // Generate the Tauri context
-    let context = tauri::generate_context!();
+    let context = generate_context!();
 
     // Print the log directory path
     println!(
