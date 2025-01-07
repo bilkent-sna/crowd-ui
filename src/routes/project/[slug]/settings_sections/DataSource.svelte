@@ -10,8 +10,10 @@
 		Button,
 		Select,
 		P,
-		GradientButton
+		GradientButton,
+		Modal
 	} from 'flowbite-svelte';
+	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
 
@@ -41,6 +43,9 @@
 
 	let exploreCheck = false;
 	let explorationInfo = {};
+
+	let errorModalOpen = false;
+	let latestError = 'error';
 
 	onMount(() => {
 		if (dataSource === 'previously-uploaded') {
@@ -158,6 +163,8 @@
 			}
 		} catch (error) {
 			console.error('Error loading dataset files:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -183,10 +190,45 @@
 					datasetSaveSuccessful = true;
 				} catch (error) {
 					console.error('Error uploading file:', error);
+					latestError = error;
+					errorModalOpen = true;
 				}
 			};
 			reader.readAsArrayBuffer(selectedFile);
 		}
+	}
+
+	//Displaying and getting matrix input for stochastic block model
+
+	// Default matrix size (e.g., 3x3)
+	let rows = 3;
+	let cols = 3;
+
+	// Matrix data, initialized with empty strings
+	let matrix = Array(rows)
+		.fill()
+		.map(() => Array(cols).fill(''));
+
+	// Function to update matrix cell values
+	function updateMatrix(row, col, value) {
+		matrix[row][col] = value;
+	}
+
+	// Function to handle form submission
+	function submitMatrix() {
+		console.log('Matrix:', matrix);
+		alert(JSON.stringify(matrix)); // Replace this with your logic
+	}
+
+	// Dynamically update the matrix when dimensions change
+	onMount(() => {
+		updateMatrixSize();
+	});
+
+	function updateMatrixSize() {
+		matrix = Array(rows)
+			.fill()
+			.map(() => Array(cols).fill(''));
 	}
 </script>
 
@@ -270,6 +312,12 @@
 								{ value: 'connected-watts-strogatz', name: 'Connected Watts-Strogatz' },
 								{ value: 'newman-watts-strogatz', name: 'Newman-Watts-Strogatz' },
 								{ value: 'powerlaw-cluster-graph', name: 'Powerlaw Cluster' },
+								{ value: 'forest-fire', name: 'Forest Fire' },
+								{ value: 'stochastic-block', name: 'Stochastic Block' },
+								{ value: 'LFR-benchmark', name: 'LFR Benchmark' },
+								{ value: 'geometric-random', name: 'Geometric Random' },
+								{ value: 'configuration', name: 'Configuration' },
+								{ value: 'static-fitness', name: 'Static Fitness' },
 								{ value: 'complete-graph', name: 'Complete' },
 								{ value: 'karate-club-graph', name: 'Karate Club' },
 								{ value: 'davis-southern-woman', name: 'Davis Southern Woman' },
@@ -284,6 +332,58 @@
 					>
 				</div>
 				{#if !['karate-club-graph', 'davis-southern-woman', 'florentine-families', 'les-miserables'].includes(graphGenerateType) && dataSource === 'generate-graph' && graphGenerateType !== ''}
+					{#if graphFileType === 'stochastic-block'}
+						<div class="mx-auto max-w-md">
+							<h2 class="mb-4 text-xl font-semibold">Matrix Input</h2>
+
+							<!-- Input for Rows and Columns -->
+							<div class="mb-4 grid grid-cols-2 gap-4">
+								<div>
+									<label for="rows" class="block text-sm font-medium text-gray-700">Rows</label>
+									<input
+										id="rows"
+										type="number"
+										bind:value={rows}
+										on:change={updateMatrixSize}
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+									/>
+								</div>
+								<div>
+									<label for="cols" class="block text-sm font-medium text-gray-700">Columns</label>
+									<input
+										id="cols"
+										type="number"
+										bind:value={cols}
+										on:change={updateMatrixSize}
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+									/>
+								</div>
+							</div>
+
+							<!-- Dynamic Matrix Inputs -->
+							<div class="grid gap-2" style="grid-template-columns: repeat({cols}, 1fr);">
+								{#each matrix as row, i}
+									{#each row as cell, j}
+										<input
+											type="text"
+											bind:value={matrix[i][j]}
+											on:input={(e) => updateMatrix(i, j, e.target.value)}
+											class="block w-full rounded-md border px-2 py-1 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+										/>
+									{/each}
+								{/each}
+							</div>
+
+							<!-- Submit Button -->
+							<button
+								on:click={submitMatrix}
+								class="mt-4 w-full rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+							>
+								Submit Matrix
+							</button>
+						</div>
+					{/if}
+
 					<div class="mt-4">
 						<Label class="pb-2">Test with different values:</Label>
 						<Radio name="explore-radio" bind:group={exploreCheck} value={true}>Yes</Radio>
@@ -348,3 +448,20 @@
 		>Save</GradientButton
 	>
 </div>
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
+	</div>
+</Modal>

@@ -1,8 +1,12 @@
 <script>
 	//This component gets all the recent simulations and displays it in a list format
 
-	import { Button, A } from 'flowbite-svelte';
-	import { CirclePlusSolid, CloseCircleSolid } from 'flowbite-svelte-icons';
+	import { Button, A, Modal, P } from 'flowbite-svelte';
+	import {
+		CirclePlusSolid,
+		CloseCircleSolid,
+		ExclamationCircleOutline
+	} from 'flowbite-svelte-icons';
 	import {
 		Table,
 		TableBody,
@@ -22,6 +26,9 @@
 	let allSimulations = [];
 	let subsimulationsInfo = {};
 
+	let errorModalOpen = false;
+	let latestError = 'error';
+
 	onMount(async () => {
 		await run_python_list_simulations(generateSlug($project.name));
 	});
@@ -32,6 +39,8 @@
 			allSimulations = JSON.parse(result);
 		} catch (error) {
 			console.error('Error running Python list simulations:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -50,6 +59,8 @@
 			subsimulationsInfo = JSON.parse(result);
 		} catch (error) {
 			console.error('Error running Python get sub simulations info', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -168,3 +179,20 @@
 		</div>
 	</div>
 {/if}
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
+	</div>
+</Modal>

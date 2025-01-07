@@ -1,7 +1,8 @@
 <script>
 	// @ts-nocheck
 
-	import { Button, List, Li, Heading, P, Span } from 'flowbite-svelte';
+	import { Button, List, Li, Heading, P, Span, Modal } from 'flowbite-svelte';
+	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
 	import fileSaver from 'file-saver';
 	import CodeMirrorEditor from 'svelte-codemirror-editor';
 	import { python } from '@codemirror/lang-python';
@@ -10,6 +11,9 @@
 	import { project } from '$lib/stores/projects';
 
 	let code = '';
+
+	let errorModalOpen = false;
+	let latestError = 'error';
 
 	onMount(async () => {
 		await loadMethodsFile();
@@ -24,6 +28,8 @@
 			console.log(code);
 		} catch (error) {
 			console.error('Error getting methods from Python:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -35,6 +41,8 @@
 			});
 		} catch (error) {
 			console.error('Error saving methods with Python', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -89,6 +97,23 @@
 		</div>
 	</div>
 </div>
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
+	</div>
+</Modal>
 
 <style>
 	.code-editor {

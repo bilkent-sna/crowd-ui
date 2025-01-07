@@ -61,7 +61,7 @@ fn log_python_output(py: Python<'_>) {
 }
 
 /// Creates a new project using Python's `crowd.api.project_api.ProjectFunctions.create_project`.
-pub fn create_project(name: String, date: String, info: String, node_or_edge: String) {
+pub fn create_project(name: String, date: String, info: String, node_or_edge: String) -> Result<String, String>  {
     pyo3::prepare_freethreaded_python();
 
     Python::with_gil(|py| {
@@ -70,15 +70,25 @@ pub fn create_project(name: String, date: String, info: String, node_or_edge: St
                 // Clone the String values to avoid moving them into the tuple
                 let args = (name.clone(), date.clone(), info.clone(), node_or_edge.clone());
                 match project_functions.call_method1(py, "create_project", args) {
-                    Ok(_) => info!("Project created successfully: {}", name),
-                    Err(e) => error!("Error calling create_project: {}", e),
+                    Ok(_) => {
+                        info!("Project created successfully: {}", name);
+                        log_python_output(py);
+                        Ok("Project created successfully".to_string())
+                    },
+                    Err(e) => {
+                        error!("Error calling create_project: {}", e);
+                        log_python_output(py);
+                        Err(format!("Error calling create_project: {}", e))
+                    },
                 }
-                // Capture and log Python's stdout and stderr
-                log_python_output(py);
+               
             }
-            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
+            Err(e) => {
+                error!("Error initializing ProjectFunctions: {}", e);
+                Err(format!("Error initializing ProjectFunctions: {}", e))
+            },
         }
-    });
+    })
 }
 
 
@@ -89,13 +99,9 @@ pub fn send_conf_and_run(
     epochs: i32,
     snapshot_period: i32,
     batch_num: i32,
-) -> String {
-    pyo3::prepare_freethreaded_python();
+) -> Result<String, String> {
 
-    let mut result = String::new();
-    info!("Initializing simulation with parameters: data = {}, project_name = {}, epochs = {}, snapshot_period = {}, batch_num = {}",
-        data, project_name, epochs, snapshot_period, batch_num
-    );
+    pyo3::prepare_freethreaded_python();
 
     Python::with_gil(|py| {
         match get_project_functions(py) {
@@ -103,90 +109,128 @@ pub fn send_conf_and_run(
                 let args = (data, project_name, epochs, snapshot_period, batch_num);
                 match project_functions.call_method1(py, "get_conf_and_run", args) {
                     Ok(py_result) => {
-                        result = py_result.to_string();
-                        info!("Simulation completed successfully. Result: {}", result);
+                        let result: String = py_result.extract(py).unwrap_or_default();
+                        log_python_output(py);
+                        if result.is_empty() {
+                            warn!("Simulation returned an empty result.");
+                        } else {
+                            info!("Simulation completed successfully. Result: {}", result);
+                        }
+                        Ok(result)
                     }
-                    Err(e) => error!("Error calling get_conf_and_run: {}", e),
+                    Err(e) => {
+                        error!("Error calling get_conf_and_run: {}", e);
+                        log_python_output(py);
+                        Err(format!("Error calling get_conf_and_run: {}", e))
+                    }
                 }
-                // Capture and log Python's stdout and stderr
-                log_python_output(py);
             }
-            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
+            Err(e) => {
+                error!("Error initializing ProjectFunctions: {}", e);
+                Err(format!("Error initializing ProjectFunctions: {}", e))
+            }
         }
-    });
-
-    if result.is_empty() {
-        warn!("Simulation returned an empty result.");
-    }
-
-    result
+    })
 }
 
 /// Runs the edge configuration with given parameters.
-pub fn edge_conf_run(data: String, project_name: String, epochs: i32, snapshot_period: i32) -> String {
+pub fn edge_conf_run(data: String, project_name: String, epochs: i32, snapshot_period: i32) -> Result<String, String> {
     pyo3::prepare_freethreaded_python();
 
-    let mut result = String::new();
     Python::with_gil(|py| {
         match get_project_functions(py) {
             Ok(project_functions) => {
                 let args = (data, project_name, epochs, snapshot_period);
                 match project_functions.call_method1(py, "edge_conf_run", args) {
-                    Ok(py_result) => result = py_result.to_string(),
-                    Err(e) => error!("Error calling edge_conf_run: {}", e),
+                    Ok(py_result) => {
+                        let result: String = py_result.extract(py).unwrap_or_default();
+                        log_python_output(py);
+                        if result.is_empty() {
+                            warn!("Simulation returned an empty result.");
+                        } else {
+                            info!("Simulation completed successfully. Result: {}", result);
+                        }
+                        Ok(result)
+                    }
+                    Err(e) => {
+                        error!("Error calling edge_conf_run: {}", e);
+                        log_python_output(py);
+                        Err(format!("Error calling edge_conf_run: {}", e))
+                    }
                 }
-                // Capture and log Python's stdout and stderr
-                log_python_output(py);
             }
-            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
+            Err(e) => {
+                error!("Error initializing ProjectFunctions: {}", e);
+                Err(format!("Error initializing ProjectFunctions: {}", e))
+            }
         }
-    });
-
-    result
+    })
 }
 
 /// Initializes and runs a simulation for the given project.
-pub fn init_and_run_simulation(project_name: String, epochs: i32, snapshot_period: i32) -> String {
+pub fn init_and_run_simulation(project_name: String, epochs: i32, snapshot_period: i32) -> Result<String, String> {
     pyo3::prepare_freethreaded_python();
 
-    let mut result = String::new();
     Python::with_gil(|py| {
         match get_project_functions(py) {
             Ok(project_functions) => {
                 let args = (project_name, epochs, snapshot_period, 1);
                 match project_functions.call_method1(py, "init_and_run_simulation", args) {
-                    Ok(py_result) => result = py_result.to_string(),
-                    Err(e) => error!("Error calling init_and_run_simulation: {}", e),
+                    Ok(py_result) => {
+                        let result: String = py_result.extract(py).unwrap_or_default();
+                        log_python_output(py);
+                        if result.is_empty() {
+                            warn!("Simulation returned an empty result.");
+                        } else {
+                            info!("Simulation completed successfully. Result: {}", result);
+                        }
+                        Ok(result)
+                    }
+                    Err(e) => {
+                        error!("Error calling init_and_run_simulation: {}", e);
+                        log_python_output(py);
+                        Err(format!("Error calling init_and_run_simulation: {}", e))
+                    }
                 }
-                // Capture and log Python's stdout and stderr
-                log_python_output(py);
             }
-            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
+            Err(e) => {
+                error!("Error initializing ProjectFunctions: {}", e);
+                Err(format!("Error initializing ProjectFunctions: {}", e))
+            }
         }
-    });
-
-    result
+    })
 }
 
 /// Runs the edge simulation with given parameters.
-pub fn edge_sim_run(project_name: String, epochs: i32, snapshot_period: i32) -> String {
+pub fn edge_sim_run(project_name: String, epochs: i32, snapshot_period: i32) -> Result<String, String> {
     pyo3::prepare_freethreaded_python();
-
-    let mut result = String::new();
+    
     Python::with_gil(|py| {
         match get_project_functions(py) {
             Ok(project_functions) => {
                 let args = (project_name, epochs, snapshot_period);
                 match project_functions.call_method1(py, "edge_sim_run", args) {
-                    Ok(py_result) => result = py_result.to_string(),
-                    Err(e) => error!("Error calling edge_sim_run: {}", e),
+                    Ok(py_result) => {
+                        let result: String = py_result.extract(py).unwrap_or_default();
+                        log_python_output(py);
+                        if result.is_empty() {
+                            warn!("Simulation returned an empty result.");
+                        } else {
+                            info!("Simulation completed successfully. Result: {}", result);
+                        }
+                        Ok(result)
+                    }
+                    Err(e) => {
+                        error!("Error calling edge_sim_run: {}", e);
+                        log_python_output(py);
+                        Err(format!("Error calling edge_sim_run: {}", e))
+                    }
                 }
-                // Capture and log Python's stdout and stderr
-                log_python_output(py);
             }
-            Err(e) => error!("Error initializing ProjectFunctions: {}", e),
+            Err(e) => {
+                error!("Error initializing ProjectFunctions: {}", e);
+                Err(format!("Error initializing ProjectFunctions: {}", e))
+            }
         }
-    });
-
-    result
+    })
 }

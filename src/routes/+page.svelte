@@ -1,7 +1,7 @@
 <script>
 	import { Heading, P, Button, Span, Radio } from 'flowbite-svelte';
 	import { Modal, Label, Input, Checkbox } from 'flowbite-svelte';
-	import { ArrowRightOutline } from 'flowbite-svelte-icons';
+	import { ArrowRightOutline, ExclamationCircleOutline } from 'flowbite-svelte-icons';
 
 	import { invoke } from '@tauri-apps/api/tauri';
 	import { goto } from '$app/navigation';
@@ -15,6 +15,9 @@
 	let newProjectName = '';
 	let newProjectInfo = '';
 	let nodeEdgeSelect = '';
+
+	let errorModalOpen = false;
+	let latestError = 'error';
 
 	//called when create project button is clicked in the modal
 	function createProject() {
@@ -52,6 +55,8 @@
 			console.log('Project creation finished on Python side.');
 		} catch (error) {
 			console.error('Error creating project:', error);
+			latestError = error;
+			errorModalOpen = true;
 		} // finally {
 		// 	//goto project page
 		// 	goto(`/project/${generateSlug(name)}`);
@@ -106,4 +111,21 @@
 			Create project<ArrowRightOutline class="ms-2 h-6 w-6" />
 		</Button>
 	</form>
+</Modal>
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
+	</div>
 </Modal>

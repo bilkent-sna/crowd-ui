@@ -19,8 +19,10 @@
 	import {
 		ArrowRightOutline,
 		CirclePlusSolid,
-		ListOutline,
-		TrashBinSolid
+		ShareNodesSolid,
+		TrashBinSolid,
+		ExclamationCircleOutline,
+		ListOutline
 	} from 'flowbite-svelte-icons';
 
 	import { createEventDispatcher, onMount } from 'svelte';
@@ -36,6 +38,9 @@
 		};
 		dispatch('message', { name: 'nodeParameters', contents: theMessage });
 	}
+
+	let errorModalOpen = false;
+	let latestError = 'error';
 
 	let nodeParameterName = '';
 	let numericalRange1;
@@ -90,6 +95,8 @@
 			}
 		} catch (error) {
 			console.error('Error loading dataset files:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -115,6 +122,8 @@
 					datasetSaveSuccessful = true;
 				} catch (error) {
 					console.error('Error uploading file:', error);
+					latestError = error;
+					errorModalOpen = true;
 				}
 			};
 			reader.readAsArrayBuffer(selectedFile);
@@ -215,7 +224,7 @@
 		<Li class="pb-3 sm:pb-4">
 			<div class="flex items-center space-x-4 rtl:space-x-reverse">
 				<div class="flex-shrink-0">
-					<ListOutline />
+					<ShareNodesSolid />
 				</div>
 				<div class="min-w-0 flex-1">
 					<p class="truncate text-sm font-medium text-gray-900 dark:text-white">{parameter.name}</p>
@@ -364,4 +373,21 @@
 			</Button>
 		{/if}
 	</form>
+</Modal>
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
+	</div>
 </Modal>

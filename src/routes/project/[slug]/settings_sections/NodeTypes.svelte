@@ -20,7 +20,8 @@
 		ArrowRightOutline,
 		CirclePlusSolid,
 		DrawSquareOutline,
-		TrashBinSolid
+		TrashBinSolid,
+		ExclamationCircleOutline
 	} from 'flowbite-svelte-icons';
 
 	import { createEventDispatcher, onMount } from 'svelte';
@@ -32,7 +33,7 @@
 	}
 
 	let nodeTypeName = '';
-	let nodeTypeWeight;
+	let nodeTypeWeight = '0.5';
 	let addNodeTypeOpen = false;
 
 	let nodeTypes = [];
@@ -64,6 +65,9 @@
 	let selectedDataset = '';
 	let datasetSaveSuccessful = false;
 
+	let errorModalOpen = false;
+	let latestError = 'error';
+
 	onMount(() => {
 		if (dataSource === 'previously-uploaded') {
 			loadDatasetFiles();
@@ -84,6 +88,8 @@
 			}
 		} catch (error) {
 			console.error('Error loading dataset files:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -109,6 +115,8 @@
 					datasetSaveSuccessful = true;
 				} catch (error) {
 					console.error('Error uploading file:', error);
+					latestError = error;
+					errorModalOpen = true;
 				}
 			};
 			reader.readAsArrayBuffer(selectedFile);
@@ -148,7 +156,7 @@
 		}
 		nodeTypes = [...nodeTypes, currType];
 		nodeTypeName = '';
-		nodeTypeWeight = 0;
+		nodeTypeWeight = '0';
 	}
 
 	function removeNodeType(name) {
@@ -275,4 +283,21 @@
 			Add nodetype<ArrowRightOutline class="ms-2 h-6 w-6" />
 		</Button>
 	</form>
+</Modal>
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
+	</div>
 </Modal>

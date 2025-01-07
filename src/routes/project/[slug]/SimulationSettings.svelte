@@ -13,7 +13,9 @@
 		Input,
 		Label,
 		Radio,
-		Spinner
+		Spinner,
+		Modal,
+		P
 	} from 'flowbite-svelte';
 	import {
 		CirclePlusSolid,
@@ -27,7 +29,9 @@
 		ObjectsColumnSolid,
 		LinkOutline,
 		ListOutline,
-		ArrowRightOutline
+		ArrowRightOutline,
+		ShareNodesSolid,
+		ExclamationCircleOutline
 	} from 'flowbite-svelte-icons';
 
 	import { onMount } from 'svelte';
@@ -49,6 +53,7 @@
 	import DataSource from './settings_sections/DataSource.svelte';
 	import EdgeParameters from './settings_sections/EdgeParameters.svelte';
 	import NodeParameters from './settings_sections/NodeParameters.svelte';
+	import NetworkParameters from './settings_sections/NetworkParameters.svelte';
 	import NodeTypes from './settings_sections/NodeTypes.svelte';
 	import Rules from './settings_sections/Rules.svelte';
 
@@ -58,6 +63,9 @@
 	let epochs = 0;
 	let snapshotPeriod = 0;
 	let batchNumber = 0;
+
+	let errorModalOpen = false;
+	let latestError = 'error';
 
 	$: isDiffusion = simType === 'true';
 	$: console.log(isDiffusion);
@@ -175,6 +183,8 @@
 			goto(targetUrl); // Optionally await to ensure navigation happens
 		} catch (error) {
 			console.error('Error sending data:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -207,6 +217,8 @@
 			goto(targetUrl); // Optionally await to ensure navigation happens
 		} catch (error) {
 			console.error('Error sending data:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -318,8 +330,6 @@
 									<Radio name="simulation-type" bind:group={simType} value="false">Other</Radio>
 								</div>
 							</AccordionItem>
-						{/if}
-						{#if isDiffusion}
 							<AccordionItem>
 								<span slot="header" class="flex gap-2 text-base">
 									<DrawSquareOutline class="mt-0.5" />
@@ -329,7 +339,7 @@
 							</AccordionItem>
 							<AccordionItem>
 								<span slot="header" class="flex gap-2 text-base">
-									<ListOutline class="mt-0.5" />
+									<ShareNodesSolid class="mt-0.5" />
 									<span>Node parameters</span>
 								</span>
 								<NodeParameters on:message={handleInfoFromChild} />
@@ -341,6 +351,15 @@
 								</span>
 								<EdgeParameters on:message={handleInfoFromChild} />
 							</AccordionItem>
+							<AccordionItem>
+								<span slot="header" class="flex gap-2 text-base">
+									<ListOutline class="mt-0.5" />
+									<span>Network parameters</span>
+								</span>
+								<NetworkParameters on:message={handleInfoFromChild} />
+							</AccordionItem>
+						{/if}
+						{#if isDiffusion}
 							<AccordionItem>
 								<span slot="header" class="flex gap-2 text-base">
 									<GridPlusSolid class="mt-0.5" />
@@ -363,7 +382,7 @@
 							<AccordionItem>
 								<span slot="header" class="flex gap-2 text-base">
 									<FileCodeSolid class="mt-0.5" />
-									<span>Custom Simulation</span>
+									<span>Custom simulation</span>
 								</span>
 								<CustomSimulation />
 							</AccordionItem>
@@ -404,3 +423,20 @@
 		</div>
 	</div>
 {/if}
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
+	</div>
+</Modal>

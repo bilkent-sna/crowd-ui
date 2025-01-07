@@ -3,7 +3,11 @@
 
 	import { chart } from 'svelte-apexcharts';
 	import { Button, Modal, Input, Select, Heading, P, Span, Spinner } from 'flowbite-svelte';
-	import { ChartLineUpOutline, TrashBinSolid } from 'flowbite-svelte-icons';
+	import {
+		ChartLineUpOutline,
+		TrashBinSolid,
+		ExclamationCircleOutline
+	} from 'flowbite-svelte-icons';
 
 	import { onMount, tick } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
@@ -13,6 +17,9 @@
 	// A boolean which will set to true when we are loading information from the backend
 	let loadingInformation = true;
 	let paramFileList = [];
+
+	let errorModalOpen = false;
+	let latestError = 'error';
 
 	onMount(async () => {
 		loadingInformation = true;
@@ -32,6 +39,8 @@
 			console.log('ParamsFileList in JS:', paramFileList);
 		} catch (error) {
 			console.error('Error occured while loading parameter file names:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -85,6 +94,8 @@
 			console.log('data to send in JS:', data_to_send);
 		} catch (error) {
 			console.error('Error occured while loading parameter file names:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -436,6 +447,23 @@
 	<div class="mt-4 flex justify-end space-x-2">
 		<Button on:click={addChart}>Draw Chart</Button>
 		<Button on:click={addChartToggle}>Cancel</Button>
+	</div>
+</Modal>
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
 	</div>
 </Modal>
 

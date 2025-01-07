@@ -1,9 +1,10 @@
 import { c as create_ssr_component, b as compute_rest_props, h as getContext, e as spread, f as escape_attribute_value, g as escape_object, a as add_attribute, i as escape, d as subscribe, v as validate_component } from "../../../../chunks/ssr.js";
 import { H as Heading } from "../../../../chunks/Heading.js";
 import { P } from "../../../../chunks/P.js";
-import { S as Span } from "../../../../chunks/Span.js";
+import { M as Modal, E as ExclamationCircleOutline, S as Span } from "../../../../chunks/ExclamationCircleOutline.js";
 import "@tauri-apps/api/tauri";
 import { p as project, n as nodeOrEdge, b as simulationType } from "../../../../chunks/projects.js";
+import { B as Button } from "../../../../chunks/Button.js";
 import { A } from "../../../../chunks/A.js";
 import { twMerge } from "tailwind-merge";
 import "../../../../chunks/client.js";
@@ -82,6 +83,8 @@ const SimulationsList = create_ssr_component(($$result, $$props, $$bindings, slo
   let $$unsubscribe_project;
   $$unsubscribe_project = subscribe(project, (value) => value);
   let allSimulations = [];
+  let errorModalOpen = false;
+  let latestError = "error";
   let searchTerm = "";
   let $$settled;
   let $$rendered;
@@ -94,7 +97,47 @@ const SimulationsList = create_ssr_component(($$result, $$props, $$bindings, slo
       default: () => {
         return `${validate_component(CirclePlusSolid, "CirclePlusSolid").$$render($$result, { class: "h-6 w-6" }, {}, {})} Show all simulations`;
       }
-    })}</div>`}`;
+    })}</div>`} ${validate_component(Modal, "Modal").$$render(
+      $$result,
+      {
+        size: "xs",
+        autoclose: true,
+        open: errorModalOpen
+      },
+      {
+        open: ($$value) => {
+          errorModalOpen = $$value;
+          $$settled = false;
+        }
+      },
+      {
+        default: () => {
+          return `<div class="text-center">${validate_component(ExclamationCircleOutline, "ExclamationCircleOutline").$$render(
+            $$result,
+            {
+              class: "mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200"
+            },
+            {},
+            {}
+          )} <h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400" data-svelte-h="svelte-2e0vep">Error:</h3> ${validate_component(P, "P").$$render(
+            $$result,
+            {
+              class: "mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+            },
+            {},
+            {
+              default: () => {
+                return `${escape(latestError)}`;
+              }
+            }
+          )} ${validate_component(Button, "Button").$$render($$result, { color: "red", class: "me-2" }, {}, {
+            default: () => {
+              return `Try again`;
+            }
+          })}</div>`;
+        }
+      }
+    )}`;
   } while (!$$settled);
   $$unsubscribe_project();
   return $$rendered;
@@ -106,6 +149,8 @@ const SimulationSettings = create_ssr_component(($$result, $$props, $$bindings, 
   $$unsubscribe_project = subscribe(project, (value) => value);
   let simType = "false";
   let isDiffusion = true;
+  let errorModalOpen = false;
+  let latestError = "error";
   let dataFromChildren = {};
   let $$settled;
   let $$rendered;
@@ -133,7 +178,47 @@ const SimulationSettings = create_ssr_component(($$result, $$props, $$bindings, 
       default: () => {
         return `${validate_component(CirclePlusSolid, "CirclePlusSolid").$$render($$result, { class: "h-6 w-6" }, {}, {})} Show simulation settings`;
       }
-    })}</div>`}`;
+    })}</div>`} ${validate_component(Modal, "Modal").$$render(
+      $$result,
+      {
+        size: "xs",
+        autoclose: true,
+        open: errorModalOpen
+      },
+      {
+        open: ($$value) => {
+          errorModalOpen = $$value;
+          $$settled = false;
+        }
+      },
+      {
+        default: () => {
+          return `<div class="text-center">${validate_component(ExclamationCircleOutline, "ExclamationCircleOutline").$$render(
+            $$result,
+            {
+              class: "mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200"
+            },
+            {},
+            {}
+          )} <h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400" data-svelte-h="svelte-2e0vep">Error:</h3> ${validate_component(P, "P").$$render(
+            $$result,
+            {
+              class: "mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+            },
+            {},
+            {
+              default: () => {
+                return `${escape(latestError)}`;
+              }
+            }
+          )} ${validate_component(Button, "Button").$$render($$result, { color: "red", class: "me-2" }, {}, {
+            default: () => {
+              return `Try again`;
+            }
+          })}</div>`;
+        }
+      }
+    )}`;
   } while (!$$settled);
   $$unsubscribe_nodeOrEdge();
   $$unsubscribe_project();

@@ -151,35 +151,33 @@ fn run_python_test_time() -> String {
 
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_list_projects() -> String {
+fn run_python_list_projects() -> Result<String, String>{
     let results = general_py_backend::list_projects();
-    println!("Inside main.rs printing projects list results");
-    println!("{}", results);
-    return results;
-}
-
-#[tauri::command(rename_all = "snake_case")]
-fn run_python_list_simulations(project_name : String) -> String {
-    let results = general_py_backend::list_simulations(project_name);
-    // println!("Inside main.rs printing simulations list results");
+    // println!("Inside main.rs printing projects list results");
     // println!("{}", results);
     return results;
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_list_sim_and_count(project_name : String) -> String {
+fn run_python_list_simulations(project_name : String) -> Result<String, String> {
+    let results = general_py_backend::list_simulations(project_name);
+    return results;
+}
+
+#[tauri::command(rename_all = "snake_case")]
+fn run_python_list_sim_and_count(project_name : String) -> Result<String, String> {
     let results = general_py_backend::list_sim_and_count(project_name);
     return results;
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_get_sub_simulations_info(project_name : String, simulation_directory: String) -> String{
+fn run_python_get_sub_simulations_info(project_name : String, simulation_directory: String) -> Result<String, String>{
     let results = general_py_backend::get_subsimulations_info(project_name, simulation_directory);
     return results;
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_list_parameters(project_name : String, simulation_directory: String) -> String {
+fn run_python_list_parameters(project_name : String, simulation_directory: String) -> Result<String, String> {
     let results = general_py_backend::list_parameters(project_name, simulation_directory);
     // println!("Inside main.rs printing simulations list parameters");
     // println!("{}", results);
@@ -187,7 +185,7 @@ fn run_python_list_parameters(project_name : String, simulation_directory: Strin
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_list_datasets(project_name : String) -> String {
+fn run_python_list_datasets(project_name : String) -> Result<String, String> {
     let results = general_py_backend::list_datasets(project_name);
     // println!("Inside main.rs printing simulations list datasets");
     // println!("{}", results);
@@ -195,7 +193,7 @@ fn run_python_list_datasets(project_name : String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_save_dataset(project_name : String, file_name: String, file_content: Vec<u8>) -> String {
+fn run_python_save_dataset(project_name : String, file_name: String, file_content: Vec<u8>) -> Result<String, String> {
     let results = general_py_backend::save_dataset(project_name, file_name, file_content);
     // println!("Inside main.rs printing simulations list datasets");
     // println!("{}", results);
@@ -203,7 +201,7 @@ fn run_python_save_dataset(project_name : String, file_name: String, file_conten
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_load_simulation_info(project_name : String, simulation_directory: String) -> String {
+fn run_python_load_simulation_info(project_name : String, simulation_directory: String) -> Result<String, String> {
     let results = general_py_backend::load_simulation_info(project_name, simulation_directory);
     // println!("Inside main.rs printing simulations info");
     // println!("{}", results);
@@ -211,7 +209,7 @@ fn run_python_load_simulation_info(project_name : String, simulation_directory: 
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_load_simulation_graph(project_name : String, simulation_directory: String) -> String {
+fn run_python_load_simulation_graph(project_name : String, simulation_directory: String) -> Result<String, String> {
     let results = general_py_backend::load_simulation_graph(project_name, simulation_directory);
     // println!("Inside main.rs printing simulations graph");
     // println!("{}", results);
@@ -219,7 +217,7 @@ fn run_python_load_simulation_graph(project_name : String, simulation_directory:
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_load_added_edges(project_name : String, simulation_directory: String) -> String {
+fn run_python_load_added_edges(project_name : String, simulation_directory: String) -> Result<String, String> {
     let results = general_py_backend::load_added_edges(project_name, simulation_directory);
     // println!("Inside main.rs printing added edges");
     // println!("{}", results);
@@ -227,7 +225,7 @@ fn run_python_load_added_edges(project_name : String, simulation_directory: Stri
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_load_parameter_file(project_name : String, simulation_directory: String, file_name: String) -> String {
+fn run_python_load_parameter_file(project_name : String, simulation_directory: String, file_name: String) -> Result<String, String> {
     let results = general_py_backend::load_parameter_file(project_name, simulation_directory, file_name);
     // println!("Inside main.rs printing parameter file");
     // println!("{}", results);
@@ -235,7 +233,7 @@ fn run_python_load_parameter_file(project_name : String, simulation_directory: S
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_load_methods(project_name : String) -> String {
+fn run_python_load_methods(project_name : String) -> Result<String, String> {
     let results = general_py_backend::load_methods(project_name);
     // println!("Inside main.rs printing parameter file");
     // println!("{}", results);
@@ -243,7 +241,7 @@ fn run_python_load_methods(project_name : String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_get_conf(project_name : String) -> String {
+fn run_python_get_conf(project_name : String) -> Result<String, String> {
     let results = general_py_backend::get_conf(project_name);
     // println!("Inside main.rs printing conf file");
     // println!("{}", results);
@@ -251,36 +249,36 @@ fn run_python_get_conf(project_name : String) -> String {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_save_methods(project_name : String, code : String) {
-    general_py_backend::save_methods(project_name, code);
+fn run_python_save_methods(project_name : String, code : String) -> Result<String, String> {
+    return general_py_backend::save_methods(project_name, code);
     // println!("Inside main.rs printing parameter file");
     // println!("{}", results);
     
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_save_conf(project_name : String, content : String) {
-    general_py_backend::save_conf(project_name, content);
+fn run_python_save_conf(project_name : String, content : String) -> Result<String, String> {
+    return general_py_backend::save_conf(project_name, content);
     
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_save_methods_list_view(project_name : String, list_view : String) {
-    general_py_backend::save_methods_list_view(project_name, list_view);
+fn run_python_save_methods_list_view(project_name : String, list_view : String) -> Result<String, String> {
+    return general_py_backend::save_methods_list_view(project_name, list_view);
     //  println!("Inside main.rs printing parameter file");
     // println!("{}", results);
   
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_create_project(name: String, date: String, info: String, node_or_edge: String) {
-    println!("Inside main.rs before python call, name: {}, date:{}, info:{}", name, date, info);
-    project_py_backend::create_project(name, date, info, node_or_edge);
-    println!("Inside main.rs, project successfully created");
+fn run_python_create_project(name: String, date: String, info: String, node_or_edge: String) -> Result<String, String>{
+    // println!("Inside main.rs before python call, name: {}, date:{}, info:{}", name, date, info);
+    return project_py_backend::create_project(name, date, info, node_or_edge);
+    // println!("Inside main.rs, project successfully created");
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_send_conf_and_run(data: String, project_name: String, epochs: i32, snapshot_period: i32, batch_num: i32) -> String {
+fn run_python_send_conf_and_run(data: String, project_name: String, epochs: i32, snapshot_period: i32, batch_num: i32) -> Result<String, String> {
 // fn run_python_send_conf_and_run(app_handle: AppHandle,data: String, project_name: String, epochs: i32, snapshot_period: i32) -> String {
     // let results = project_py_backend::send_conf_and_run(app_handle, data, project_name, epochs, snapshot_period);
     // println!("Inside main.rs, simulation successfully ran");
@@ -289,21 +287,21 @@ fn run_python_send_conf_and_run(data: String, project_name: String, epochs: i32,
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_init_and_run_simulation(project_name: String, epochs: i32, snapshot_period: i32) -> String {
+fn run_python_init_and_run_simulation(project_name: String, epochs: i32, snapshot_period: i32) -> Result<String, String> {
     let results = project_py_backend::init_and_run_simulation(project_name, epochs, snapshot_period);
     println!("Inside main.rs, simulation successfully ran");
     return results
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_edge_conf_run(data: String, project_name: String, epochs: i32, snapshot_period: i32) -> String {
+fn run_python_edge_conf_run(data: String, project_name: String, epochs: i32, snapshot_period: i32) -> Result<String, String> {
     let results = project_py_backend::edge_conf_run(data, project_name, epochs, snapshot_period);
     println!("Inside main.rs, simulation successfully ran");
     return results
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn run_python_edge_sim_run(project_name: String, epochs: i32, snapshot_period: i32) -> String {
+fn run_python_edge_sim_run(project_name: String, epochs: i32, snapshot_period: i32) -> Result<String, String> {
     let results = project_py_backend::edge_sim_run(project_name, epochs, snapshot_period);
     println!("Inside main.rs, simulation successfully ran");
     return results
@@ -314,7 +312,7 @@ fn run_python_merge_parent_sim(project_name: String,
     parent_simulation_dir: String,
     simulation_dir: String, 
     json_file_name: String, 
-    merge_method: String) -> String{
+    merge_method: String) -> Result<String, String>{
     let results = merge_py_backend::merge_parent_sim(project_name, parent_simulation_dir, simulation_dir, json_file_name, merge_method);
     return results
 }
@@ -324,31 +322,13 @@ fn run_python_merge_other_sim(project_name: String,
     parent_simulation_dir: String,
     simulation_dir: String, 
     json_file_name: String, 
-    merge_dir_dict: String) -> String{
+    merge_dir_dict: String) -> Result<String, String>{
     let results = merge_py_backend::merge_other_sim(project_name, parent_simulation_dir, simulation_dir, json_file_name, merge_dir_dict);
     return results
 }
 
 fn main() {
-    // let app = tauri::Builder::default()
-    //     .invoke_handler(tauri::generate_handler![query_database, query_result_types, get_results_by_type, run_python_class_parameter, run_python_method_parameter])
-    //     .run(tauri::generate_context!())
-    //     .expect("Error while running Tauri application");
-
-    // tauri::Builder::default()
-    //     .run(tauri::generate_context!())
-    //     .expect("Error while running Tauri application");
-
-
-    // let log_file = OpenOptions::new()
-    //     .create(true)
-    //     .append(true)
-    //     .open("log.txt")
-    //     .expect("Cannot create log file");
-
-    // env_logger::Builder::from_default_env()
-    //     .target(env_logger::Target::Pipe(Box::new(log_file)))
-    //     .init();
+    
     let logger =  LogBuilder::new()
         .targets([
             LogTarget::LogDir,
@@ -356,15 +336,7 @@ fn main() {
         ])
         .build();
 
-    let builder = Builder::default()
-        // .plugin(
-        //     LogBuilder::default()
-        //         .targets([
-        //             LogTarget::LogDir,  // Log to a file in the app's log directory
-        //             LogTarget::Stdout, // (Optional) Keep logs in stdout for dev builds
-        //         ])
-        //         .build(),
-        // )  
+    let builder = Builder::default() 
         .plugin(logger)
         .invoke_handler(generate_handler![
             query_database, 

@@ -12,7 +12,7 @@
 	import { project, simulationName, simulationDirectory } from '$lib/stores/projects';
 	import { generateSlug } from '$lib/utils';
 	import { goto } from '$app/navigation';
-	import { ArrowRightOutline } from 'flowbite-svelte-icons';
+	import { ArrowRightOutline, ExclamationCircleOutline } from 'flowbite-svelte-icons';
 
 	let editor;
 	let yamlContent = '';
@@ -22,6 +22,9 @@
 	let runSimOpen = false;
 	let epochs = '0';
 	let snapshotPeriod = '0';
+
+	let errorModalOpen = false;
+	let latestError = 'error';
 
 	onMount(async () => {
 		// Load the initial YAML content from the file
@@ -73,6 +76,8 @@
 			goto(targetUrl); // Optionally await to ensure navigation happens
 		} catch (error) {
 			console.error('Error running simulation:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -97,6 +102,8 @@
 			console.log('Configuration saved successfully');
 		} catch (error) {
 			console.error('Error saving configuration:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -152,6 +159,23 @@
 			Run simulation<ArrowRightOutline class="ms-2 h-6 w-6" />
 		</Button>
 	</form>
+</Modal>
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
+	</div>
 </Modal>
 
 <style>

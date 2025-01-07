@@ -1,6 +1,6 @@
 <script>
-	import { Timeline, TimelineItem, A } from 'flowbite-svelte';
-	import { CalendarWeekSolid } from 'flowbite-svelte-icons';
+	import { Timeline, TimelineItem, A, Modal, P, Button } from 'flowbite-svelte';
+	import { CalendarWeekSolid, ExclamationCircleOutline } from 'flowbite-svelte-icons';
 
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
@@ -9,6 +9,8 @@
 	import { project, nodeOrEdge } from '$lib/stores/projects';
 
 	let allProjects = [];
+	let errorModalOpen = false;
+	let latestError = 'error';
 
 	onMount(() => {
 		run_python_list_projects();
@@ -28,6 +30,8 @@
 			console.log('Run results to get all lists-->', allProjects);
 		} catch (error) {
 			console.error('Error running Python list projects:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 </script>
@@ -68,3 +72,20 @@
 		</Timeline>
 	</div>
 </div>
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
+		>
+	</div>
+</Modal>

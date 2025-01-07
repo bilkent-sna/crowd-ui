@@ -641,7 +641,7 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
                   },
                   {},
                   {}
-                )} <a href="mailto:nedime.rende@bilkent.edu.tr" class="inline-flex items-center hover:underline" data-svelte-h="svelte-zuweyq">Send an email</a>`;
+                )} <a href="mailto:nedime.rende@bilkent.edu.tr" class="inline-flex items-center hover:underline" data-svelte-h="svelte-1e4sdqn">Send an email</a>`;
               }
             })}`;
           }

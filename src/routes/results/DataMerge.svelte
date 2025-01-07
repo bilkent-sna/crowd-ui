@@ -9,11 +9,14 @@
 		TrashBinSolid,
 		RulerCombinedOutline,
 		LayersOutline,
-		CirclePlusSolid
+		CirclePlusSolid,
+		ExclamationCircleOutline
 	} from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 
 	let mergeDataOpen = false;
+	let errorModalOpen = false;
+	let latestError = 'error';
 
 	const mergeDataToggle = () => {
 		mergeDataOpen = !mergeDataOpen;
@@ -61,6 +64,8 @@
 			console.log('ParamsFileList in JS:', paramFileList);
 		} catch (error) {
 			console.error('Error occured while loading parameter file names:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -70,6 +75,8 @@
 			allSimulationsDict = JSON.parse(result);
 		} catch (error) {
 			console.error('Error running Python list simulations:', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 	}
 
@@ -95,6 +102,8 @@
 			console.log('Data merged successfully');
 		} catch (error) {
 			console.error('Error occured while merging data in parent simulation', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 		clearLineData();
 	}
@@ -111,6 +120,8 @@
 			console.log('Data merged successfully');
 		} catch (error) {
 			console.error('Error occured while merging data with other simulation', error);
+			latestError = error;
+			errorModalOpen = true;
 		}
 		clearLineData();
 	}
@@ -326,6 +337,23 @@
 				clearLineData();
 				selectedMergeType = '';
 			}}>Cancel</Button
+		>
+	</div>
+</Modal>
+
+<Modal bind:open={errorModalOpen} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400">Error:</h3>
+		<P class="mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+			>{latestError}</P
+		>
+		<Button
+			color="red"
+			class="me-2"
+			on:click={() => {
+				errorModalOpen = false;
+			}}>Try again</Button
 		>
 	</div>
 </Modal>

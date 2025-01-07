@@ -2,10 +2,10 @@ import { c as create_ssr_component, s as setContext, a as add_attribute, h as ge
 import { B as Button } from "../../chunks/Button.js";
 import { R as Radio } from "../../chunks/Radio.js";
 import { L as Label } from "../../chunks/Label.js";
-import { M as Modal, I as Input } from "../../chunks/Modal.js";
+import { I as Input } from "../../chunks/Input.js";
+import { M as Modal, E as ExclamationCircleOutline, S as Span } from "../../chunks/ExclamationCircleOutline.js";
 import { H as Heading } from "../../chunks/Heading.js";
 import { P } from "../../chunks/P.js";
-import { S as Span } from "../../chunks/Span.js";
 import { A as ArrowRightOutline } from "../../chunks/ArrowRightOutline.js";
 import "@tauri-apps/api/tauri";
 import "../../chunks/client.js";
@@ -139,45 +139,97 @@ function generateSlug(str) {
 }
 const ListProjects = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let allProjects = [];
-  return `<div class="flex items-center justify-center"><div class="m-5 w-1/2 items-center gap-2 p-1">${validate_component(Timeline, "Timeline").$$render($$result, { order: "vertical" }, {}, {
-    default: () => {
-      return `${each(allProjects, (currProject) => {
-        return `${validate_component(TimelineItem, "TimelineItem").$$render($$result, {}, {}, {
-          icon: () => {
-            return `<span class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary-200 ring-8 ring-white dark:bg-primary-900 dark:ring-gray-900">${validate_component(CalendarWeekSolid, "CalendarWeekSolid").$$render(
-              $$result,
-              {
-                class: "h-4 w-4 text-primary-600 dark:text-primary-400"
-              },
-              {},
-              {}
-            )}</span> `;
-          },
-          default: () => {
-            return `${validate_component(A, "A").$$render(
-              $$result,
-              {
-                href: `/project/${generateSlug(currProject.name)}`,
-                class: "font-medium hover:underline"
-              },
-              {},
-              {
-                default: () => {
-                  return ` ${escape(currProject.name)} `;
+  let errorModalOpen = false;
+  let latestError = "error";
+  let $$settled;
+  let $$rendered;
+  let previous_head = $$result.head;
+  do {
+    $$settled = true;
+    $$result.head = previous_head;
+    $$rendered = `<div class="flex items-center justify-center"><div class="m-5 w-1/2 items-center gap-2 p-1">${validate_component(Timeline, "Timeline").$$render($$result, { order: "vertical" }, {}, {
+      default: () => {
+        return `${each(allProjects, (currProject) => {
+          return `${validate_component(TimelineItem, "TimelineItem").$$render($$result, {}, {}, {
+            icon: () => {
+              return `<span class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary-200 ring-8 ring-white dark:bg-primary-900 dark:ring-gray-900">${validate_component(CalendarWeekSolid, "CalendarWeekSolid").$$render(
+                $$result,
+                {
+                  class: "h-4 w-4 text-primary-600 dark:text-primary-400"
+                },
+                {},
+                {}
+              )}</span> `;
+            },
+            default: () => {
+              return `${validate_component(A, "A").$$render(
+                $$result,
+                {
+                  href: `/project/${generateSlug(currProject.name)}`,
+                  class: "font-medium hover:underline"
+                },
+                {},
+                {
+                  default: () => {
+                    return ` ${escape(currProject.name)} `;
+                  }
                 }
-              }
-            )} <div class="text-gray-500 dark:text-gray-400"><p class="mb-4 text-base font-normal">${escape(currProject.date)}</p> <p class="mb-4 text-base font-normal">${escape(currProject.info)}</p></div> `;
-          }
+              )} <div class="text-gray-500 dark:text-gray-400"><p class="mb-4 text-base font-normal">${escape(currProject.date)}</p> <p class="mb-4 text-base font-normal">${escape(currProject.info)}</p></div> `;
+            }
+          })}`;
         })}`;
-      })}`;
-    }
-  })}</div></div>`;
+      }
+    })}</div></div> ${validate_component(Modal, "Modal").$$render(
+      $$result,
+      {
+        size: "xs",
+        autoclose: true,
+        open: errorModalOpen
+      },
+      {
+        open: ($$value) => {
+          errorModalOpen = $$value;
+          $$settled = false;
+        }
+      },
+      {
+        default: () => {
+          return `<div class="text-center">${validate_component(ExclamationCircleOutline, "ExclamationCircleOutline").$$render(
+            $$result,
+            {
+              class: "mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200"
+            },
+            {},
+            {}
+          )} <h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400" data-svelte-h="svelte-2e0vep">Error:</h3> ${validate_component(P, "P").$$render(
+            $$result,
+            {
+              class: "mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+            },
+            {},
+            {
+              default: () => {
+                return `${escape(latestError)}`;
+              }
+            }
+          )} ${validate_component(Button, "Button").$$render($$result, { color: "red", class: "me-2" }, {}, {
+            default: () => {
+              return `Try again`;
+            }
+          })}</div>`;
+        }
+      }
+    )}`;
+  } while (!$$settled);
+  return $$rendered;
 });
 const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let addProjectOpen = false;
   let newProjectName = "";
   let newProjectInfo = "";
   let nodeEdgeSelect = "";
+  let errorModalOpen = false;
+  let latestError = "error";
   let $$settled;
   let $$rendered;
   let previous_head = $$result.head;
@@ -313,6 +365,46 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
               return `Create project${validate_component(ArrowRightOutline, "ArrowRightOutline").$$render($$result, { class: "ms-2 h-6 w-6" }, {}, {})}`;
             }
           })}</form>`;
+        }
+      }
+    )} ${validate_component(Modal, "Modal").$$render(
+      $$result,
+      {
+        size: "xs",
+        autoclose: true,
+        open: errorModalOpen
+      },
+      {
+        open: ($$value) => {
+          errorModalOpen = $$value;
+          $$settled = false;
+        }
+      },
+      {
+        default: () => {
+          return `<div class="text-center">${validate_component(ExclamationCircleOutline, "ExclamationCircleOutline").$$render(
+            $$result,
+            {
+              class: "mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200"
+            },
+            {},
+            {}
+          )} <h3 class="mb-1 text-xl font-normal text-gray-800 dark:text-gray-400" data-svelte-h="svelte-2e0vep">Error:</h3> ${validate_component(P, "P").$$render(
+            $$result,
+            {
+              class: "mb-5 text-center text-lg font-normal text-gray-700 dark:text-gray-400"
+            },
+            {},
+            {
+              default: () => {
+                return `${escape(latestError)}`;
+              }
+            }
+          )} ${validate_component(Button, "Button").$$render($$result, { color: "red", class: "me-2" }, {}, {
+            default: () => {
+              return `Try again`;
+            }
+          })}</div>`;
         }
       }
     )}`;

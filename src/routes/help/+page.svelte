@@ -235,7 +235,7 @@
 					<LinkOutline class="h-5 w-5 text-primary-500 dark:text-primary-400" />
 					<a
 						href="mailto:nedime.rende@bilkent.edu.tr"
-						on:click={(e) => openExternalLink(e, 'mailto:nedime.rende@bilkent.edu.tr')}
+						on:click={(e) => openExternalLink(e, 'mailto:crowd@bilkent.edu.tr')}
 						class="inline-flex items-center hover:underline">Send an email</a
 					></Li
 				>
