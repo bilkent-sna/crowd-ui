@@ -45,3 +45,17 @@ Once the installation is complete, you can start using Crowd's GUI to configure 
 
 If you encounter any issues -> open an issue on this repository.
 
+# Citation
+Please cite the following paper if you use Crowd:
+  ```
+  @misc{rende2024crowdsocialnetworksimulation,
+        title={Crowd: A Social Network Simulation Framework}, 
+        author={Ann Nedime Nese Rende and Tolga Yilmaz and Özgür Ulusoy},
+        year={2024},
+        eprint={2412.10781},
+        archivePrefix={arXiv},
+        primaryClass={cs.SI},
+        url={https://arxiv.org/abs/2412.10781}, 
+  }
+  ```
+
