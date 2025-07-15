@@ -1,4 +1,4 @@
-# Crowd UI:
+# Crowd UI
 
 Crowd is a social network simulation framework which simplifies and fastens the process of developing agent-based models and simulations on networks. It is developed as a Python library, which also provides more advanced visualization through its graphical user interface. In this repository, you can find the source code of Crowd’s GUI, written with web technologies but wrapped as a desktop app which can be easily installed and run. Installers can be found on “Releases” section. 
 
@@ -41,21 +41,20 @@ Once the installation is complete, you can start using Crowd's GUI to configure 
 
 - Create your first project, configure simulation settings and run simulations. 
 
-- For detailed usage and features, refer to our <a href="https://github.com/Bilkent-Social-Systems-Research-Group/crowd/blob/f404926641f79daa526b0530ac412972fd6e1cca/crowd/docs/examples/sir_example/sir.ipynb" >introductory example</a>. 
+- For detailed usage and features, refer to [Crowd's documentation](https://crowd.readthedocs.io/en/latest/). 
 
 If you encounter any issues -> open an issue on this repository.
 
 # Citation
 Please cite the following paper if you use Crowd:
   ```
-  @misc{rende2024crowdsocialnetworksimulation,
-        title={Crowd: A Social Network Simulation Framework}, 
-        author={Ann Nedime Nese Rende and Tolga Yilmaz and Özgür Ulusoy},
-        year={2024},
-        eprint={2412.10781},
-        archivePrefix={arXiv},
-        primaryClass={cs.SI},
-        url={https://arxiv.org/abs/2412.10781}, 
+  @article{rende2025crowd,
+     title={Crowd: A Social Network Simulation Framework},
+     author={Rende, Ann Nedime Nese and Yilmaz, Tolga and Ulusoy, Ozgur},
+     journal={IEEE Transactions on Computational Social Systems},
+     year={2025},
+     publisher={IEEE},
+     doi={10.1109/TCSS.2025.3565377}
   }
   ```
 
