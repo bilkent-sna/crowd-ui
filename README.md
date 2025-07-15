@@ -17,17 +17,17 @@ Ensure you have Python 3.12 installed on your system. If not, follow these steps
 #### Step 1: Download the Crowd Python Library
 
 - Navigate to the Crowd GitHub repository:
-https://github.com/Bilkent-Social-Systems-Research-Group/crowd
+https://github.com/bilkent-sna/crowd
 
 - Clone or download the repository to your local system:
 
-   - To clone using Git, run: git clone https://github.com/Bilkent-Social-Systems-Research-Group/crowd
+   - To clone using Git, run: git clone https://github.com/bilkent-sna/crowd
 
    - Alternatively, click Code > Download ZIP and extract it to a preferred location.
 
 #### Step 2: Download and Install Crowd UI
 
-- On this repository, go to the releases page: https://github.com/Bilkent-Social-Systems-Research-Group/crowd-ui/releases/tag/v0.9.0
+- On this repository, go to the releases page: https://github.com/bilkent-sna/crowd-ui/releases/tag/v0.9.0
 
 - Locate the latest release (v0.9.0) and download the installer. 
 
